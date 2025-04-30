@@ -28,7 +28,10 @@ operator - :: inline (using rectangle: Rectangle, number: s32) -> Rectangle {
 welcome_form: *forms.Form;
 chat_form:    *forms.Form;
 message_box:  *forms.Object;
-chat_area:    *forms.Object;
+// chat_area:    *forms.Object;
+
+message_browser: *forms.Object;
+
 socket_file_descriptor: s32;
 
 messages_builder: String_Builder;
@@ -71,23 +74,44 @@ make_welcome_form :: () {
     reset_temporary_storage();
 }
 
+make_channels_form :: () -> *forms.Form {
+    channels := forms.begin_form(.FLAT_BOX, 200, 500);
+        y: s32 = 0;
+        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 1"); y += 30;
+        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 2"); y += 30;
+        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 3"); y += 30;
+        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 4"); y += 30;
+        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 5"); y += 30;
+    forms.end_form();
+
+    return channels;
+}
+
 make_chat_form :: () {
+    channels := make_channels_form();
+
     chat_form = forms.begin_form(.UP_BOX, WINDOW_WIDTH, WINDOW_HEIGHT);
     defer forms.end_form();
 
-    chat_area = forms.add_input(.MULTILINE_INPUT, 0,  0,  WINDOW_WIDTH,  WINDOW_HEIGHT - 30);
-    // forms.fl_activate_object(chat_area);
-    // forms.fl_deactivate_object(chat_area);
-    forms.set_gravity(chat_area, .NorthWest, .SouthEast);
-    forms.fl_set_input_scroll(chat_area, 1);
+    side_bar :: 200;
 
-    message_box = forms.add_input(.NORMAL_INPUT, 0,  WINDOW_HEIGHT - 30,  WINDOW_WIDTH - 100,  30);
-    forms.set_gravity(message_box, .SouthWest, .South);
+
+    folder := forms.add_tab_folder(.TOP_TABFOLDER, 0, 0, side_bar, WINDOW_HEIGHT, "Test folder");
+    forms.set_gravity(folder, .West, .West);
+
+    forms.add_form_as_tab(folder, "Channels", channels);
+
+    message_browser = forms.fl_add_formbrowser(0, side_bar, 0, 800 - side_bar, 570, "Test label");
+    forms.set_gravity(message_browser, .West, .East);
+
+    message_box = forms.add_input(.NORMAL_INPUT, side_bar,  WINDOW_HEIGHT - 30,  WINDOW_WIDTH - 100 - side_bar,  30);
+    forms.set_gravity(message_box, .West, .East);
     forms.set_callback(message_box, message_box_callback);
     forms.fl_set_focus_object(chat_form, message_box);
 
     send_message_button := forms.add_button(.NORMAL_BUTTON, WINDOW_WIDTH - 100, WINDOW_HEIGHT - 30, 100, 30, "Send");
-    forms.set_gravity(send_message_button, .South, .SouthEast);
+    forms.set_gravity(send_message_button, .East, .East);
+    // forms.set_gravity(send_message_button, .South, .SouthEast);
     forms.set_callback(send_message_button, send_message_callback);
 
     reset_temporary_storage();
@@ -103,14 +127,8 @@ send_message :: () {
     lock(*ui_mutex);
     defer unlock(*ui_mutex);
 
-    append(*messages_builder, "me: ");
-    append(*messages_builder, message);
-    append(*messages_builder, "\n");
+    forms.fl_addto_formbrowser(message_browser, make_message_form(message));
     forms.set_input(message_box, "");
-
-    forms.set_input(chat_area, builder_to_string(*messages_builder, do_reset=false,, temp));
-
-    forms.fl_set_focus_object(chat_form, message_box);
 
     reset_temporary_storage();
 }
@@ -128,18 +146,7 @@ message_listener :: (thread: *Thread) -> s64 {
         message.data  = buffer.data;
         message.count = amount_read;
 
-        append(*messages_builder, "other: ");
-        append(*messages_builder, trim(message));
-        append(*messages_builder, "\n");
-
-        new_text := builder_to_string(*messages_builder, do_reset=false,, temp);
-        forms.set_input(chat_area, new_text);
-
-        count: s32 = 0;
-        for new_text
-            if it == #char "\n" then count += 1;
-
-        forms.fl_set_input_cursorpos(chat_area, 0, count + 1);
+        forms.fl_addto_formbrowser(message_browser, make_message_form(message));
 
         reset_temporary_storage();
     }
@@ -177,8 +184,19 @@ connect_button_callback :: (object: *forms.Object, data: s64) {
     forms.show_form(chat_form, .FREE, .FULLBORDER, "XChatger");
 }
 
-b: *forms.Form;
-browser: *forms.Object;
+make_message_form :: (text: string) -> *forms.Form {
+    form := forms.begin_form(.FLAT_BOX, WINDOW_WIDTH, 50);
+    defer forms.end_form();
+
+    forms.add_button(.NORMAL_BUTTON, 50, 0, 100, 20, "Mr Epic Username");
+    pixbutton := forms.fl_add_pixmapbutton(xx forms.FL_BUTTON_TYPE.NORMAL_BUTTON, 0, 0, 50, 50, "test");
+    forms.fl_set_pixmapbutton_file(pixbutton, "./Laptopger.xpm");
+
+    // TODO: Wordwrap this
+    message_box := forms.add_text(50, 20, 600, 30, text);
+
+    return form;
+}
 
 main :: () {
     forms.initialize();
@@ -186,44 +204,7 @@ main :: () {
     make_chat_form();
     make_welcome_form();
 
-    // forms.show_form(welcome_form, .FREE, .FULLBORDER, "XChatger");
-
-    channels := forms.begin_form(.FLAT_BOX, 200, 500);
-        y: s32 = 0;
-        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 1"); y += 30;
-        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 2"); y += 30;
-        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 3"); y += 30;
-        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 4"); y += 30;
-        forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 5"); y += 30;
-    forms.end_form();
-
-    b = forms.begin_form(.UP_BOX, WINDOW_WIDTH, WINDOW_HEIGHT);
-        side_bar :: 200;
-
-        folder := forms.add_tab_folder(.TOP_TABFOLDER, 0, 0, side_bar, 500, "Test folder");
-        forms.set_gravity(folder, .West, .West);
-
-        forms.add_form_as_tab(folder, "Channels", channels);
-
-        browser = forms.fl_add_formbrowser(0, side_bar, 0, 800 - side_bar, 500, "Test label");
-        forms.set_gravity(browser, .West, .East);
-
-        button := forms.add_button(.NORMAL_BUTTON, 0, 500, 800, 100, "click me!");
-        forms.set_callback(button, (object: *forms.Object, data: s64) {
-            log("Clicked!");
-
-            sub_form := forms.begin_form(.FLAT_BOX, WINDOW_WIDTH, 50);
-                forms.add_button(.NORMAL_BUTTON, 20, 0, 100, 20, "wooptiedoo!");
-                pixbutton := forms.fl_add_pixmapbutton(xx forms.FL_BUTTON_TYPE.NORMAL_BUTTON, 0, 0, 20, 20, null);
-                forms.fl_set_pixmapbutton_focus_file(pixbutton, "./penger.png");
-            forms.end_form();
-
-            forms.fl_addto_formbrowser(browser, sub_form);
-        });
-
-    forms.end_form();
-
-    forms.show_form(b, .FREE, .FULLBORDER, "XChatger");
+    forms.show_form(welcome_form, .FREE, .FULLBORDER, "XChatger");
 
     while forms.do_forms() {
     }

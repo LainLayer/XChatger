@@ -26,7 +26,7 @@ initialize :: inline () {
 begin_form :: inline (type: Box_Type, w: s32, h: s32) -> *Form { return fl_bgn_form(xx type, w, h); }
 end_form :: fl_end_form;
 
-add_button :: inline (type: Button_Type, x: s32, y: s32, w: s32, h: s32, label: string = "") -> *Object {
+add_button :: inline (type: Button_Type, x: s32, y: s32, w: s32, h: s32, label: string) -> *Object {
     return fl_add_button(xx type, x, y, w, h, temp_c_string(label));
 }
 
