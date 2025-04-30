@@ -187,6 +187,7 @@ main :: () {
     make_welcome_form();
 
     // forms.show_form(welcome_form, .FREE, .FULLBORDER, "XChatger");
+
     channels := forms.begin_form(.FLAT_BOX, 200, 500);
         y: s32 = 0;
         forms.add_button(.NORMAL_BUTTON, 0, y, 200, 30, "Channel 1"); y += 30;
@@ -199,11 +200,10 @@ main :: () {
     b = forms.begin_form(.UP_BOX, WINDOW_WIDTH, WINDOW_HEIGHT);
         side_bar :: 200;
 
-        folder := forms.fl_add_tabfolder(xx forms.FL_20.TOP_TABFOLDER, 0, 0, side_bar, 500, "Test folder");
+        folder := forms.add_tab_folder(.TOP_TABFOLDER, 0, 0, side_bar, 500, "Test folder");
         forms.set_gravity(folder, .West, .West);
 
-        // thing := forms.fl_create_button(0, 0, 0, 50, 30, "Hello");
-        forms.fl_addto_tabfolder(folder, "Channels", channels);
+        forms.add_form_as_tab(folder, "Channels", channels);
 
         browser = forms.fl_add_formbrowser(0, side_bar, 0, 800 - side_bar, 500, "Test label");
         forms.set_gravity(browser, .West, .East);
@@ -213,9 +213,10 @@ main :: () {
             log("Clicked!");
 
             sub_form := forms.begin_form(.FLAT_BOX, WINDOW_WIDTH, 50);
-                forms.add_button(.NORMAL_BUTTON, 0, 0, 100, 20, "wooptiedoo!");
+                forms.add_button(.NORMAL_BUTTON, 20, 0, 100, 20, "wooptiedoo!");
+                pixbutton := forms.fl_add_pixmapbutton(xx forms.FL_BUTTON_TYPE.NORMAL_BUTTON, 0, 0, 20, 20, null);
+                forms.fl_set_pixmapbutton_focus_file(pixbutton, "./penger.png");
             forms.end_form();
-
 
             forms.fl_addto_formbrowser(browser, sub_form);
         });

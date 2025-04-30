@@ -14,6 +14,7 @@ Object            :: FL_OBJECT;
 Gravity_Direction :: FL_7;
 Placement         :: FL_PLACE;
 Border_Type       :: FL_1;
+Tab_Folder_Type   :: FL_20;
 
 do_forms :: fl_do_forms;
 
@@ -72,15 +73,25 @@ add_text :: inline (x: s32, y: s32, w: s32, h: s32, label: string) -> *Object {
     return fl_add_text(0, x, y, w, h, temp_c_string(label));
 }
 
-get_input :: (object: *Object) -> string {
+get_input :: inline (object: *Object) -> string {
     result: string;
     result.data  = fl_get_input(object);
     result.count = c_style_strlen(result.data);
     return result;
 }
 
+add_tab_folder :: inline (type: Tab_Folder_Type, x: s32, y: s32, w: s32, h: s32, label: string) -> *Object {
+    return fl_add_tabfolder(xx type, x, y, w, h, temp_c_string(label));
+}
+
+add_form_as_tab :: inline (folder: *Object, label: string, form: *Form) -> *Object {
+    return fl_addto_tabfolder(folder, temp_c_string(label), form);
+}
+
+
 #scope_file
 
 X11 :: #library,system,link_always "X11";
+Xpm :: #library,system,link_always "Xpm";
 M   :: #library,system,link_always "m";
 global_context: *#Context;
