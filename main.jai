@@ -103,15 +103,18 @@ make_chat_form :: () {
 
     message_browser = forms.fl_add_formbrowser(0, side_bar, 0, 800 - side_bar, 570, "Test label");
     forms.set_gravity(message_browser, .West, .East);
+    // forms.fl_deactivate_object(message_browser);
 
+    // TODO: Fix issue here current if the mouse is anywhere on `message_browser` then its not possible
+    // to type inside this message box. Maybe this should be in its own form and somehow added to the
+    // bottom of `message_brwoser`?
     message_box = forms.add_input(.NORMAL_INPUT, side_bar,  WINDOW_HEIGHT - 30,  WINDOW_WIDTH - 100 - side_bar,  30);
     forms.set_gravity(message_box, .West, .East);
     forms.set_callback(message_box, message_box_callback);
-    forms.fl_set_focus_object(chat_form, message_box);
+    // forms.fl_set_focus_object(chat_form, message_box);
 
     send_message_button := forms.add_button(.NORMAL_BUTTON, WINDOW_WIDTH - 100, WINDOW_HEIGHT - 30, 100, 30, "Send");
     forms.set_gravity(send_message_button, .East, .East);
-    // forms.set_gravity(send_message_button, .South, .SouthEast);
     forms.set_callback(send_message_button, send_message_callback);
 
     reset_temporary_storage();
@@ -122,12 +125,15 @@ send_message_callback :: (object: *forms.Object, data: s64) { send_message(); }
 
 send_message :: () {
     message := forms.get_input(message_box);
+
+    if trim(message) == "" then return;
+
     write(socket_file_descriptor, message.data, xx message.count);
 
     lock(*ui_mutex);
     defer unlock(*ui_mutex);
-
     forms.fl_addto_formbrowser(message_browser, make_message_form(message));
+
     forms.set_input(message_box, "");
 
     reset_temporary_storage();
@@ -139,13 +145,12 @@ message_listener :: (thread: *Thread) -> s64 {
         amount_read := read(socket_file_descriptor, buffer.data, buffer.count);
         assert(amount_read != -1 && amount_read != 0); // TODO: Deal with disconnects
 
-        lock(*ui_mutex);
-        defer unlock(*ui_mutex);
-
         message: string;
         message.data  = buffer.data;
         message.count = amount_read;
 
+        lock(*ui_mutex);
+        defer unlock(*ui_mutex);
         forms.fl_addto_formbrowser(message_browser, make_message_form(message));
 
         reset_temporary_storage();
