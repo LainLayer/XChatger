@@ -6,6 +6,8 @@
 #import "String";
 forms :: #import "XForms";
 
+#import "Protocol";
+
 WINDOW_WIDTH  :: 800;
 WINDOW_HEIGHT :: 600;
 
@@ -124,6 +126,13 @@ message_box_callback  :: (object: *forms.Object, data: s64) { send_message(); }
 send_message_callback :: (object: *forms.Object, data: s64) { send_message(); }
 
 send_message :: () {
+
+    health_check := make_health_check_packet(ping=true);
+    log("Sending message: %", health_check);
+    write(socket_file_descriptor, health_check.data, xx health_check.count);
+
+    return;
+
     message := forms.get_input(message_box);
 
     if trim(message) == "" then return;
@@ -143,15 +152,24 @@ message_listener :: (thread: *Thread) -> s64 {
     while true {
         buffer: [1024]u8;
         amount_read := read(socket_file_descriptor, buffer.data, buffer.count);
-        assert(amount_read != -1 && amount_read != 0); // TODO: Deal with disconnects
+        // assert(amount_read != -1 && amount_read != 0); // TODO: Deal with disconnects
+        if(amount_read == -1 || amount_read == 0) {
+            log("read returned %", amount_read);
+            exit(1);
+            continue;
+        }
 
-        message: string;
+        message: []u8;
         message.data  = buffer.data;
         message.count = amount_read;
 
-        lock(*ui_mutex);
-        defer unlock(*ui_mutex);
-        forms.fl_addto_formbrowser(message_browser, make_message_form(message));
+        log("got reply: %", message);
+
+        continue;
+
+        // lock(*ui_mutex);
+        // defer unlock(*ui_mutex);
+        // forms.fl_addto_formbrowser(message_browser, make_message_form(message));
 
         reset_temporary_storage();
     }
@@ -173,6 +191,7 @@ connect_button_callback :: (object: *forms.Object, data: s64) {
     server_address.sin_family      = AF_INET;
     server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_address.sin_port        = htons(4348);
+    // TODO: Get the actual data from the welcome form
 
     if connect(socket_file_descriptor, xx *server_address, size_of(sockaddr_in)) == -1 {
         log("connection with the server failed: %", get_error_string(errno()));
@@ -204,6 +223,7 @@ make_message_form :: (text: string) -> *forms.Form {
 }
 
 main :: () {
+
     forms.initialize();
 
     make_chat_form();
