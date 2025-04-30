@@ -1,0 +1,385 @@
+@node Part V Resources for Forms Library
+@chapter Resources for Forms Library
+
+Managing resources is an important part of programming with X. Typical
+X programs use extensive resource database/management to customize
+their appearances. With the help of the Form Designer there is little
+or no need to specify any resources for the default appearance of an
+application written using the Forms Library. Because of this, complete
+resource support is a somewhat low-priority task and currently only
+minimal support is available. Nevertheless, more complete and useful
+resource management system specific to the Forms Library can be
+implemented using the services provided by the XForms.
+
+@ifnottex
+
+@menu
+* Current Support::
+* Going Further::
+@end menu
+
+@end ifnottex
+
+
+@node Current Support
+@section Current Support
+
+At the moment all built-in XForms resources have a top level class
+name @code{XForm} and a resource name @code{xform}. Because of this
+incomplete specification most of the current resources are "global",
+in the sense that they affect all form windows. Eventually all
+resources will be fully resolved, e.g., to specify attribute
+@code{foo} of form @code{formName}, the resource name can be
+@code{appName.formName.foo} instead of (the current incomplete)
+@code{appName.xform.foo}.
+
+The argument @code{app_opt} passed to @code{@ref{fl_initialize()}} is
+a table of structures listing your applications command line options.
+The structure is defined as follows
+@tindex FL_CMD_OPT
+@example
+typedef struct @{
+    char          * option;
+    char          * specifier;
+    XrmOptionKind   argKind;
+    void          * value;
+@} XrmOptionDescList, FL_CMD_OPT;
+@end example
+@noindent
+See @code{XrmGetResource()} for details.
+
+After the initialization routine is called all command line arguments,
+both XForms built-in and application specific ones, are removed from
+@code{argc} and @code{argv} and parsed into a standard XResources
+database. To read your application specific options follow
+@code{@ref{fl_initialize()}} with the following routine
+@findex fl_get_app_resources()
+@anchor{fl_get_app_resources()}
+@example
+void fl_get_app_resources(FL_RESOURCE *resource, int nresources);
+@end example
+@noindent
+Here @code{resource} is a table containing application specific
+resources in the following format:
+@tindex FL_resource
+@example
+typedef struct @{
+    char     * res_name;  /* resource name without application name */
+    char     * res_class; /* resource class */
+    FL_RTYPE   type;      /* C type of the variable */
+    void     * var        /* variable that will hold the value */
+    char     * defval;    /* default value in string form */
+    int        nbytes;    /* buffer size for string var. */
+@} FL_RESOURCE;
+@end example
+@noindent
+and the resource type @code{FL_RTYPE} type is one of the following
+@tindex FL_RTYPE
+@anchor{FL_RTYPE}
+@table @code
+@tindex FL_SHORT
+@anchor{FL_SHORT}
+@item FL_SHORT
+for short variable
+@tindex FL_BOOL
+@anchor{FL_BOOL}
+@item FL_BOOL
+for boolean variable (int)
+@tindex FL_INT
+@anchor{FL_INT}
+@item FL_INT
+for int variable
+@tindex FL_LONG
+@anchor{FL_LONG}
+@item FL_LONG
+for long variable
+@tindex FL_FLOAT
+@anchor{FL_FLOAT}
+@item FL_FLOAT
+for float variable
+@tindex FL_FLOAT
+@tindex FL_STRING
+@anchor{FL_STRING}
+@item FL_STRING
+for char[] variable
+@tindex FL_FLOAT
+@anchor{FL_NONE}
+@item FL_NONE
+for variables not to be used (or not available)
+@end table
+
+Note that the variable for @code{FL_BOOL} must be of type int. It
+differs from @code{FL_INT} only in the way the resources are
+converted, not in the way their values are stored. A boolean variable
+is considered to be true (1) if any one of @code{True}, @code{true},
+@code{Yes}, @code{yes}, @code{On}, @code{on}, or 1 is specified as its
+value. For string variables, the length for the destination buffer
+must be specified.
+
+@code{@ref{fl_get_app_resources()}} simply looks up all entries
+specified in the @code{FL_RESOURCE} structure in all databases after
+prefixing the resource name with the application name, which can be
+the new name introduced by the @code{-name} command line option.
+
+Summarized below are the currently recognized Forms Library built-in
+resources:
+@multitable @columnfractions 0.3 0.3 0.2 0.2
+@headitem Resource Name
+@tab Class
+@tab Type
+@tab Default values
+@item rgamma
+@tab Gamma
+@tab float
+@tab 1.0
+@item ggamma
+@tab Gamma
+@tab float
+@tab 1.0
+@item bgamma
+@tab Gamma
+@tab float
+@tab 1.0
+@item visual
+@tab Visual
+@tab string
+@tab best
+@item depth
+@tab Depth
+@tab int
+@tab best
+@item doubleBuffer
+@tab DoubleBuffer
+@tab bool
+@tab true
+@item privateColormap
+@tab PrivateColormap
+@tab bool
+@tab false
+@item standardColormap
+@tab StandardColormap
+@tab bool
+@tab false
+@item sharedColormap
+@tab SharedColormap
+@tab bool
+@tab false
+@item pupFontSize
+@tab PupFontSize
+@tab int
+@tab 12pt
+@item buttonFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item sliderFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item inputFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item browserFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item menuFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item choiceFontSize
+@tab FontSize
+@tab int
+@tab 10pt
+@item ulPropWidth
+@tab ULPropWidth
+@tab bool
+@tab true
+@item ulThickness
+@tab ULThickness
+@tab int
+@tab 1
+@item scrollbarType
+@tab ScrollbarType
+@tab string
+@tab thin
+@item coordUnit
+@tab CoordUnit
+@tab string
+@tab pixel
+@item borderWidth
+@tab BorderWidth
+@tab int
+@tab 1
+@end multitable
+
+Again, "best" means that the Forms Library by default selects a visual
+that has the most depth.
+
+By default, resource files are read and merged in the order as
+suggested by X11 R5 as follows:
+@itemize @bullet
+@item
+@file{/usr/lib/X11/app-defaults/<AppClassName>}
+@item
+@file{$XAPPRLESDIR/<AppClassName>}
+@item
+@code{RESOURCE_MANAGER} property as set using @code{xrdb} if
+@code{RESOURCE_MANAGER} is empty, @file{~/.Xdefaults}
+@item
+@code{$XENVIRONMENT} if @code{$XENVIORONMENT} is empty,
+@file{~/.Xdefaults-hostname}
+@item
+ommand line options
+@end itemize
+
+All options set via resources may not be the final values used because
+resource settings are applied at the time an object/form is created,
+thus any modifications after that override the resource settings. For
+example @code{buttonLabelSize}, if set, is applied at the time the
+button is created (@code{@ref{fl_add_button()}}). Thus altering the
+size after the button is created via
+@code{@ref{fl_set_object_lsize()}} overrides whatever is set by the
+resource database.
+
+To run your application in @code{PseudoColor} with a depth of 8 and a
+thicker underline, specify the following resources
+@example
+appname*visual:      PseudoColor
+appname*depth:       8
+appname*ulThickness: 2
+@end example
+
+Since resources on a form by form basis are yet to be implemented,
+there is no point specifying anything more specific although also
+@code{appname.XForm.depth} etc.@: would work correctly.
+
+@ifnottex
+
+@menu
+* Resources Example::
+@end menu
+
+@end ifnottex
+
+
+@node Resources Example
+@subsection Resources Example
+
+Let us assume that you have an application named @code{myapp} and it
+accepts the options @w{@code{-foo} @emph{level}} and @code{-bar} plus a
+filename. The proper way to initialize the Forms Library is as follows
+@example
+FL_CMD_OPT cmdopt[] = @{
+  @{"-foo", "*.foo", XrmoptionSepArg, 0     @},
+  @{"-bar", ".bar",  XrmoptionNoArg,  "True"@}
+@};
+
+int foolevel, ifbar;
+int deftrue;      /* can only be set thru resources */
+
+FL_resource res[] = @{
+  @{"foo",     "FooCLASS", FL_INT,  &foolevel, "0"@},
+  @{"bar",     "BarCLASS", FL_BOOL, &ifbar,    "0"@},
+  @{"deftrue", "Whatever", FL_BOOL, &deftrue,  "1"@}
+@};
+
+int main(int argc, char *argv[]) @{
+    fl_initialize(&argc, argv ,"MyappClass", cmdopt, 2);
+    fl_get_app_resources(res, 3);
+    if (argc == 1)   /* missing filename */
+        fprintf(stderr, "Usage %s: [-foo level][-bar] "
+                "filename\n","myapp");
+    /* rest of the program */
+@}
+@end example
+@noindent
+After this both variables @code{foolevel} and @code{ifbar} are set
+either through resource files or command line options, with the
+command line options overriding those set in the resource files. In
+case neither the command line nor the resource files specified the
+options, the default value string is converted.
+
+There is another routine, a resource routine of the lowest level in
+XForms, which might be useful if a quick-and-dirty option needs to be
+read:
+@findex fl_get_resource()
+@anchor{fl_get_resource()}
+@example
+const char *fl_get_resource(const char *res_name,
+                            const char *res_class,
+                            FL_RTYPE type, char *defval,
+                            void *val, int nbytes);
+@end example
+@noindent
+@code{res_name} and @code{res_class} must be complete resource
+specifications (minus the application name) and should not contain
+wildcards of any kind. The resource will be converted according to the
+type and result stored in @code{type}, which is an integer of type
+@code{@ref{FL_RTYPE}}. @code{nbytes} is used only if the resource type
+is @code{@ref{FL_STRING}}. The function returns the string
+representation of the resource value. If a value of
+@code{@ref{FL_NONE}} is passed for @code{type} the resource is not
+converted and the pointer @code{val} is not dereferenced.
+
+There is also a routine that allows the application program to set
+resources programmatically:
+@findex fl_set_resource()
+@anchor{fl_set_resource()}
+@example
+void fl_set_resource(const char *string, const char *value);
+@end example
+@noindent
+where @code{string} and @code{value} are a resource-value pair. The
+string can be a fully qualified resource name (minus the application
+name) or a resource class.
+
+Routines @code{@ref{fl_set_resource()}} and
+@code{@ref{fl_get_resource()}} can be used to store and retrieve
+arbitrary strings and values and may be useful to pass data around.
+
+
+@node Going Further
+@section Going Further
+
+It is possible to implement your own form/object specific resources
+management system using the services mentioned above. For example, to
+implement a user-configurable form size, code similar to the following
+can be used, assuming the form is named @code{"myform"}:
+@example
+struct fsize @{
+    int width,
+        height;
+@} myformsize;
+
+FL_RESOURCE res[] = @{
+  @{"myform.width", "XForm.width",  FL_INT, &myform.width,  "150"@},
+  @{"myform.height","XForm.height", FL_INT, &myform.height, "150"@}
+@};
+
+fl_initialize(&argc, argv, app_class, 0, 0);
+fl_get_app_resources(res, 2);
+
+/* create the forms */
+
+myform = fl_bgn_form(myformsize.width, myformsize.height,.....);
+@end example
+
+Or (more realistically) you create the form first using @code{fdesign}
+and then scale it before it is shown:
+@example
+fl_initialize(&argc, argv, app_class, 0, 0);
+fl_get_app_resources(res, 2);
+
+/*create_all_forms here */
+
+fl_set_form_size(myform, mysformsize.width, myformsize.height);
+fl_show_form(myform, ...);
+@end example
+
+Since eventually form geometry and other things might be done via
+XForms internal routines it is recommended that you name your form to
+be the form title with all spaces removed and the first letter
+lower-cased, i.e., if a form is shown with a label @code{Foo Bar}, the
+name of the form should be @code{fooBar}.

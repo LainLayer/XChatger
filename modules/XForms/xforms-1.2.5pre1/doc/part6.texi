@@ -1,0 +1,6 @@
+@node Part VI
+@unnumbered @emph{Part VI - Image Support API}
+
+@menu
+* Part VI Images::
+@end menu

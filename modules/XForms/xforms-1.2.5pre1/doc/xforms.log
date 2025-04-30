@@ -1,0 +1,830 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdfetex 2015.9.7)  25 JAN 2016 23:32
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**\nonstopmode \catcode126=12 \def\normaltilde{~}\catcode126=13 \let~\normaltil
+de  \input ./xforms.texi
+(./xforms.texi (/usr/share/texmf/tex/texinfo/texinfo.tex
+Loading texinfo [version 2013-09-11.11]:
+\bindingoffset=\dimen16
+\normaloffset=\dimen17
+\pagewidth=\dimen18
+\pageheight=\dimen19
+\outerhsize=\dimen20
+\outervsize=\dimen21
+\cornerlong=\dimen22
+\cornerthick=\dimen23
+\topandbottommargin=\dimen24
+\headlinebox=\box16
+\footlinebox=\box17
+\margin=\insert252
+\EMsimple=\toks13
+\groupbox=\box18
+\groupinvalidhelp=\toks14
+\mil=\dimen25
+\exdentamount=\skip18
+\inmarginspacing=\skip19
+\centerpenalty=\count27
+ pdf,
+\tempnum=\count28
+\lnkcount=\count29
+\filename=\toks15
+\filenamelength=\count30
+\pgn=\count31
+\toksA=\toks16
+\toksB=\toks17
+\toksC=\toks18
+\toksD=\toks19
+\boxA=\box19
+\countA=\count32
+\nopdfimagehelp=\toks20
+ fonts,
+\sffam=\fam8
+\textleading=\dimen26
+ markup,
+\fontdepth=\count33
+ glyphs,
+\errorbox=\box20
+
+page headings,
+\titlepagetopglue=\skip20
+\titlepagebottomglue=\skip21
+\evenheadline=\toks21
+\oddheadline=\toks22
+\evenfootline=\toks23
+\oddfootline=\toks24
+ tables,
+\tableindent=\dimen27
+\itemindent=\dimen28
+\itemmargin=\dimen29
+\itemmax=\dimen30
+\itemno=\count34
+\multitableparskip=\skip22
+\multitableparindent=\skip23
+\multitablecolspace=\dimen31
+\multitablelinespace=\skip24
+\colcount=\count35
+\everytab=\toks25
+ conditionals,
+\doignorecount=\count36
+ indexing,
+\whatsitskip=\skip25
+\whatsitpenalty=\count37
+\secondaryindent=\skip26
+\partialpage=\box21
+\doublecolumnhsize=\dimen32
+ sectioning,
+\unnumberedno=\count38
+\chapno=\count39
+\secno=\count40
+\subsecno=\count41
+\subsubsecno=\count42
+\appendixno=\count43
+\absseclevel=\count44
+\secbase=\count45
+\chapheadingskip=\skip27
+\secheadingskip=\skip28
+\subsecheadingskip=\skip29
+ toc,
+\tocfile=\write0
+\contentsrightmargin=\skip30
+\savepageno=\count46
+\lastnegativepageno=\count47
+\tocindent=\dimen33
+ environments,
+\lispnarrowing=\skip31
+\envskipamount=\skip32
+\circthick=\dimen34
+\cartouter=\dimen35
+\cartinner=\dimen36
+\normbskip=\skip33
+\normpskip=\skip34
+\normlskip=\skip35
+\lskip=\skip36
+\rskip=\skip37
+\nonfillparindent=\dimen37
+\tabw=\dimen38
+\verbbox=\box22
+
+defuns,
+\defbodyindent=\skip38
+\defargsindent=\skip39
+\deflastargmargin=\skip40
+\defunpenalty=\count48
+\parencount=\count49
+\brackcount=\count50
+ macros,
+\paramno=\count51
+\macname=\toks26
+ cross references,
+\auxfile=\write1
+\savesfregister=\count52
+\toprefbox=\box23
+\printedrefnamebox=\box24
+\infofilenamebox=\box25
+\printedmanualbox=\box26
+ insertions,
+\footnoteno=\count53
+\SAVEfootins=\box27
+\SAVEmargin=\box28
+
+(/usr/share/texlive/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+\epsffilein=\read1
+\epsfframemargin=\dimen39
+\epsfframethickness=\dimen40
+\epsfrsize=\dimen41
+\epsftmp=\dimen42
+\epsftsize=\dimen43
+\epsfxsize=\dimen44
+\epsfysize=\dimen45
+\pspoints=\dimen46
+)
+\noepsfhelp=\toks27
+ localization,
+\nolanghelp=\toks28
+\countUTFx=\count54
+\countUTFy=\count55
+\countUTFz=\count56
+ formatting,
+\defaultparindent=\dimen47
+ and turning on texinfo input format.) (./xforms.aux)
+\openout1 = `xforms.aux'.
+
+@cpindfile=@write2
+@fnindfile=@write3
+@vrindfile=@write4
+@tpindfile=@write5
+@kyindfile=@write6
+@pgindfile=@write7
+ [1
+\openout2 = `xforms.cp'.
+
+\openout3 = `xforms.fn'.
+
+\openout4 = `xforms.vr'.
+
+\openout5 = `xforms.tp'.
+
+\openout6 = `xforms.ky'.
+
+\openout7 = `xforms.pg'.
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./xforms.toc [-1]
+[-2] [-3] [-4] [-5] [-6] [-7] [-8]) [-9] (./xforms.toc) (./xforms.toc) ()
+\openout0 = `xforms.toc'.
+
+texinfo.tex: doing @include of part0_preface.texi
+
+
+(./part0_preface.texi (@emph {Preface}) [1]
+Underfull \hbox (badness 10000) in paragraph at lines 20--30
+
+
+@hbox(0.0+0.0)x433.62
+.@penalty -10000
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--30
+
+
+@hbox(0.0+0.0)x433.62
+.@penalty -10000
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--30
+
+
+@hbox(0.0+0.0)x433.62
+.@glue(@rightskip) 0.0
+
+[2] [3]
+Underfull \hbox (badness 10000) in paragraph at lines 150--156
+
+
+@hbox(0.0+0.0)x433.62
+.@penalty -10000
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--156
+
+
+@hbox(0.0+0.0)x433.62
+.@penalty -10000
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--156
+
+
+@hbox(0.0+0.0)x433.62
+.@penalty -10000
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--156
+
+
+@hbox(0.0+0.0)x433.62
+.@glue(@rightskip) 0.0
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 221--223
+[]@textrm scm/guile bind-ing by Jo-hannes Lev-el-ing (@texttt <@textrm Johannes
+.Leveling@Informatik.Uni-
+
+@hbox(8.2125+2.73749)x433.62, glue set 6.3333
+.@hbox(0.0+0.0)x0.0
+.@textrm s
+.@textrm c
+.@textrm m
+.@textrm /
+.etc.
+
+[5])
+texinfo.tex: doing @include of part1.texi
+
+ (./part1.texi (@emph {Part I - Using the Forms Library}) [6])
+texinfo.tex: doing @include of part1_introduction.texi
+
+
+(./part1_introduction.texi Chapter 1 [7])
+texinfo.tex: doing @include of part1_getting_started.texi
+
+ (./part1_getting_started.texi
+Chapter 2 [8] [9] <./xforms_images/pushme.png> [10] [11] <./xforms_images/yesno
+.png> [12] [13] [14])
+texinfo.tex: doing @include of part1_defining_forms.texi
+
+ (./part1_defining_forms.texi Chapter 3 [15] [16] <./xforms_images/boxtypes.png
+> [17] [18] [19] [20] <./xforms_images/slider.png>
+[21] <./xforms_images/input.png> [22] [23] <./xforms_images/FL_BLACK.png> <./xf
+orms_images/FL_WHITE.png> <./xforms_images/FL_COL1.png> <./xforms_images/FL_BOT
+TOM_BCOL.png> <./xforms_images/FL_RIGHT_BCOL.png> <./xforms_images/FL_MCOL.png>
+ <./xforms_images/FL_LEFT_BCOL.png> <./xforms_images/FL_LIGHTER_COL1.png> <./xf
+orms_images/FL_DARKER_COL1.png> <./xforms_images/FL_SLATEBLUE.png> <./xforms_im
+ages/FL_INDIANARED.png> <./xforms_images/FL_RED.png> <./xforms_images/FL_BLUE.p
+ng> <./xforms_images/FL_GREEN.png> <./xforms_images/FL_YELLOW.png> <./xforms_im
+ages/FL_MAGENTA.png> <./xforms_images/FL_CYAN.png> <./xforms_images/FL_TOMATO.p
+ng> <./xforms_images/FL_INACTIVE.png> <./xforms_images/FL_TOP_BCOL.png> <./xfor
+ms_images/FL_PALEGREEN.png> <./xforms_images/FL_DARKGOLD.png> <./xforms_images/
+FL_ORCHID.png> <./xforms_images/FL_DARKCYAN.png> <./xforms_images/FL_DARKTOMATO
+.png> <./xforms_images/FL_WHEAT.png> <./xforms_images/FL_DARKORANGE.png> <./xfo
+rms_images/FL_DARKPINK.png> <./xforms_images/FL_CHARTEUSE.png> <./xforms_images
+/FL_DARKVIOLET.png> <./xforms_images/FL_SPRINGGREEN.png> <./xforms_images/FL_DO
+DGERBLUE.png> [24] [25] [26] [27] <./xforms_images/borderwidth.png> <./xforms_i
+mages/fontsize.png> [28] [29] [30] [31] [32] [33] [34] <./xforms_images/symbols
+.png> [35] [36])
+texinfo.tex: doing @include of part1_doing_interaction.texi
+
+ (./part1_doing_interaction.texi Chapter 4 [37] [38] [39]
+[40] [41] <./xforms_images/gravity.png> [42] [43] [44] [45]
+Underfull \hbox (badness 10000) in paragraph at lines 726--736
+@texttt ALWAYS], page 46[][][] @textrm and [][]@texttt [FL_RETURN_NONE], page 4
+6[][][] @textrm can be log-i-cally @texttt OR[]@textrm 'ed.
+
+@hbox(7.60416+2.43333)x433.62, glue set 6.13078
+.@texttt A
+.@texttt L
+.@texttt W
+.@texttt A
+.@texttt Y
+.etc.
+
+[46] [47] [48] [49] [50] [51] [52] [53] [54] [55])
+texinfo.tex: doing @include of part1_free_objects.texi
+
+ (./part1_free_objects.texi
+Chapter 5 [56] [57] [58] [59] [60] [61] [62] [63] [64] [65] [66] [67])
+texinfo.tex: doing @include of part1_goodies.texi
+
+
+(./part1_goodies.texi Chapter 6 [68] [69] [70] [71] [72] [73] [74] [75] <./xfor
+ms_images/colchooser.png> [76] <./xforms_images/fselect.png> [77] [78] [79]
+[80] [81])
+texinfo.tex: doing @include of part2.texi
+
+ (./part2.texi (@emph {Part II - The Form Designer}) [82])
+texinfo.tex: doing @include of part2_introduction.texi
+
+
+(./part2_introduction.texi Chapter 7 [83])
+texinfo.tex: doing @include of part2_getting_started.texi
+
+ (./part2_getting_started.texi
+Chapter 8 [84] <./xforms_images/fdesign.png> [85] [86])
+texinfo.tex: doing @include of part2_command_line.texi
+
+
+(./part2_command_line.texi Chapter 9 [87] [88]
+Underfull \hbox (badness 10000) in paragraph at lines 104--105
+ @textrm string (e.g.,
+
+@hbox(8.2125+2.73749)x86.72267, glue set 10.8939
+.@glue(@leftskip) 12.0
+.@textrm s
+.@textrm t
+.@textrm r
+.@textrm i
+.etc.
+
+)
+texinfo.tex: doing @include of part2_creating_forms.texi
+
+ (./part2_creating_forms.texi Chapter 10 [89] [90] <./xforms_images/fd_align.pn
+g> [91] [92] <./xforms_images/genattr.png> [93] [94] [95] [96])
+texinfo.tex: doing @include of part2_saving_loading.texi
+
+
+(./part2_saving_loading.texi Chapter 11 [97] [98] [99] [100] [101] [102])
+texinfo.tex: doing @include of part2_language_filters.texi
+
+
+(./part2_language_filters.texi Chapter 12 [103] [104])
+texinfo.tex: doing @include of part2_generating_hardcopies.texi
+
+
+(./part2_generating_hardcopies.texi Chapter 13 [105] [106])
+texinfo.tex: doing @include of part3.texi
+
+ (./part3.texi
+(@emph {Part III - Object Classes}) [107])
+texinfo.tex: doing @include of part3_introduction.texi
+
+ (./part3_introduction.texi
+Chapter 14 [108] [109])
+texinfo.tex: doing @include of part3_static_objects.texi
+
+ (./part3_static_objects.texi Chapter 15 [110] [111]
+[112] <./xforms_images/labelframe.png> [113] [114] [115] [116] [117] [118]
+[119] [120])
+texinfo.tex: doing @include of part3_buttons.texi
+
+ (./part3_buttons.texi Chapter 16 [121] <./xforms_images/buttontypes.png> [122]
+ [123]
+Underfull \hbox (badness 10000) in paragraph at lines 219--240
+[]@textrm Except for the [][]@texttt [FL_HIDDEN_BUTTON], page 124[][][] @textrm
+ and [][]@texttt [FL_HIDDEN_RET_BUTTON],
+
+@hbox(7.60416+2.43333)x433.62, glue set 4.93367
+.@hbox(0.0+0.0)x0.0
+.@textrm E
+.@textrm x
+.@textrm c
+.@textrm e
+.etc.
+
+[124] [125]
+Underfull \hbox (badness 10000) in paragraph at lines 337--350
+@texttt page 246[][][]@textrm , [][]@texttt [FL_RIGHT_MOUSE], page 246[][][]@te
+xtrm , [][]@texttt [FL_SCROLLUP_MOUSE], page 246[][][] @textrm or
+
+@hbox(7.60416+2.43333)x433.62, glue set 7.64825
+.@texttt p
+.@texttt a
+.@texttt g
+.@texttt e
+.@penalty 10000
+.etc.
+
+[126] [127])
+texinfo.tex: doing @include of part3_valuator_objects.texi
+
+ (./part3_valuator_objects.texi Chapter 17 [128] <./xforms_images/slidertypes.p
+ng> [129] [130] [131] [132] <./xforms_images/scrollbars.png>
+[133] [134] [135] <./xforms_images/dials.png> [136] [137] [138] [139]
+Underfull \hbox (badness 10000) in paragraph at lines 1038--1043
+@texttt page 246[][][]@textrm , [][]@texttt [FL_RIGHT_MOUSE], page 246[][][]@te
+xtrm , [][]@texttt [FL_SCROLLUP_MOUSE], page 246[][][] @textrm or
+
+@hbox(7.60416+2.43333)x433.62, glue set 7.64825
+.@texttt p
+.@texttt a
+.@texttt g
+.@texttt e
+.@penalty 10000
+.etc.
+
+[140]
+Overfull \hbox (14.94176pt too wide) in paragraph at lines 1164--1164
+ []@texttt void fl_get_positioner_xbounds(FL_OBJECT *obj, double *min, double *
+max);[] |
+
+@hbox(7.60416+2.43333)x433.62
+.@glue(@leftskip) 28.90755
+.@hbox(0.0+0.0)x0.0
+.@texttt v
+.@texttt o
+.@texttt i
+.etc.
+
+
+Overfull \hbox (14.94176pt too wide) in paragraph at lines 1165--1165
+ []@texttt void fl_get_positioner_ybounds(FL_OBJECT *obj, double *min, double *
+max);[] |
+
+@hbox(7.60416+2.43333)x433.62
+.@glue(@leftskip) 28.90755
+.@hbox(0.0+0.0)x0.0
+.@texttt v
+.@texttt o
+.@texttt i
+.etc.
+
+[141] <./xforms_images/counters.png> [142] [143] [144] [145] [146]
+Underfull \hbox (badness 7186) in paragraph at lines 1677--1684
+@texttt page 292[][][]@textrm , [][]@texttt [fl_set_object_lsize()], page 292[]
+[][] @textrm and [][]@texttt [fl_set_object_lstyle()],
+
+@hbox(7.60416+2.43333)x433.62, glue set 4.15967
+.@texttt p
+.@texttt a
+.@texttt g
+.@texttt e
+.@penalty 10000
+.etc.
+
+ <./xforms_images/thumbwheels.png> [147] [148])
+texinfo.tex: doing @include of part3_input_objects.texi
+
+ (./part3_input_objects.texi
+Chapter 18 [149] [150] [151] [152] [153] [154] [155] [156] [157] [158])
+texinfo.tex: doing @include of part3_choice_objects.texi
+
+
+(./part3_choice_objects.texi Chapter 19 [159] [160] [161] [162] [163] [164]
+Underfull \hbox (badness 10000) in paragraph at lines 520--524
+[][]@texttt [fl_popup_set_color()], page 219[][][] @textrm and [][]@texttt [fl_
+popup_entry_set_font()], page 219[][][]
+
+@hbox(7.60416+2.43333)x433.62, glue set 4.44281
+.@pdfstartlink(*+*)x* attr{/Border [0 0 0]} action goto name{fl_popup_set_color
+\(\)}
+.@pdfliteral{0.50 0.09 0.12 rg 0.50 0.09 0.12 RG}
+.@texttt [
+.@texttt f
+.@texttt l
+.etc.
+
+[165] [166] [167] [168] [169] [170] [171] [172] [173] [174] [175] [176]
+[177] [178] [179])
+texinfo.tex: doing @include of part3_container_objects.texi
+
+ (./part3_container_objects.texi Chapter 20 [180] <./xforms_images/folders.png>
+ [181] [182] [183] [184] [185] [186] [187])
+texinfo.tex: doing @include of part3_other_objects.texi
+
+
+(./part3_other_objects.texi Chapter 21 [188]
+Underfull \hbox (badness 7379) in paragraph at lines 92--96
+@textrm of [][]@texttt [FL_RETURN_CHANGED], page 45[][][]@textrm , [][]@texttt 
+[FL_RETURN_END], page 45[][][]@textrm , [][]@texttt [FL_RETURN_END_
+
+@hbox(7.60416+2.43333)x433.62, glue set 4.19589
+.@textrm o
+.@textrm f
+.@glue 3.65 plus 1.825 minus 1.21666
+.@pdfstartlink(*+*)x* attr{/Border [0 0 0]} action goto name{FL_RETURN_CHANGED}
+
+.@pdfliteral{0.50 0.09 0.12 rg 0.50 0.09 0.12 RG}
+.etc.
+
+[189] [190] [191]
+Overfull \hbox (26.43913pt too wide) in paragraph at lines 364--364
+ []@texttt void fl_set_xyplot_data_double(FL_OBJECT *obj, double *x, double *y,
+ int n,[] |
+
+@hbox(7.60416+2.43333)x433.62
+.@glue(@leftskip) 28.90755
+.@hbox(0.0+0.0)x0.0
+.@texttt v
+.@texttt o
+.@texttt i
+.etc.
+
+[192] [193] [194] [195] [196] [197] [198] [199] [200] [201] [202] [203])
+texinfo.tex: doing @include of part3_popups.texi
+
+
+(./part3_popups.texi Chapter 22 [204] [205] [206] [207] [208] [209] [210]
+[211] [212] [213] [214] [215] [216] [217] [218] [219] [220])
+texinfo.tex: doing @include of part3_deprecated_objects.texi
+
+
+(./part3_deprecated_objects.texi Chapter 23 [221] [222] [223]
+Underfull \hbox (badness 10000) in paragraph at lines 308--315
+@texttt setpup_default_fontsize()], page 238[][][] @textrm and [][]@texttt [fl_
+setpup_default_fontstyle()],
+
+@hbox(7.60416+2.43333)x433.62, glue set 5.44281
+.@texttt s
+.@texttt e
+.@texttt t
+.@texttt p
+.@texttt u
+.etc.
+
+[224] [225] [226] [227] [228] [229] [230] [231] [232] [233]
+Underfull \hbox (badness 7558) in paragraph at lines 1080--1084
+[]@textrm where @texttt popup_id[] @textrm is the popup ID re-turned by [][]@te
+xttt [fl_newpup()], page 230[][][] @textrm or
+
+@hbox(7.60416+2.43333)x433.62, glue set 4.23207
+.@hbox(0.0+0.0)x0.0
+.@textrm w
+.@textrm h
+.@textrm e
+.@textrm r
+.etc.
+
+[234] [235] [236] [237] [238])
+texinfo.tex: doing @include of part4.texi
+
+ (./part4.texi
+(@emph {Part IV - Designing Object Classes}) [239])
+texinfo.tex: doing @include of part4_introduction.texi
+
+ (./part4_introduction.texi
+Chapter 24 [240])
+texinfo.tex: doing @include of part4_global_structure.texi
+
+ (./part4_global_structure.texi Chapter 25 [241] [242]
+[243])
+texinfo.tex: doing @include of part4_events.texi
+
+ (./part4_events.texi Chapter 26 [244] [245] [246] [247] [248])
+texinfo.tex: doing @include of part4_fl_object.texi
+
+
+(./part4_fl_object.texi Chapter 27 [249]
+Underfull \hbox (badness 10000) in paragraph at lines 62--69
+ @textrm The op-tions are @texttt FL_RESIZE_NONE[]@textrm , @texttt FL_RESIZE_X
+[]@textrm , @texttt FL_RESIZE_Y[] @textrm and
+
+@hbox(7.60416+2.12917)x433.62, glue set 4.6366
+.@glue(@leftskip) 57.81621
+.@textrm T
+.@textrm h
+.@textrm e
+.@glue 3.65 plus 1.825 minus 1.21666
+.etc.
+
+[250]
+Underfull \hbox (badness 10000) in paragraph at lines 115--127
+ @texttt page 31[][][]@textrm , [][]@texttt [FL_ALIGN_BOTTOM], page 31[][][]@te
+xtrm , [][]@texttt [FL_ALIGN_CENTER], page 31[][][]@textrm ,
+
+@hbox(7.60416+2.43333)x433.62, glue set 5.34877
+.@glue(@leftskip) 57.81621
+.@texttt p
+.@texttt a
+.@texttt g
+.@texttt e
+.etc.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--127
+ [][]@texttt [FL_ALIGN_LEFT_TOP], page 31[][][]@textrm , [][]@texttt [FL_ALIGN_
+RIGHT_TOP], page 31[][][]@textrm ,
+
+@hbox(7.60416+2.43333)x433.62, glue set 18.67087
+.@glue(@leftskip) 57.81621
+.@pdfstartlink(*+*)x* attr{/Border [0 0 0]} action goto name{FL_ALIGN_LEFT_TOP}
+
+.@pdfliteral{0.50 0.09 0.12 rg 0.50 0.09 0.12 RG}
+.@texttt [
+.@texttt F
+.etc.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--127
+ [][]@texttt [FL_ALIGN_LEFT_BOTTOM], page 31[][][] @textrm and [][]@texttt [FL_
+ALIGN_RIGHT_BOTTOM],
+
+@hbox(7.60416+2.43333)x433.62, glue set 10.07755
+.@glue(@leftskip) 57.81621
+.@pdfstartlink(*+*)x* attr{/Border [0 0 0]} action goto name{FL_ALIGN_LEFT_BOTT
+OM}
+.@pdfliteral{0.50 0.09 0.12 rg 0.50 0.09 0.12 RG}
+.@texttt [
+.@texttt F
+.etc.
+
+[251] [252] [253] [254]
+Overfull \hbox (26.43913pt too wide) in paragraph at lines 373--373
+ []@texttt obj->bw         = borderWidth_resource_set ? resource_val : FL_BOUND
+_WIDTH;[] |
+
+@hbox(6.69167+2.43333)x433.62
+.@glue(@leftskip) 28.90755
+.@hbox(0.0+0.0)x0.0
+.@texttt o
+.@texttt b
+.@texttt j
+.etc.
+
+[255])
+texinfo.tex: doing @include of part4_drawing_objects.texi
+
+ (./part4_drawing_objects.texi Chapter 28 [256] [257] [258] [259]
+[260] [261] [262] [263] [264]
+Underfull \hbox (badness 10000) in paragraph at lines 770--774
+ []@textrm Dashed line, but the dash pat-tern is user de-fin-able via [][]@text
+tt [fl_
+
+@hbox(7.60416+2.12917)x433.62, glue set 4.72227
+.@glue(@leftskip) 57.81621
+.@hbox(0.0+0.0)x0.0
+.@textrm D
+.@textrm a
+.@textrm s
+.etc.
+
+[265] [266])
+texinfo.tex: doing @include of part4_an_example.texi
+
+ (./part4_an_example.texi Chapter 29 [267] [268] [269] [270])
+texinfo.tex: doing @include of part4_new_buttons.texi
+
+
+(./part4_new_buttons.texi Chapter 30 [271] [272] [273] [274] <./xforms_images/c
+rossbutton.png> [275] [276] [277])
+texinfo.tex: doing @include of part4_preemptive_handler.texi
+
+ (./part4_preemptive_handler.texi Chapter 31
+[278]
+Underfull \hbox (badness 10000) in paragraph at lines 65--71
+[][]@texttt [fl_deactivate_form()], page 300[][][] @textrm or [][]@texttt [fl_d
+eactivate_all_forms()], page 300[][][]@textrm )
+
+@hbox(8.2125+2.73749)x433.62, glue set 5.43448
+.@pdfstartlink(*+*)x* attr{/Border [0 0 0]} action goto name{fl_deactivate_form
+\(\)}
+.@pdfliteral{0.50 0.09 0.12 rg 0.50 0.09 0.12 RG}
+.@texttt [
+.@texttt f
+.@texttt l
+.etc.
+
+)
+texinfo.tex: doing @include of part5.texi
+
+ (./part5.texi (@emph {Part V - General Informations}) [279])
+texinfo.tex: doing @include of part5_overview.texi
+
+
+(./part5_overview.texi Chapter 32 [280] [281] [282]
+Underfull \hbox (badness 10000) in paragraph at lines 306--307
+@texttt int
+
+@hbox(6.69167+0.0)x108.405
+.@texttt i
+.@texttt n
+.@texttt t
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 322--323
+@texttt int
+
+@hbox(6.69167+0.0)x108.405
+.@texttt i
+.@texttt n
+.@texttt t
+.@glue(@rightskip) 0.0
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 330--331
+@texttt int
+
+@hbox(6.69167+0.0)x108.405
+.@texttt i
+.@texttt n
+.@texttt t
+.@glue(@rightskip) 0.0
+
+[283] [284] [285] [286] [287] [288] [289] [290] [291] [292] [293] [294]
+[295] [296] [297] [298] [299] [300]
+Overfull \hbox (20.69044pt too wide) in paragraph at lines 1933--1933
+ []@texttt FL_APPEVENT_CB fl_set_event_callback(FL_APPEVENT_CB callback, void *
+data);[] |
+
+@hbox(7.60416+1.52081)x433.62
+.@glue(@leftskip) 28.90755
+.@hbox(0.0+0.0)x0.0
+.@texttt F
+.@texttt L
+.@texttt _
+.etc.
+
+[301] [302] [303] [304]
+Underfull \hbox (badness 10000) in paragraph at lines 2254--2261
+ @texttt or StaticGray[]. Al-ter-na-tively, the func-tions [][][fl_get_vclass()
+],
+
+@hbox(7.60416+2.43333)x433.62
+.@glue(@leftskip) 57.81621
+.@texttt o
+.@texttt r
+.@glue(@spaceskip) 3.65
+.@texttt S
+.etc.
+
+[305])
+texinfo.tex: doing @include of part5_useful_functions.texi
+
+ (./part5_useful_functions.texi Chapter 33 [306] [307]
+Underfull \hbox (badness 10000) in paragraph at lines 140--145
+ []@texttt ExposureMask[]@textrm , @texttt KeyPressMask[]@textrm , @texttt KeyR
+eleaseMask[]@textrm , @texttt ButtonPressMask[]@textrm ,
+
+@hbox(6.69167+2.43333)x433.62, glue set 7.01472
+.@glue(@leftskip) 57.81621
+.@hbox(0.0+0.0)x0.0
+.@texttt E
+.@texttt x
+.@texttt p
+.etc.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--145
+ @texttt ButtonReleaseMask[]@textrm , @texttt OwnerGrabButtonMask[]@textrm , @t
+exttt ButtonMotionMask[]@textrm ,
+
+@hbox(6.69167+2.12917)x433.62, glue set 13.24875
+.@glue(@leftskip) 57.81621
+.@texttt B
+.@texttt u
+.@texttt t
+.@texttt t
+.etc.
+
+[308] [309] [310] [311] [312])
+texinfo.tex: doing @include of part5_resources.texi
+
+ (./part5_resources.texi Chapter 34 [313]
+[314] [315] [316] [317])
+texinfo.tex: doing @include of part5_dirty_tricks.texi
+
+ (./part5_dirty_tricks.texi Chapter 35 [318] [319])
+texinfo.tex: doing @include of part5_trouble_shooting.texi
+
+
+(./part5_trouble_shooting.texi Chapter 36 [320] [321])
+texinfo.tex: doing @include of part6.texi
+
+ (./part6.texi
+(@emph {Part VI - Image Support API}) [322])
+texinfo.tex: doing @include of part6_images.texi
+
+ (./part6_images.texi Chapter 37
+[323] [324] [325] [326] [327] [328] [329] [330] [331] [332]
+Underfull \hbox (badness 10000) in paragraph at lines 744--745
+ @textrm need pbm-plus/netpbm
+
+@hbox(8.2125+2.73749)x130.08731, glue set 5.33864
+.@glue(@leftskip) 12.0
+.@textrm n
+.@textrm e
+.@textrm e
+.@textrm d
+.etc.
+
+[333] [334] [335] [336] [337] [338] [339] [340] [341] [342] [343] [344]
+[345] [346] [347] [348] [349] [350] [351] [352] [353]) (Index of Functions)
+[354] (./xforms.fns [355] [356] [357] [358] [359] [360] [361] [362])
+(Index of Global Variables) [363] (./xforms.vrs) (Index of Constants) [364]
+(./xforms.tps [365] [366] [367]) [368] ) 
+Here is how much of TeX's memory you used:
+ 9328 strings out of 497047
+ 188970 string characters out of 6203993
+ 191645 words of memory out of 5000000
+ 8251 multiletter control sequences out of 15000+600000
+ 32127 words of font info for 112 fonts, out of 8000000 for 9000
+ 51 hyphenation exceptions out of 8191
+ 20i,6n,16p,352b,5195s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmb10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmtt9.pfb>
+Output written on xforms.pdf (378 pages, 2339280 bytes).
+PDF statistics:
+ 8236 PDF objects out of 8907 (max. 8388607)
+ 2009 named destinations out of 2073 (max. 500000)
+ 3024 words of extra memory for PDF output out of 10000 (max. 10000000)
+

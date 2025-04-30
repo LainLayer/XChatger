@@ -1,0 +1,110 @@
+Magic: 13000
+
+Internal Form Definition File
+    (do not change)
+
+Number of forms: 1
+Unit of measure: FL_COORD_PIXEL
+Border Width: -2
+
+=============== FORM ===============
+Name: form0
+Width: 320
+Height: 155
+Number of Objects: 5
+
+--------------------
+class: FL_BOX
+type: UP_BOX
+box: 0 0 320 155
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+
+--------------------
+class: FL_LABELFRAME
+type: ENGRAVED_FRAME
+box: 10 15 300 120
+boxtype: FL_NO_BOX
+colors: FL_BLACK FL_COL1
+alignment: FL_ALIGN_TOP_LEFT
+style: FL_TIMESBOLD_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Dials
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+
+--------------------
+class: FL_DIAL
+type: LINE_DIAL
+box: 20 37 80 75
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_BOTTOM_BCOL
+alignment: FL_ALIGN_BOTTOM
+style: FL_BOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: LineDial
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+  value: 0.75
+
+--------------------
+class: FL_DIAL
+type: FILL_DIAL
+box: 120 37 80 75
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_BOTTOM_BCOL
+alignment: FL_ALIGN_BOTTOM
+style: FL_BOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: FillDial
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+  value: 0.65
+
+--------------------
+class: FL_DIAL
+type: NORMAL_DIAL
+box: 220 37 80 75
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_BOTTOM_BCOL
+alignment: FL_ALIGN_BOTTOM
+style: FL_BOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: NormalDial
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+  value: 0.2
+
+==============================
+create_the_forms

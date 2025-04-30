@@ -1,0 +1,215 @@
+Magic: 15000
+
+Internal Form Definition File
+    (do not change)
+
+Number of forms: 1
+Unit of measure: FL_COORD_PIXEL
+Border Width: -1
+
+=============== FORM ===============
+Name: posattrib
+Width: 540
+Height: 280
+Number of Objects: 11
+
+--------------------
+class: FL_BOX
+type: FL_FLAT_BOX
+box: 0 0 540 280
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: background
+callback: 
+argument: 
+
+--------------------
+class: FL_LABELFRAME
+type: FL_ENGRAVED_FRAME
+box: 30 20 475 235
+boxtype: FL_NO_BOX
+colors: FL_BLACK FL_COL1
+alignment: FL_ALIGN_LEFT_TOP
+style: FL_TIMESBOLD_STYLE
+size: FL_MEDIUM_SIZE
+lcol: FL_BLACK
+label: Positioner Attributes
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+
+--------------------
+class: FL_MENU
+type: FL_PULLDOWN_MENU
+box: 195 55 138 24
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Return Setting
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: returnsetting
+callback: pos_returnsetting_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 170 95 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Xmin(left)
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: xminval
+callback: pos_xminmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 170 131 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Xmax(right)
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: xmaxval
+callback: pos_xminmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 170 168 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Initial XValue
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: initialxval
+callback: pos_initialxvalue_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 170 205 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: X StepSize
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: xstep
+callback: pos_xstepchange_cb
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 275 95 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_RIGHT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Ymin(bottom)
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: yminval
+callback: pos_yminmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 275 131 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_RIGHT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Ymax(top)
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: ymaxval
+callback: pos_yminmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 275 168 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_RIGHT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Initial YValue
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: initialyval
+callback: pos_initialyvalue_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 275 205 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_RIGHT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: YStepSize
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: ystep
+callback: pos_ystepchange_cb
+argument: 0
+
+==============================
+create_the_forms

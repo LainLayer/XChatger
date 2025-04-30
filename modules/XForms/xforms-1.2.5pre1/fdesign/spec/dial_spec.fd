@@ -1,0 +1,197 @@
+Magic: 15000
+
+Internal Form Definition File
+    (do not change)
+
+Number of forms: 1
+Unit of measure: FL_COORD_PIXEL
+Border Width: -1
+
+=============== FORM ===============
+Name: dialattrib
+Width: 540
+Height: 280
+Number of Objects: 10
+
+--------------------
+class: FL_BOX
+type: FL_FLAT_BOX
+box: 0 0 540 280
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: background
+callback: 
+argument: 
+
+--------------------
+class: FL_MENU
+type: FL_PULLDOWN_MENU
+box: 305 90 138 24
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Return Setting
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: returnsetting
+callback: dial_returnsetting_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 45 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Dial Min
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: minval
+callback: dial_minmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 77 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: DialMax
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: maxval
+callback: dial_minmax_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 109 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Initial Value
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: initialval
+callback: dial_initialvalue_change
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 141 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Dial Step
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: step
+callback: dial_stepchange_cb
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 173 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Min. Angle
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: thetai
+callback: dial_thetachange_cb
+argument: 0
+
+--------------------
+class: FL_INPUT
+type: FL_FLOAT_INPUT
+box: 195 205 92 24
+boxtype: FL_DOWN_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_NORMAL_STYLE
+size: FL_NORMAL_SIZE
+lcol: FL_BLACK
+label: Max. Angle
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: thetaf
+callback: dial_thetachange_cb
+argument: 1
+
+--------------------
+class: FL_CHOICE
+type: FL_NORMAL_CHOICE2
+box: 306 155 134 25
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_BLACK
+alignment: FL_ALIGN_TOP
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Direction
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: dir
+callback: dir_cb
+argument: 0
+
+--------------------
+class: FL_LABELFRAME
+type: FL_ENGRAVED_FRAME
+box: 30 15 480 240
+boxtype: FL_NO_BOX
+colors: FL_BLACK FL_COL1
+alignment: FL_ALIGN_LEFT_TOP
+style: FL_TIMESBOLD_STYLE + FL_EMBOSSED_STYLE
+size: FL_MEDIUM_SIZE
+lcol: FL_DARKVIOLET
+label: Dial Attributes
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+
+==============================
+create_the_forms

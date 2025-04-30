@@ -1,0 +1,213 @@
+# -debug
+# The integer value specifies what kind of debugging output is generated.
+
+$DEBUG = 0;
+
+# -doctype
+# The value is the 'SystemLiteral' which identifies the canonical DTD 
+# for the document.
+# Definition: The SystemLiteral is called the entity's system
+# identifier. It is a URI, which may be used to retrieve the entity.
+# See http://www.xml.com/axml/target.html#NT-ExternalID
+
+$DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
+
+# -expand
+# the @EXPAND array contains the expanded section names.
+
+#@EXPAND = ( 'html' );
+
+# -iso
+# if this value is true, ISO8859 characters are used for special symbols 
+# (like copyright, etc).
+
+$USE_ISO = 0;
+
+# -I
+# add a directory to the list of directories where @include files are
+# searched for (besides the directory of the file). additional '-I' 
+# args are appended to this list.
+# (APA: Don't implicitely search ., to conform with the docs!)
+# my @INCLUDE_DIRS = (".");
+
+@INCLUDE_DIRS = ( );
+
+# -P
+# prepend a directory to the list of directories where @include files are
+# searched for before the directory of the file. additional '-P' 
+# args are prepended to this list.
+
+@PREPEND_DIRS = ( );
+
+# --conf-dir
+# append to the files searched for init files.
+
+@CONF_DIRS = ( ) ;
+
+# -top-file
+# This file name is used for the top-level file.
+# The extension is set appropriately, if necessary.
+# If empty, <basename of document>.html is used.
+# Typically, you would set this to "index.html".
+
+$TOP_FILE = 'index.html';
+
+# -toc-file
+# This file name is used for the table of contents.  The
+# extension is set appropriately, if necessary.
+# If empty, <basename of document>_toc.html is used.
+
+$TOC_FILE = '';
+
+# -frames
+# if the value is true, HTML 4.0 "frames" are used. 
+# A file describing the frame layout is generated, together with a file 
+# with the short table of contents.
+
+$FRAMES = 0;
+
+# -menu | -nomenu
+# if the value is true the Texinfo menus are shown.
+
+$SHOW_MENU = 1;
+
+# -number | -nonumber
+# if this is set the sections are numbered, and section names and numbers 
+# are used in references and menus (instead of node names).
+
+$NUMBER_SECTIONS = 1;
+
+# -use-nodes
+# if this is set the nodes are used as sectionning elements. 
+# Otherwise the nodes are incorporated in sections.
+
+$USE_NODES = 0;
+
+# -node-files
+# if this is set one file per node is generated, which can be a target for 
+# cross manual references.
+
+$NODE_FILES = 0;
+
+# -split section|chapter|node|none
+# if $SPLIT is set to 'section' (resp. 'chapter') one html file per section 
+# (resp. chapter) is generated. If $SPLIT is set to 'node' one html file per 
+# node or sectionning element is generated. In all these cases separate pages 
+# for Top, Table of content (Toc), Overview and About are generated.
+# Otherwise a monolithic html file that contains the whole document is 
+# created.
+
+$SPLIT = 'chapter';
+
+# -sec-nav|-nosec-nav
+# if this is set then navigation panels are printed at the beginning of each 
+# section.
+# If the document is split at nodes then navigation panels are 
+# printed at the end if there were more than $WORDS_IN_PAGE words on page.
+#
+# If the document is split at sections this is ignored.
+#
+# This is most useful if you do not want to have section navigation
+# with -split chapter. There will be chapter navigation panel at the 
+# beginning and at the end of chapters anyway.
+
+$SECTION_NAVIGATION = 0;
+
+# -separated-footnotes
+# if this is set footnotes are on a separated page. Otherwise they are at
+# the end of each file (if the document is split).
+
+$SEPARATED_FOOTNOTES = 0;
+
+# -toc-links
+# if this is set, links from headings to toc entries are created.
+
+$TOC_LINKS = 0;
+
+# -subdir
+# If this is set, then put result files into the specified directory.
+# If not set, then result files are put into the current directory.
+#$SUBDIR = 'html';
+
+$SUBDIR = '.';
+
+# -short-extn
+# If this is set, then all HTML files will have extension ".htm" instead of
+# ".html". This is helpful when shipping the document to DOS-based systems.
+
+$SHORTEXTN = 0;
+
+# -prefix
+# This set the output file prefix, prepended to all .html, .gif and .pl files.
+# By default, this is the basename of the document.
+
+$PREFIX = '';
+
+# -o filename
+# If this is set a monolithic document is outputted into $filename.
+
+$OUT = '';
+
+# -no-validate
+# suppress node cross-reference validation
+
+$NOVALIDATE = 0;
+
+# -short-ref
+# if this is set cross-references are given without section numbers.
+
+$SHORT_REF = 0;
+
+# -idx-sum
+# if value is set, then for each @printindex <index name>
+# <document name>_<index name>.idx is created which contains lines of the form
+# key ref sorted alphabetically (case matters).
+
+$IDX_SUMMARY = 0;
+
+# -def-table
+# If this is set a table construction for @def.... instead of definition 
+# lists.
+# (New Option: 27.07.2000 Karl Heinz Marbaise)
+
+$DEF_TABLE = 0;
+
+# -verbose
+# if this is set chatter about what we are doing.
+
+$VERBOSE = 0;
+
+# -lang
+# use &$I('my string') if you want to have translations of 'my string'
+# and provide the translations in $LANGUAGES->{$LANG} with 'my string'
+# as key.
+# To add a new language use ISO 639 language codes (see e.g. perl module 
+# Locale-Codes-1.02 for  definitions). Supply translations in the 
+# $LANGUAGES hash and put it in a file with $LANG as name in an i18n 
+# directory. 
+# Default's to 'en' if not set or no @documentlanguage is specified.
+
+$LANG = 'en';
+
+# -ignore-preamble-text
+# If this is set the text before @node and sectionning commands is ignored.
+
+$IGNORE_PREAMBLE_TEXT = 0;
+
+# -html-xref-prefix
+# base directory for external manuals.
+#$EXTERNAL_DIR = '../';
+
+$EXTERNAL_DIR = undef;
+
+# -css-include
+# All the specified css files are used. More precisely the @import sections
+# are added to the beginning of the CSS_LINES the remaining is added at
+# the end of the CSS_LINES (after the css rules generated by texi2html).
+# cf texinfo manual for more info.
+# - means STDIN
+
+@CSS_FILES = ( 'xforms.css' );
+
+
+1;

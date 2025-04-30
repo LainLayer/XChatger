@@ -1,0 +1,1802 @@
+@node Part III Choice Objects
+@chapter Choice Objects
+
+@ifnottex
+
+@menu
+* Select Object:   Select Object
+* Nmenu Object:    Nmenu Object
+* Browser Object:  Browser Object
+@end menu
+
+@end ifnottex
+
+
+@node Select Object
+@section Select Object
+
+A select object is a rather simple object that allows the user to
+pick alternatives from a linear list that pops up when he clicks on
+the object. It remembers the last selected item, which is also
+shown on top of the select object.
+
+The select object internally uses a popup (@pxref{Part III Popups})
+and thus it can be helpful to understand at lest some aspects of how
+popups work to fully grasp the functionality of select objects.
+
+
+@ifnottex
+
+@menu
+* Adding Select Objects:   Adding Select Objects
+* Select Interaction:      Select Interaction
+* Other Select Routines:   Other Select Routines
+* Select Attributes:       Select Attributes
+* Remarks:                 Select Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Select Objects
+@subsection Adding Select Objects
+
+To add a select object to a form use
+@findex fl_add_select()
+@anchor{fl_add_select()}
+@example
+FL_OBJECT *fl_add_select(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label)
+@end example
+@noindent
+There are currently three types which just differ by the way they
+look:
+@table @code
+@tindex FL_NORMAL_SELECT
+@anchor{FL_NORMAL_SELECT}
+@item FL_NORMAL_SELECT
+Per default this type is drawn as a rounded, flat box (but you can
+change that by setting a different boxtype for the object) with the
+text of the currently selected item in its center.
+
+@tindex FL_MENU_SELECT
+@anchor{FL_MENU_SELECT}
+@item FL_MENU_SELECT
+This select object looks like a button with a little extra box at its
+right side (just like a @code{FL_MENU_BUTTON}) and the text of the
+currently selected item is drawn on the button-like object.
+
+@tindex FL_DROPLIST_SELECT
+@anchor{FL_DROPLIST_SELECT}
+@item FL_DROPLIST_SELECT
+This type looks like a button with the text of the currently selected
+item on top of it and a second square button directly beside it with
+an downward pointing arrow on it.
+@end table
+
+Per default @code{label} is drawn outside and to the left of the
+object.
+
+Once a new select object has been created items have to be added to
+it. For this the following function exists:
+@findex fl_add_select_items()
+@anchor{fl_add_select_items()}
+@example
+FL_POPUP_ENTRY *fl_add_select_items(FL_OBJECT *obj,
+                                    const char items,...);
+@end example
+@noindent
+@code{items} is a string with the items to add, separated by the
+@code{|} character. In the simplest case you would just use something
+like @code{"Item 1|Item 2|Item 3"} to add three items to the list. If
+there weren't any items before the first item will be automatically
+shown as the selected one.
+
+As also described in the documentation for the similar function
+@code{@ref{fl_popup_add_entries()}} (@pxref{Adding Popups}) the text
+for an item may contain "special sequences" that start with the
+character @code{%} and the may require an additional argument passed
+to the function after the @code{items} argument:
+@table @code
+@item %x
+Set a value of type @code{long int} that's passed to all callback
+routines for the item. The value must be given in the arguments
+following the @code{items} string.
+
+@item %u
+Set a @code{user_void} pointer that's passed to all callbacks of the
+item. The pointer must be specified in the arguments following the
+@code{items} string.
+
+@item %f
+Set a callback function that gets called when the item is selected.
+The function is of type
+@example
+int callback(FL_POPUP_RETURN *r);
+@end example
+@noindent
+Information about the item etc.@: gets passed to the callback function
+via the @code{@ref{FL_POPUP_RETURN}} structure and the return value of
+the function can be used to keep the selection from becoming reported
+back to the user made by returning a value of @code{FL_IGNORE} (-1).
+The function's address must be given in the arguments following the
+@code{items} string.
+
+@item %E
+Set a callback routine that gets called each time the mouse enters the
+item (as long as the item isn't disabled or hidden). The type of the
+function is the same as that of the callback function for the
+selection of the item but it's return value is never used. The
+functions address must be given in the arguments following the
+@code{items} string.
+
+@item %L
+Set a callback routine that gets called each time the mouse leaves the
+item. The type of the function is the same that as of the callback
+function for the selection of the item but it's return value is never
+used. The functions address must be given in the arguments following
+the @code{items} string.
+
+@item %d
+Marks the item as disabled, i.e., it can't be selected and its text
+is per default drawn in a different color
+
+@item %h
+Marks the item as hidden, i.e., it is not shown while in this state.
+
+@item %S
+For items with shortcut keys it's quite common to have them shown on
+the right hand side. Using @code{"%S"} you can split the items text
+into two parts, the first one (before @code{"%S"}) being drawn flushed
+left and the second part flushed right. Note that using this special
+sequence doesn't automatically sets a shortcut key, this still has to
+be done using @code{"%s"}.
+
+@item %s
+Sets one or more shortcut keys for an item. Requires a string with the
+shortcuts in the arguments following the @code{items} string.
+@xref{Shortcuts}, for details on how to define shortcuts. Please note
+that the character in the label identical to the shortcut character is
+only shown as underlined if @code{"%S"} isn't used.
+
+@item %%
+Use this to get a @code{'%'} within the text of an item.
+@end table
+@noindent
+If you compare this list of "special sequences" with those listed for
+the @code{@ref{fl_popup_add_entries()}} function you will find that
+aome are missing. This is because a select object is a simple linear
+list of items that uses only parts of the popups functionalities.
+
+Another way to set up the popup of a select object is to use the
+function
+@findex fl_set_select_items()
+@anchor{fl_set_select_items()}
+@example
+long fl_set_select_items(FL_OBJECT *obj, FL_POPUP_ITEM *item);
+@end example
+@noindent
+Here @code{item} is an array of structures of type
+@code{@ref{FL_POPUP_ITEM}} with the @code{text} member of the very
+last element of the array being set to @code{NULL}, indicating the end
+of the array.
+
+The @code{text} member is the text of the item. It may only contain
+one "special sequence", @code{"%S"} to indicate that the string is to
+be split at that position into the part of the item label to be drawn
+to the left and on the right side (also prepending the string with
+@code{'_'} or @code{'/'} has no effect). @code{callback} is a callback
+function to be invoked on selection of the item. @code{shortcut} is a
+string for setting keybord shortcuts for the item. @code{type} has no
+function at all here (there can be only items of type
+@code{@ref{FL_POPUP_NORMAL}} in a select objects popup) and
+@code{state} can be set to @code{@ref{FL_POPUP_DISABLED}} and/or
+@code{@ref{FL_POPUP_HIDDEN}}.
+
+Please note: when the select object already had items before the call
+of @code{@ref{fl_set_select_items()}} then they are removed before the
+new ones are set. The values assigned to the items start at 0.
+
+A third way to "populate" a select object is to create a popup
+directly and then associate it with the select object using
+@findex fl_set_select_popup()
+@anchor{fl_set_select_popup()}
+@example
+int fl_set_select_popup(FL_OBJECT *obj, FL_POPUP *popup);
+@end example
+@noindent
+If the select object already had a popup before this will be deleted
+and replaced by the new popup passed as the second argument. Please
+note that the popup the argument @code{popup} points to may not
+contain any entries other than those of type
+@code{@ref{FL_POPUP_NORMAL}} (and, of course, the popup can't be a
+sub-popup of another popup).
+
+
+@node Select Interaction
+@subsection Select Interaction
+
+The simplest interaction with a select object consists of clicking
+onto the object and then selecting an item in the popup that gets
+shown directly beside the mouse position.
+
+If you click with the left or right mouse button onto the select
+object previous or next item, respectively, will be selected. If
+youl keep the left or mouse button pressed down for a longer time
+slowly all alternatives are selected, one after each other.
+
+You finally can also use the scroll wheel of your mouse to select
+the next or previous item (scrolling down selects the next, scrolling
+up the previous item).
+
+On every selection of an item (also if the already selected item is
+re-selected) a callback that may have been associated with the item is
+executed. The callback receives as its argument a pointer to a
+structure of type @code{@ref{FL_POPUP_RETURN}}.
+
+Its @code{val} member is a integer value associated with the entry. It
+can be set explicitely on creation of the item using the @code{"%x"}
+"special sequence". If not given then first item gets the value 0, the
+next 1 etc. @code{user_data} is a pointer to some user data, which can
+be set on creation of the item using @code{"%u"}. @code{text} is the
+string used in creating the item, including all "special sequences",
+while @code{label} is the string shown in the popup for the item. If
+there was a special sequence of @code{"%S"} in the string that was
+used to create the item @code{accel} is the text that appears
+right-flushed in the popup for the item. @code{entry} is a pointer to
+the popup entry that represents the item in the select object and,
+finally, @code{popup} is the popup associated with the select object.
+
+Normally, when a new item is selected this is reported back to the
+caller either by calling the select objects callback (if one exists)
+or by returning the object as the result of a call of e.g.,
+@code{@ref{fl_do_forms()}}. But if the callback for the item itself
+returns @code{FL_IGNORE} then the latter doesn't happen. This can be
+useful for cases where all work for a change of the selection can
+already be done within the items callback and the "main loop"
+shouldn't get involved anymore.
+
+As for all other normal objects the condition under which a
+@code{FL_SELECT} object gets returned to the application (or an
+associate callback is called) can be influenced by calling the
+function
+@example
+int fl_set_object_return(FL_OBJECT *obj, unsigned int when)
+@end example
+where @code{when} can have the following values
+@table @code
+@item @ref{FL_RETURN_NONE}
+Never return or invoke a callback.
+
+@item @ref{FL_RETURN_END_CHANGED}
+Return or invoke callback if end of interaction and selection of an
+item coincide.
+
+@item @ref{FL_RETURN_CHANGED}
+Return or invoke callback whenever an item is selected (this is the
+default).
+
+@item @ref{FL_RETURN_END}
+Return or invoke callback on end of an interaction.
+
+@item @ref{FL_RETURN_ALWAYS}
+Return (or invoke callback) whenever the interaction ends and/or
+an item is selected.
+@end table
+
+
+Per default the popup of a select objects remains shown when the user
+releases the mouse somewhere outside the popup window (or on its title
+area). The alternative is to close the popup immediately when the user
+releases the mouse, independent of where it is. Using the function
+@findex fl_set_select_policy()
+@anchor{fl_set_select_policy()}
+@example
+int fl_set_select_policy(FL_OBJECT *obj, int policy);
+@end example
+@noindent
+the program can switch between these two modes of operation,
+where @code{policy} can be on of two values:
+@table @code
+@tindex FL_POPUP_NORMAL_SELECT
+@item FL_POPUP_NORMAL_SELECT
+Keeps the popup opened when the mouse isn't released on one of the
+selectable items.
+
+@tindex FL_POPUP_DRAG_SELECT
+@item FL_POPUP_DRAG_SELECT
+Close the popup immediately when the mouse button is released.
+@end table
+@noindent
+The function returns on success the previous setting of the "policy"
+and -1 on error.
+
+
+@node Other Select Routines
+@subsection Other Select Routines
+
+To find out which item is currently selected use
+@findex fl_get_select_item()
+@anchor{fl_get_select_item()}
+@example
+FL_POPUP_RETURN *fl_get_select_item(FL_OBJECT *obj); 
+@end example
+@noindent
+It returns a pointer to a structure of type
+@code{@ref{FL_POPUP_RETURN}} as already described above, containing
+all needed information about the selected item.
+
+For some actions, e.g., deletion of an item etc., it is necessary to
+know the popup entry that represents it. Therefore it's possible to
+search the list of items according to several criteria:
+@findex fl_get_select_item_by_value()
+@anchor{fl_get_select_item_by_value()}
+@findex fl_get_select_item_by_label()
+@anchor{fl_get_select_item_by_label()}
+@findex fl_get_select_item_by_label_f()
+@anchor{fl_get_select_item_by_label_f()}
+@findex fl_get_select_item_by_text()
+@anchor{fl_get_select_item_by_text()}
+@findex fl_get_select_item_by_text_f()
+@anchor{fl_get_select_item_by_text_f()}
+@example
+FL_POPUP_ENTRY *fl_get_select_item_by_value(FL_OBJECT *obj, long val);
+FL_POPUP_ENTRY *fl_get_select_item_by_label(FL_OBJECT *obj,
+                                            const char *label);
+FL_POPUP_ENTRY *fl_get_select_item_by_label_f(FL_OBJECT *obj,
+                                              const char *fmt, ...);
+FL_POPUP_ENTRY *fl_get_select_item_by_text(FL_OBJECT *obj,
+                                           const char *text);
+FL_POPUP_ENTRY *fl_get_select_item_by_text_f(FL_OBJECT *obj,
+                                             const char *fmt, ...);
+@end example
+The first function, @code{@ref{fl_get_select_item_by_value()}},
+searches through the list of items and returns the first one with the
+@code{val} associated with the item (or @code{NULL} if none is found).
+The second and third, @code{@ref{fl_get_select_item_by_label()}} and
+@code{@ref{fl_get_select_item_by_label_f()}} searches for a certain
+label as displayed for the item in the popup. The last two,
+@code{@ref{fl_get_select_item_by_text()}} and
+@code{@ref{fl_get_select_item_by_text_f()}} searches for the text the
+item was created by (that might be the same as the label text in
+simple cases). The difference between the second and third and the
+forth and the last is the way the text is passed to the functions,
+it's either a simple string or the result of the expansion of a format
+string as used for @code{printf()} etc. using the following
+unspecified arguments.
+
+Please note that all these functions return a structure of type
+@code{@ref{FL_POPUP_ENTRY}} (and not @code{@ref{FL_POPUP_RETURN}},
+which gives you direct access to the entry in the popup for the item.
+
+Using e.g., the result of one of the functions above you can also set
+the currently selected item via your program using
+@findex fl_set_select_item()
+@anchor{fl_set_select_item()}
+@example
+FL_POPUP_RETURN *fl_set_select_item(FL_OBJECT *obj,
+                                    FL_POPUP_ENTRY *entry);
+@end example
+
+Or you could use the result to delete an item:
+@findex fl_delete_select_item()
+@anchor{fl_delete_select_item()}
+@example
+int fl_delete_select_item(FL_OBJECT *obj, FL_POPUP_ENTRY *entry);
+@end example
+@noindent
+Please note that the values associated with items won't change due to
+removing an item.
+
+Alternatively, you can replace an item by one or more new ones.
+To do that use
+@findex fl_replace_select_item()
+@anchor{fl_replace_select_item()}
+@example
+FL_POPUP_ENTRY *fl_replace_select_item(FL_OBJECT *obj,
+                                       FL_POPUP_ENTRY *old,
+                                       const char *new_items, ...);
+@end example
+@noindent
+@code{old} designates the item to be removed and @code{new_items} is a
+string exactly like it would be used in
+@code{@ref{fl_add_select_items()}} for the @code{items} argument, that
+defines the item(s) to replace the existing item. Please note that,
+unless values to be associated with the items (see the @code{val}
+member of the @code{@ref{FL_POPUP_RETURN}} structure) there's a twist
+here. When items get created they per default receive increasing
+values, starting at 0. This also holds for items that get created in
+the process of replacement. The result is that the ordering of those
+values in that case wont represent the order in which they appear in
+the select objects popup.
+
+Another sometimes useful function allows insertion of new items somewhere
+in the middle of a list of already existing items:
+@findex fl_insert_select_items()
+@anchor{fl_insert_select_items()}
+@example
+FL_POPUP_ENTRY *fl_insert_select_items(FL_OBJECT *obj,
+                                       FL_POPUP_ENTRY *after,
+                                       const char *new_items, ...);
+@end example
+@noindent
+@code{after} is the entry after which the new item(s) are to be
+inserted (if it's @code{NULL} the new items are inserted at the very
+start). The rest of the arguments are the same as for
+@code{@ref{fl_replace_select_item()}} and the same caveats about the
+values associated automatically with the new items holds.
+
+It's possible to remove all items from a select object by calling
+@findex fl_clear_select()
+@anchor{fl_clear_select()}
+@example
+int fl_clear_select(FL_OBJECT *obj);
+@end example
+@noindent
+Afterwards you have to call again e.g.,
+@code{@ref{fl_add_select_items()}} to set new entries. Note that if
+you used @code{@ref{fl_set_select_popup()}} to set a popup for the
+select object then that popup gets deleted automatically on calling
+@code{@ref{fl_clear_select()}}! The values automatically associated
+with items when calling @code{@ref{fl_add_select_items()}} will start
+at 0 again.
+
+
+@node Select Attributes
+@subsection Select Attributes
+
+The two color arguments, @code{clo1} and @code{col2}, of the function
+@code{@ref{fl_set_object_color()}} set the background color of the
+object normally and when the mouse is hovering over it, respectively.
+
+With the functions
+@findex fl_set_select_text_color()
+@anchor{fl_set_select_text_color()}
+@findex fl_get_select_text_color()
+@anchor{fl_get_select_text_color()}
+@example
+FL_COLOR fl_set_selection_text_color(FL_OBJECT *obj, FL_COLOR color);
+FL_COLOR fl_get_selection_text_color(FL_OBJECT *obj);
+@end example
+@noindent
+the color of the text of the currently selected item on top of the
+object can be set or queried.
+
+To control (or determine) the alignment of the text with the currently
+selected item on top of the select object use
+@findex fl_set_select_text_align()
+@anchor{fl_set_select_text_align()}
+@findex fl_get_select_text_align()
+@anchor{fl_get_select_text_align()}
+@example
+int fl_set_select_text_align(FLOBJECT *obj, int align);
+int fl_get_select_text_align(FLOBJECT *obj);
+@end example
+@noindent
+Please note that the @code{@ref{FL_ALIGN_INSIDE}} flag should be set
+with @code{align} since the text always will be drawn within the
+boundaries of the object. On success the function return the old
+setting for the alignment or -1 on error.
+
+Finally, the font style and size of the text can be set or obtained
+using
+@findex fl_set_select_text_font()
+@anchor{fl_set_select_text_font()}
+@findex fl_get_select_text_font()
+@anchor{fl_get_select_text_font()}
+@example
+int fl_set_select_text_font(FL_OBJECT *obj, int style, int size);
+int fl_get_select_text_font(FL_OBJECT *obj, int *style, int *size);
+@end example
+@noindent
+
+The rest of the appearance of a select object concerns the popup that
+is used. To avoid bloating the API unnecessarily no functions for
+select objects were added that would just call popup functions. The
+popup belonging to a select object can be easily found from either a
+@code{@ref{FL_POPUP_ENTRY}} structure as returned by the functions for
+searching for items or the @code{@ref{FL_POPUP_RETURN}} structure
+passed to all callbacks and also returned by
+@code{@ref{fl_get_select_item()}}. Both structures have a member
+called @code{popup} that is a pointer to the popup associated with the
+select object. For popup functions operation on indiviual items just
+use the pointer to the @code{@ref{FL_POPUP_ENTRY}} structure itself or
+the @code{entry} member of the @code{@ref{FL_POPUP_RETURN}} structure.
+
+There's also a convenience function for finding out the popup used
+for a select object:
+@findex fl_get_select_popup()
+@anchor{fl_get_select_popup()}
+@example
+FL_POPUP *fl_get_select_popup(FL_OBJECT *obj);
+@end example
+@noindent
+During the lifetime of a select object the popup never changes as long
+as @code{@ref{fl_set_select_popup()}} isn't called.
+
+Per default the popup of a select object does not have a title drawn
+on top of it. To change that use @code{@ref{fl_popup_set_title()}}.
+
+To change the various colors and fonts used when drawing the popup use
+the functions @code{@ref{fl_popup_set_color()}} and
+@code{@ref{fl_popup_entry_set_font()}} (and
+@code{@ref{fl_popup_set_title_font()}}).
+
+To change the border width or minimum width of the popup use
+@code{@ref{fl_popup_set_bw()}} and
+@code{@ref{fl_popup_set_min_width()}}.
+
+To disable or hide (or do the reverse) an item use the functions
+@code{@ref{fl_popup_entry_set_state()}} and
+@code{@ref{fl_popup_entry_get_state()}}.
+
+The keyboard shortcut for an entry can be set via
+@code{@ref{fl_popup_entry_set_shortcut()}}.
+
+The callback functions (selection, enter and leave callback) for
+individual items can be set via
+@code{@ref{fl_popup_entry_set_callback()}},
+@code{@ref{fl_popup_entry_set_enter_callback()}} and
+@code{@ref{fl_popup_entry_set_leave_callback()}}, a callback for the
+whole popup with @code{@ref{fl_popup_set_callback()}}.
+
+Finally, to assign a different (long) value to an item or set a
+pointer to user data use @code{@ref{fl_popup_entry_set_value()}}
+and @code{@ref{fl_popup_entry_set_user_data()}}.
+
+
+@node Select Remarks
+@subsection Remarks
+
+See the demo program @file{select.c} for an example of the use of
+select objects.
+
+
+@node Nmenu Object
+@section Nmenu Object
+
+Another object type that heavily depends on popups is the "nmenu"
+object type. It is meant to be used for menus and the "n" in front of
+the name stands for "new" since this is a re-implementation of the
+old menu object type (which is now deprecated since it is based on
+@ref{XPopup}).
+
+
+@ifnottex
+
+@menu
+* Adding Nmenu Objects:   Adding Nmenu Objects
+* Nmenu Interaction:      Nmenu Interaction
+* Other Nmenu Routines:   Other Nmenu Routines
+* Nmenu Attributes:       Nmenu Attributes
+* Remarks:                Nmenu Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Nmenu Objects
+@subsection Adding Nmenu Objects
+
+To add a nmenu object use
+@findex fl_add_nmenu()
+@anchor{fl_add_nmenu()}
+@example
+FL_OBJECT *fl_add_nmenu(int type, FL_Coord x, FL_Coord y,
+                        FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+There are currently three types:
+@table @code
+@tindex FL_NORMAL_NMENU
+@anchor{FL_NORMAL_NMENU}
+@item FL_NORMAL_NMENU
+Probably the most often used type: shown as text on a borderless
+background, popup gets opened when clicked on.
+
+@tindex FL_NORMAL_TOUCH_NMENU
+@anchor{FL_NORMAL_TOUCH_NMENU}
+@item FL_NORMAL_TOUCH_NMENU
+Also shown as text on a borderless background, but popup gets opened
+when the mouse is moved on top of it without any further user action
+required.
+
+@tindex FL_BUTTON_NMENU
+@anchor{FL_BUTTON_NMENU}
+@item FL_BUTTON_NMENU
+When not active shown as text on borderless background, when clicked
+on popup is shown and the object itself being displayed as a button.
+
+@tindex FL_BUTTON_TOUCH_NMENU
+@anchor{FL_BUTTON_TOUCH_NMENU}
+@item FL_BUTTON_TOUCH_NMENU
+When not active shown as text on borderless background, when mouse is
+moved onto it the popup is shown and the object itself is displayed as
+a button.
+@end table
+
+Once a new nmenu object has been created items have to be added to
+it. For this the following function exists:
+@findex fl_add_nmenu_items()
+@anchor{fl_add_nmenu_items()}
+@example
+FL_POPUP_ENTRY *fl_add_nmenu_items(FL_OBJECT *obj,
+                                   const char items, ...);
+@end example
+@noindent
+(The function can also be used to append new items to a nmenu object
+that already has items.)
+
+The function returns a pointer to the first menu entry added on
+success and @code{NULL} on failure. @code{items} is a string with the
+items to add, separated by the @code{'|'} character. In the simplest
+case you would just use something like @code{"Item 1|Item 2|Item 3"}
+to add three items to the list.
+
+As also described in the documentation for the similar function
+@code{@ref{fl_popup_add_entries()}} the text for an item may contain
+"special sequences" that start with the character @code{'%'} and then
+may require an additional argument passed to the function after the
+@code{items} argument. All of those described in detail in the
+documentation for the @code{@ref{fl_popup_add_entries()}} function can
+also be used for nmenus.
+
+Another way to set up the popup of a select object, using an array of
+@ref{FL_POPUP_ITEM} structures, is via the function
+@findex fl_set_nmenu_items()
+@anchor{fl_set_nmenu_items()}
+@example
+FL_POPUP_ENTRY *fl_set_nmenu_items(FL_OBJECT *obj, FL_POPUP_ITEM *item);
+@end example
+@noindent
+The function returns a pointer to the first menu item on success and
+@code{NULL} on failure. The function expects as arguments a pointer to
+the nmenu object and an array of @code{@ref{FL_POPUP_ITEM}}
+structuress, with the very last element having @code{NULL} as the
+@code{text} member to mark the end of the array.
+
+The @code{text} member of the structure may contain the character
+sequence @code{"%S"} to have the text drawn for the item split up at
+that position and with everything before @code{"%S"} drawn
+left-flushed and the rest right-flushed. Moreover, @code{text} may
+start with the character @code{'/'} and/or @code{'_'}. For an
+underline character a line is drawn above the item. And if there's a
+slash this item marks the begin of a sub-menu with all further items
+belonging to the sub-menu until a structure with member @code{text}
+being set to @code{NULL} is found in the array. (The @code{'/'} and
+@code{'_'} characters are, of course, not drawn.)
+
+@code{type} indicates the type of the item. It can be
+@table @code
+@tindex FL_POPUP_NORMAL
+@item FL_POPUP_NORMAL
+A normal, plain item.
+
+@tindex FL_POPUP_TOGGLE
+@item FL_POPUP_TOGGLE
+An item that represents one of two states and is drawn with a
+check-marker when in "on" state.
+
+@tindex FL_POPUP_RADIO
+@item FL_POPUP_RADIO
+A radio item, i.e., it belongs to a group of items of which only one
+can be in "on" state at a time. They are drawn with a circle to the
+left with the circle for the "selected" item being filled with a
+color.
+@end table
+@noindent
+Please note that if @code{text} starts with a @code{'/'} the type
+@strong{must} be @code{FL_POPUP_NORMAL}.
+
+The @code{state} member per default is @code{@ref{FL_POPUP_NONE}}. It
+can be set to
+@table @code
+@tindex FL_POPUP_NONE
+@item FL_POPUP_NONE
+No special flags are set for the state of the item.
+
+@tindex FL_POPUP_DSABLED
+@item FL_POPUP_DSABLED
+The item is disabled and can't be selected.
+
+@tindex FL_POPUP_HIDDEN
+@item FL_POPUP_HIDDEN
+The item is hidden, i.e., does not get shown (and thus can't be
+selected).
+
+@tindex FL_POPUP_CHECKED
+@item FL_POPUP_CHECKED
+Only relevant for toggle or radio items, marks it as in "on" state.
+@end table
+
+@code{callback} is a function that will be called if the item is
+selected. The callback function has the following type:
+@example
+typedef int (*FL_POPUP_CB)(FL_POPUP_RETURN *);
+@end example
+@noindent
+It receives a pointer to a structure that contains all information
+about the entry selected by the user:
+@example
+typedef struct @{
+    long int              val;       /* value assigned to entry */
+    void                 *user_data; /* pointer to user data */
+    const char           *text;      /* text of selected popup entry */
+    const char           *label;     /* text drawn on left side */        
+    const char           *accel;     /* text drawn on right side */
+    const FL_POPUP_ENTRY *entry;     /* selected popup entry */
+    const FL_POPUP       *popup;     /* (sub-)popup it belongs to */
+@} FL_POPUP_RETURN;
+@end example
+@noindent
+@code{val} is a value that has been associated with the entry and
+@code{user_data} is a pointer that can be used to store the location
+of further information. @code{text} is the text that was used to
+create the entry (including all "special" characters), while
+@code{label} and @code{accel} are the texts shown for the entry on the
+left and right. @code{entry} is the pointer to the structure for the
+entry selected and @code{popup} to the (sub-) popup the entry belongs
+to (@pxref{Part III Popups} for more details on these structures).
+
+If the callback function already does all the work required on
+selection of the item have it return the value @code{FL_IGNORE} to
+keep the selection from being reported back to the main loop of the
+program.
+
+Finally, @code{shortcut} is a string encoding the keybord shortcut to
+be used for the item.
+
+
+There's also a third method to "populate" a menu. If you already
+created a popup than you can set it as the menu's popup via a call of
+@findex fl_set_nmenu_popup()
+@anchor{fl_set_nmenu_popup()}
+@example
+int fl_set_nmenu_popup(FL_POPUP *popup);
+@end example
+@noindent
+Of course, the popup you associate with the nmenu object in this way
+can't be a sub-popup.
+
+
+@node Nmenu Interaction
+@subsection Nmenu Interaction
+
+There are, if seen interaction-wise, two types of nmenu objects,
+normal ones and touch nmenus. For normal nmenus a popup is opened when
+the user clicks on the area of the nmenu object while for touch nmenus
+the popup already is shown when the user moves the mouse unto the
+area. In other respects they behave identical: the user just selects
+one of the items in the popup (or one of the sub-popups) and then the
+popup is closed again. The selection can now be handled within a
+callback function and/or reported back to the main loop of the
+program.
+
+The popup is always shown directly below the nmenu object (except
+for the case that the popup is that long that it wouldn't fit on the
+screen, in which case the popup is drawn above the nmenu's area.
+
+The most natural way to deal with a selection by the user is probably
+via a callback for the item that was selected. But also a callback for
+the popup as a whole or the object itself can be used. Item and popup
+callback functions are of type @code{@ref{FL_POPUP_CB}} described
+above (and in even more detail in @ref{Part III Popups}), while object
+callbacks are "normal" XForms callback functions.
+
+The condition under which a @code{FL_NMENU} object gets returned to
+the application (or an associate callback is invoked) can be
+influenced by calling the function
+@example
+int fl_set_object_return(FL_OBJECT *obj, unsigned int when)
+@end example
+where @code{when} can have the following values
+@table @code
+@item @ref{FL_RETURN_NONE}
+Never return or invoke a callback.
+
+@item @ref{FL_RETURN_END_CHANGED}
+Return or invoke callback if end of interaction and selection of an
+item coincide.
+
+@item @ref{FL_RETURN_CHANGED}
+Return or invoke callback whenever an item is selected (this is the
+default).
+
+@item @ref{FL_RETURN_END}
+Return or invoke callback on end of an interaction.
+
+@item @ref{FL_RETURN_ALWAYS}
+Return (or invoke callback) whenever the interaction ends and/or
+an item is selected.
+@end table
+
+
+One detail of the interaction that can be adjusted is under which
+conditions the nmenu's popup gets closed. Per default the popup is
+closed when an item is selected or (without a selection) when the user
+clicks somehwere outside of the popups area. This can be changed so
+that the popup also gets closed (without a selection) when the mouse
+button is clicked or released on a non-selectable item (giving the
+impression of a "pull-down" menu). For this purpose there's the
+@findex fl_set_nmenu_policy()
+@anchor{fl_set_nmenu_policy()}
+@example
+int fl_set_nmenu_policy(FL_OBJECT *obj, int policy);
+@end example
+@noindent
+function where @code{policy} can be one of two values:
+@table @code
+@tindex FL_POPUP_NORMAL_SELECT
+@item FL_POPUP_NORMAL_SELECT
+Default, popup stays open until mouse button is released on a
+selectable entry or button is clicked outside the popups area.
+
+@tindex FL_POPUP_DRAG_SELECT
+@item FL_POPUP_DRAG_SELECT
+Popup is closed when the mouse button is released.
+@end table
+@noindent
+The function returns on success the previous setting of the "policy"
+and -1 on error.
+
+
+@node Other Nmenu Routines
+@subsection Other Nmenu Routines
+
+To find out which item of a nmenu object was selected last use
+@findex fl_get_nmenu_item()
+@anchor{fl_get_nmenu_item()}
+@example
+FL_POPUP_RETURN *fl_get_nmenu_item(FL_OBJECT *obj);
+@end example
+@noindent
+The function returns either a pointer to a @code{@ref{FL_POPUP_RETURN}}
+structure with informations about the selected item (as already
+discussed above when talking about callbacks) or @code{NULL} if
+no selection was made the last time the nmenu object was used.
+
+For some actions, e.g., deletion of an item etc., it is necessary to
+know the popup entry that represents it. Therefore it's possible to
+search the list of items according to several criteria:
+@findex fl_get_nmenu_item_by_value()
+@anchor{fl_get_nmenu_item_by_value()}
+@findex fl_get_nmenu_item_by_label()
+@anchor{fl_get_nmenu_item_by_label()}
+@findex fl_get_nmenu_item_by_text()
+@anchor{fl_get_nmenu_item_by_text()}
+@example
+FL_POPUP_ENTRY *fl_get_nmenu_item_by_value(FL_OBJECT *obj, long val);
+FL_POPUP_ENTRY *fl_get_nmenu_item_by_label(FL_OBJECT *obj,
+                                           const char *label);
+FL_POPUP_ENTRY *fl_get_nmenu_item_by_label(FL_OBJECT *obj,
+                                           const char *text);
+@end example
+The first function, @code{@ref{fl_get_nmenu_item_by_value()}},
+searches through the list of all items (including items in sub-popups)
+and returns the first one with the @code{val} associated with the item
+(or @code{NULL} if none is found). The second,
+@code{@ref{fl_get_nmenu_item_by_label()}} searches for a certain label
+as displayed for the item in the popup. The third,
+@code{@ref{fl_get_nmenu_item_by_text()}} searches for the text the
+item was created by (that might be the same as the label text in
+simple cases). Please note that all functions return a structure of
+type @code{@ref{FL_POPUP_ENTRY}} (and not
+@code{@ref{FL_POPUP_RETURN}}, which gives you direct access to the
+entry in the popup for the item.
+
+
+Using e.g., the results of the above searches a nmenu item can be
+deleted:
+@findex fl_delete_nmenu_item()
+@anchor{fl_delete_nmenu_item()}
+@example
+int fl_delete_nmenu_item(FL_OBJECT *obj, FL_POPUP_ENTRY *item);
+@end example
+
+Alternatively, an item can be replaced by one or more items:
+@findex fl_replace_nmenu_item()
+@anchor{fl_replace_nmenu_item()}
+@example
+FL_POPUP_ENTRY *fl_replace_nmenu_item(FL_OBJECT *obj,
+                                      FL_POPUP_ENTRY *old,
+                                      const char *new_items, ...);
+@end example
+where @code{old} is the item to replace and @code{new_items} is a
+string exactly as used for @code{@ref{fl_add_nmenu_items()}} with
+informations about the new item(s).
+
+One also may insert additional items using
+@findex fl_insert_nmenu_items()
+@anchor{fl_insert_nmenu_items()}
+@example
+FL_POPUP_ENTRY *fl_insert_nmenu_items(FL_OBJECT *obj,
+                                      FL_POPUP_ENTRY *after,
+                                      const char *new_items, ...);
+@end example
+@noindent
+where @code{after} is the item after which the new items are to be
+inserted (use @code{NULL} to insert at the very start) and
+@code{new_items} is a string just like used with
+@code{@ref{fl_add_nmenu_items()}} with informations about the
+additional item(s).
+
+
+As you may remember, there are two different ways to "populate" a
+nmenu object. In one case you pass a kind of format string plus
+a variable number of arguments and in the other case an array of
+@code{@ref{FL_POPUP_ITEM}} structures. The previously listed
+functions for inserting and replacing used the first "interface".
+But there are also three functions for using the alternative
+interface:
+@anchor{fl_add_nmenu_items2()}
+@findex fl_add_nmenu_items2()
+@anchor{fl_insert_nmenu_items2()}
+@findex fl_insert_nmenu_items2()
+@anchor{fl_replace_nmenu_items2()}
+@findex fl_replace_nmenu_items2()
+@example
+FL_POPUP_ENTRY *fl_add_nmenu_items2(FL_OBJECT *obj,
+                                    FL_POPUP_ITEM *items);
+FL_POPUP_ENTRY *fl_insert_nmenu_items2(FL_OBJECT *obj,
+                                       FL_POPUP_ENTRY *after,
+                                       FL_POPUP_ITEM *items);
+FL_POPUP_ENTRY *fl_replace_nmenu_items2(FL_OBJECT *obj,
+                                        FL_POPUP_ENTRY *old_item,
+                                        FL_POPUP_ITEM *items);
+@end example
+@noindent
+All three functions return a pointer to the first new entry in the
+nmenu's popup on success and @code{NULL} on failure. The all take
+a pointer to the nmenu object as their first argument.
+
+@code{@ref{fl_add_nmenu_items2()}} appends the items given by the list
+specified via the second argument to the nmenu's popup.
+@code{@ref{fl_insert_nmenu_items2()}} inserts one or more new items
+(as given by the last argument) after the entry specified by
+@code{after} (if @code{after} is @code{NULL} the new items are
+inserted before all existing items). Finally,
+@code{@ref{fl_replace_nmenu_items2()}} replaces the existing entry
+@code{old_item} with a new (or a list of new items specified by
+@code{items}.
+
+Finally, there's a function to remove all items from a nmenu object
+at once:
+@findex fl_clear_nmenu()
+@anchor{fl_clear_nmenu()}
+@example
+in fl_clear_nmenu(FL_OBJECT *obj);
+@end example
+
+
+@node Nmenu Attributes
+@subsection Nmenu Attributes
+
+
+While not "active" the background of the nmenu object is drawn in the
+color that can be controlled via the first color argument,
+@code{col1}, of @code{@ref{fl_set_object_color()}}. When "active"
+(i.e., while the popup is shown) its background is drawn in the color
+of second color argument, @code{col2}, of the same function. The color
+of the label when "inactive" is controlled via
+@code{@ref{fl_set_object_lcolor()}}. When in "active" state the color
+use for the label can be set via the function
+@findex fl_set_nmenu_hl_text_color()
+@anchor{fl_set_nmenu_hl_text_color()}
+@example
+FL_COLOR fl_set_nmenu_hl_text_color(FL_OBJECT *obj, FL_COLOR color);
+@end example
+@noindent
+The function returns the old color on success or
+@code{@ref{FL_MAX_COLORS}} on failure. Per default this color is
+@code{FL_BLACK} for nmenus that are shown as a button while being
+"active" while for normal nmenus it's the same color that is used
+items in the popup when the mouse is hovering over them.
+
+The size and style of the font used for the label of the nmenu object
+can be set via @code{@ref{fl_set_object_lsize()}} and
+@code{@ref{fl_set_object_lstyle()}}.
+
+The rest of the appearance of a nmenu object is given by the
+appearance of the popup. These can be directly set via the functions
+for setting the popup appearance as described in @ref{Popup
+Attributes}. To find out which popup is associated with the nmenu
+object use the function
+@findex fl_get_nmenu_popup()
+@anchor{fl_get_nmenu_popup()}
+@example
+FL_POPUP *fl_get_nmenu_popup(FL_OBJECT *obj);
+@end example
+@noindent
+and then use the popup specific functions to set the appearance. The
+same also holds for the appearance etc.@: of the items of the popup, a
+lot of functions exist that allow to set the attributes of entries of
+a popup, @pxref{Popup Attributes}.
+
+
+@node Nmenu Remarks
+@subsection Remarks
+
+See the demo program @file{menu.c}.
+
+
+@node Browser Object
+@section Browser Object
+
+The browser object class is probably the most powerful that currently
+exists in the Forms Library. A browser is a box that contains a number
+of lines of text. If the text does not fit inside the box, a scrollbar
+is automatically added so that the user can scroll through it. A
+browser can be used for building up a help facility or to give
+messages to the user.
+
+It is possible to create a browser from which the user can select
+lines. In this way the user can make its selections from a (possible)
+long list of choices. Both single lines and multiple lines can be
+selected, depending on the type of the browser.
+
+@ifnottex
+
+@menu
+* Adding Browser Objects:   Adding Browser Objects
+* Browser Types:            Browser Types
+* Browser Interaction:      Browser Interaction
+* Other Browser Routines:   Other Browser Routines
+* Browser Attributes:       Browser Attributes
+* Remarks:                  Browser Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Browser Objects
+@subsection Adding Browser Objects
+
+To add a browser to a form use the routine
+@findex fl_add_browser()
+@anchor{fl_add_browser()}
+@example
+FL_OBJECT *fl_add_browser(int type, FL_Coord x, FL_Coord y,
+                          FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+The meaning of the parameters is as usual. The label is placed below
+the box by default.
+
+
+@node Browser Types
+@subsection Browser Types
+
+The following types of browsers exist (see below for more information
+about them):
+@table @code
+@tindex FL_NORMAL_BROWSER
+@anchor{FL_NORMAL_BROWSER}
+@item FL_NORMAL_BROWSER
+A browser in which no selections can be made.
+
+@tindex FL_SELECT_BROWSER
+@anchor{FL_SELECT_BROWSER}
+@item FL_SELECT_BROWSER
+In this type of browser the user can make single line selections which
+get reset immediately when the mouse button is released.
+
+@tindex FL_HOLD_BROWSER
+@anchor{FL_HOLD_BROWSER}
+@item FL_HOLD_BROWSER
+Same as @code{FL_SELECT_BROSER} but the selection remains visible till
+the next selection.
+
+@tindex FL_DESELECTABLE_HOLD_BROWSER
+@anchor{FL_DESELECTABLE_HOLD_BROWSER}
+@item FL_DESELECTABLE_HOLD_BROWSER
+Same as the @code{FL_HOLD_BROWSER} but the user can deselect the
+selected line.
+
+@tindex FL_MULTI_BROWSER
+@anchor{FL_MULTI_BROWSER}
+@item FL_MULTI_BROWSER
+Multiple selections can be made and remain visible till de-selected.
+@end table
+
+Hence, the differences only lie in how the selection process works.
+
+
+@node Browser Interaction
+@subsection Browser Interaction
+
+The user can change the position of the slider or use keyboard cursor
+keys (including @code{<Home>}, @code{<PageDown>}, etc.) to scroll
+through the text. When he/she presses the left mouse below or above
+the slider, the browser scrolls one page up or down. Any other mouse
+button scrolls one line at a time (except wheel mouse buttons). When
+not using an @code{@ref{FL_NORMAL_BROWSER}} the user can also make
+selections with the mouse by pointing to a line or by using the cursor
+keys.
+
+For @code{@ref{FL_SELECT_BROWSER}}'s, as long as the user keeps the
+left mouse button pressed, the current line under the mouse is
+highlighted. Whenever she releases the left mouse button the
+highlighting disappears and the browser is returned to the application
+program. The application program can now figure out which line was
+selected using a call of @code{@ref{fl_get_browser()}} to be described
+below. It returns the number of the last selected line (with the
+topmost line being line 1).
+
+A @code{@ref{FL_HOLD_BROWSER}} works exactly the same except that,
+when the left mouse button is released, the selection remains
+highlighted. A @code{@ref{FL_DESELECTABLE_HOLD_BROWSER}} additionally
+allows the user to undo a selection (by clicking on it again).
+
+An @code{@ref{FL_MULTI_BROWSER}} allows the user to select and
+de-select multiple lines. Whenever he selects or de-selects a line the
+browser object is returned to the application program (or a callback
+is executed when installed) that then can figure out which line was
+selected using @code{@ref{fl_get_browser()}} (described in more detail
+below). That function returns the number of the last line to be
+selected or de-selected. When a line was de-selected the negation of
+the line number gets returned. I.e., if line 10 was selected the
+routine returns 10 and if line 10 was de-selected -10. When the user
+presses the left mouse button on a non-selected line and then moves it
+with the mouse button still pressed down, he will select all lines he
+touches with his mouse until he releases it. All these lines will
+become highlighted. When the user starts pressing the mouse on an
+already selected line he de-selects lines rather than selecting them.
+
+
+Per default a browser only gets returned (or a possibly associated
+callback gets invoked) on selection of a line (and, in the case of
+@code{@ref{FL_MULTI_BROWSER}}, on deselections). This behaviour can be
+changed by using the function
+@example
+int fl_set_object_return(FL_OBJECT *obj, unsigned int when)
+@end example
+where @code{when} can have the following values
+@table @code
+@item @ref{FL_RETURN_NONE}
+Never return or invoke callback.
+
+@item @ref{FL_RETURN_SELECTION}
+Return or invoke callback on selection of a line. Please note that for
+@code{@ref{FL_MULTI_BROWSER}} the browser may be returned just once
+for a number of lines having been selected.
+
+@item @ref{FL_RETURN_DESELECTION}
+Return or invoke a callback on deselection of a line. This only
+happens for @code{@ref{FL_DESELECTABLE_HOLD_BROWSER}} and
+@code{@ref{FL_MULTI_BROWSER}} objects and, for the latter, the browser
+may get returned (or the callback invoked) just once for a number of
+lines having been deselected.
+
+@item @ref{FL_RETURN_END_CHANGED}
+Return or invoke callback at end (mouse release) if the text in the
+browser has been scrolled.
+
+@item @ref{FL_RETURN_CHANGED}
+Return or invoke callback whenever the text in the browser has been scrolled.
+
+@item @ref{FL_RETURN_END}
+Return or invoke callback on end of an interaction for scrolling the
+text in the browser regardless if the text was scrolled or not.
+
+@item @ref{FL_RETURN_ALWAYS}
+Return or invoke callback on selection, deselection or scrolling of
+text or end of scrolling.
+@end table
+
+The default setting for @code{when} for a browser object is
+@code{@ref{FL_RETURN_SELECTION}|@ref{FL_RETURN_DESELECTION}} (unless
+during the built of XForms you set the configuration flag
+@code{--enable-bwc-bs-hack} in which case the default is
+@code{@ref{FL_RETURN_NONE}} to keep backward compatibility with
+earlier releases of the library).
+
+
+@node Other Browser Routines
+@subsection Other Browser Routines
+
+There are a large number of routines to change the contents of a
+browser, select and de-select lines, etc.
+
+To remove all lnes from a browser use
+@findex fl_clear_browser()
+@anchor{fl_clear_browser()}
+@example
+void fl_clear_browser(FL_OBJECT *obj);
+@end example
+
+To add a line to a browser use one of
+@findex fl_add_browser_line()
+@anchor{fl_add_browser_line()}
+@findex fl_add_browser_line_f()
+@anchor{fl_add_browser_line_f()}
+@example
+void fl_add_browser_line(FL_OBJECT *obj, const char *text);
+void fl_add_browser_line_f(FL_OBJECT *obj, const char *fmt, ...);
+@end example
+The first function receives a simple string as the argument, the
+second one expects a format string just like for @code{printf()} etc.
+and followed by the appropriate number of arguments of the correct
+types. The line to be added may contain embedded newline characters
+(@code{'\n'}). These will result in the text being split up into
+several lines, separated at the newline characters.
+
+A second way of adding a line to the browser is to use calls of
+@findex fl_addto_browser()
+@anchor{fl_addto_browser()}
+@findex fl_addto_browser_f()
+@anchor{fl_addto_browser_f()}
+@example
+void fl_addto_browser(FL_OBJECT *obj, const char *text);
+@end example
+@noindent
+The difference to @code{@ref{fl_add_browser_line()}} and
+@code{@ref{fl_add_browser_line_f()}} is that with these
+calls the browser will be shifted such that the newly appended line is
+visible. This is useful when e.g., using the browser to display
+messages.
+
+Sometimes it may be more convenient to add characters to a browser
+without starting of a new line. To this end, the following routines
+exists
+@findex fl_addto_browser_chars()
+@anchor{fl_addto_browser_chars()}
+@findex fl_addto_browser_chars_f()
+@anchor{fl_addto_browser_chars_f()}
+@example
+void fl_addto_browser_chars(FL_OBJECT *obj, const char *text);
+void fl_addto_browser_chars_f(FL_OBJECT *obj, const char *fmt, ...);
+@end example
+@noindent
+These functions appends text to the last line in the browser without
+advancing the line counter. The to functions differ in that the first
+one takes a simple string argument while the second expects a format
+string just as for @code{printf()} etc., followed by a corresponding
+number of arguments. Again the text may contain embedded newline
+characters (@code{'\n'}). In that case, the text before the first
+embedded newline is appended to the last line, and everything
+afterwards is put onto new lines. As in the case of
+@code{@ref{fl_addto_browser()}} the last added line will be visible in
+the browser.
+
+You can also insert a line in front of a given line. All lines after
+it will be shifted. Note that the top line is numbered 1 (not 0).
+@findex fl_insert_browser_line()
+@anchor{fl_insert_browser_line()}
+@findex fl_insert_browser_line_f()
+@anchor{fl_insert_browser_line_f()}
+@example
+void fl_insert_browser_line(FL_OBJECT *obj, int line,
+                            const char *text);
+void fl_insert_browser_line_f(FL_OBJECT *obj, int line,
+                              const char *fmt, ...);
+@end example
+@noindent
+The first function takes a simple string argument while the second one
+expects a format string as used for @code{printf()} etc. and the
+appropriate number of arguments (of the types specified in the format
+string).
+
+Please note that on insertion (as well as replacements, see below)
+embedded newline characters don't result in the line being split up as
+it's done in the previous functions. Instead they will rather likely
+appear as strange looking characters in the text shown. The only
+exception is when inserting into an empty browser or after the last
+line, then this function works exactly as if you had called
+@code{@ref{fl_add_browser_line()}} or
+@code{@ref{fl_add_browser_line_f()}}.
+
+To delete a line (shifting the following lines) use:
+@findex fl_delete_browser_line()
+@anchor{fl_delete_browser_line()}
+@example
+void fl_delete_browser_line(FL_OBJECT *obj, int line);
+
+@end example
+
+One can also replace a line using one of
+@findex fl_replace_browser_line()
+@anchor{fl_replace_browser_line()}
+@findex fl_replace_browser_line_f()
+@anchor{fl_replace_browser_line_f()}
+@example
+void fl_replace_browser_line(FL_OBJECT *obj, int line,
+                             const char *text);
+void fl_replace_browser_line_f(FL_OBJECT *obj, int line,
+                               const char *fmt, ...);
+@end example
+The first one takes a simple string for the replacement text while for
+the second it is to be specified by a format string exactly as used in
+@code{printf()} etc. and the appropriate number of arguments of the
+types specifed in the format string.
+\
+As in the case of @code{@ref{fl_insert_browser_line()}} and
+@code{@ref{fl_insert_browser_line_f()}} newline characters embedded
+into the replacement text don't have any special meaning, i.e., they
+don't result in replacement of more than a single line.
+
+Making many changes to a visible browser after another, e.g.,
+clearing it and then adding a number of new lines, is slow because the
+browser is redrawn on each and every change. This can be avoided by
+using calls of @code{@ref{fl_freeze_form()}} and
+@code{@ref{fl_unfreeze_form()}}. So a piece of code that fills in a
+visible browser should preferably look like the following
+@example
+fl_freeze_form(browser->form);
+fl_clear_browser(browser);
+fl_add_browser_line(browser, "line 1");
+fl_add_browser_line(browser, "line 2");
+...
+fl_unfreeze_form(brow->form);
+@end example
+@noindent
+where @code{browser->form} is the form that contains the browser
+object named @code{browser}.
+
+To obtain the contents of a particular line in the browser, use
+@findex fl_get_browser_line()
+@anchor{fl_get_browser_line()}
+@example
+const char *fl_get_browser_line(FL_OBJECT *obj, int line);
+@end example
+@noindent
+It returns a pointer to the text of that line, exactly as it were
+passed to the function that created the line.
+
+It is possible to load an entire file into a browser using
+@findex fl_load_browser()
+@anchor{fl_load_browser()}
+@example
+int fl_load_browser(FL_OBJECT *obj, const char *filename);
+@end example
+@noindent
+The routine returns @code{1} when file could be successfully loaded,
+otherwise @code{0}. If the file name is an empty string (or the file
+could not be opened for reading) the browser is just cleared. This
+routine is particularly useful when using the browser for a help
+facility. You can create different help files and load the needed one
+depending on context.
+
+The application program can select or de-select lines in the browser.
+To this end the following calls exist with the obvious meaning:
+@findex fl_select_browser_line()
+@anchor{fl_select_browser_line()}
+@findex fl_deselect_browser()
+@anchor{fl_deselect_browser()}
+@findex fl_deselect_browser_line()
+@anchor{fl_deselect_browser_line()}
+@example
+void fl_select_browser_line(FL_OBJECT *obj, int line);
+void fl_deselect_browser_line(FL_OBJECT *obj, int line);
+void fl_deselect_browser(FL_OBJECT *obj);
+@end example
+@noindent
+The last call de-selects all lines.
+
+To check whether a line is selected, use the routine
+@findex fl_isselected_browser_line()
+@anchor{fl_isselected_browser_line()}
+@example
+int fl_isselected_browser_line(FL_OBJECT *obj, int line);
+@end example
+
+The routine
+@findex fl_get_browser_maxline()
+@anchor{fl_get_browser_maxline()}
+@example
+int fl_get_browser_maxline(FL_OBJECT *obj);
+@end example
+@noindent
+returns the number of lines in the browser. For example, when the
+application program wants to figure out which lines in a
+@code{@ref{FL_MULTI_BROWSER}} are selected code similar to the
+following can be used:
+@example
+int total_lines = fl_get_browser_maxline(browser);
+for (i = 1; i <= total_lines; i++)
+    if (fl_isselected_browser_line(browser, i))
+        /* Handle the selected line */
+@end example
+
+Sometimes it is useful to know how many lines are visible in the
+browser. To this end, the following call can be used
+@findex fl_get_browser_screenlines()
+@anchor{fl_get_browser_screenlines()}
+@example
+int fl_get_browser_screenlines(FL_OBJECT *obj);
+@end example
+Please note that this count only includes lines that are shown
+completely in the browser, lines that are partially obscured aren't
+counted in.
+
+To obtain the last selection made by the user, e.g., when the browser
+is returned, the application program can use the routine
+@findex fl_get_browser()
+@anchor{fl_get_browser()}
+@example
+int fl_get_browser(FL_OBJECT *obj);
+@end example
+@noindent
+It returns the line number of the last selection being made (0 if no
+selection was made). When the last action was a de-selection (only for
+@code{@ref{FL_MULTI_BROWSER}}) the negative of the de-selected line
+number is returned.
+
+The following function allows to find out the (unobscured) line that
+is currently shown at the top of the browser:
+@findex fl_get_browser_topline()
+@anchor{fl_get_browser_topline()}
+@example
+int fl_get_browser_topline(FL_OBJECT *obj);
+@end example
+@noindent
+Note that the index of the top line is @code{1}, not @code{0}. A
+value of @code{0} is returned if the browser doesn't contain any
+lines.
+
+Finally, the function
+@findex fl_show_browser_line()
+@anchor{fl_show_browser_line()}
+@example void fl_show_browser_line(FL_OBJECT *obj, int ln);
+@end example
+@noindent
+shifts the browsers content so that (as far as possible) the line
+indexed by @code{ln} is shown at the center of the browser.
+
+It is possible to register a callback function that gets called when a
+line is double-clicked on. To do so, the following function is
+available:
+@findex fl_set_browser_dblclick_callback()
+@anchor{fl_set_browser_dblclick_callback()}
+@example
+void fl_set_browser_dblclick_callback(FL_OBJECT *obj,
+                                      void (*cb)(FL_OBJECT *, long),
+`                                     long data);
+@end example
+@noindent
+Of course, double-click callbacks make most sense for
+@code{@ref{FL_HOLD_BROWSER}}s.
+
+The part if the text visible within the browser can be set
+programmatically in a number of ways. With the functions
+@findex fl_set_browser_topline()
+@anchor{fl_set_browser_topline()}
+@findex fl_set_browser_bottomline()
+@anchor{fl_set_browser_bottomline()}
+@example
+void fl_set_browser_topline(FL_OBJECT *obj, int line);
+void fl_set_browser_bottomline(FL_OBJECT *obj, int line);
+@end example
+@noindent
+the line shown at the top or the bottom can be set (note again
+that line numbers start with 1).
+
+Instead of by line number also the amount the text is scrolled in
+horizontal and vertical direction can be set with the functions
+@findex fl_set_browser_xoffset()
+@anchor{fl_set_browser_xoffset()}
+@findex fl_set_browser_rel_xoffset()
+@anchor{fl_set_browser_rel_xoffset()}
+@findex fl_set_browser_yoffset()
+@anchor{fl_set_browser_yoffset()}
+@findex fl_set_browser_rel_yoffset()
+@anchor{fl_set_browser_rel_yoffset()}
+@example
+void fl_set_browser_xoffset(FL_OBJECT *obj, FL_Coord xoff);
+void fl_set_browser_rel_xoffset(FL_OBJECT *obj, double xval);
+void fl_set_browser_yoffset(FL_OBJECT *obj, FL_Coord yoff);
+void fl_set_browser_rel_yoffset(FL_OBJECT *obj, double yval);
+@end example
+@noindent
+where @code{xoff} and @code{yoff} indicate how many pixels to scroll
+horizontally (relative to the left margin) or vertically (relative to
+the top of the text), while @code{xval} and @code{yval} stand for
+positions relative to the total width or height of all of the text and
+thus have to be numbers between @code{0.0} and @code{1.0}.
+
+There are also a number of functions that can be used to obtain the
+current amount of scrolling:
+@findex fl_get_browser_xoffset()
+@anchor{fl_get_browser_xoffset()}
+@findex fl_get_browser_rel_xoffset()
+@anchor{fl_get_browser_rel_xoffset()}
+@findex fl_get_browser_yoffset()
+@anchor{fl_get_browser_yoffset()}
+@findex fl_get_browser_rel_yoffset()
+@anchor{fl_get_browser_rel_yoffset()}
+@example
+FL_Coord fl_get_browser_xoffset(FL_OBJECT *obj);
+FL_Coord fl_get_browser_rel_xoffset(FL_OBJECT *obj);
+FL_Coord fl_get_browser_yoffset(FL_OBJECT *obj);
+FL_Coord fl_get_browser_rel_yoffset(FL_OBJECT *obj);
+@end example
+
+Finally, there's a function that tells you the vertical position of a
+line in pixels:
+@findex fl_get_browser_line_yoffset()
+@anchor{fl_get_browser_line_yoffset()}
+@example
+int fl_get_browser_line_yoffset(FL_OBJECT *obj, imt line);
+@end example
+@noindent
+The return value is just the value that would have to be passed to
+@code{@ref{fl_set_browser_yoffset()}} to make the line appear at the
+top of the browser. If the line does not exist it returns @code{-1}
+instead.
+
+
+@node Browser Attributes
+@subsection Browser Attributes
+
+Never use the boxtype @code{@ref{FL_NO_BOX}} for browsers.
+
+The first color argument (@code{col1}) to
+@code{@ref{fl_set_object_color()}} controls the color of the browser's
+box, the second (@code{col2}) the color of the selection. The text
+color is the same as the label color, @code{obj->lcol}.
+
+To set the font size used inside the browser use
+@findex fl_set_browser_fontsize()
+@anchor{fl_set_browser_fontsize()}
+@example
+void fl_set_browser_fontsize(FL_OBJECT *obj, int size);
+@end example
+
+To set the font style used inside the browser use
+@findex fl_set_browser_fontstyle()
+@anchor{fl_set_browser_fontstyle()}
+@example
+void fl_set_browser_fontstyle(FL_OBJECT *obj, int style);
+@end example
+@noindent
+@xref{Label Attributes and Fonts}, for details on font sizes and
+styles.
+
+It is possible to change the appearance of individual lines in the
+browser. Whenever a line starts with the symbol @code{'@@'} the next
+letter indicates the special characteristics associated with this line.
+The following possibilities exist at the moment:
+@table @code
+@item f
+Fixed width font.
+
+@item n
+Normal (Helvetica) font.
+
+@item t
+Times-Roman like font.
+
+@item b
+Boldface modifier.
+
+@item i
+Italics modifier.
+
+@item l
+Large (new size is @code{@ref{FL_LARGE_SIZE}}).
+
+@item m
+Medium (new size is @code{@ref{FL_MEDIUM_SIZE}}).
+
+@item s
+Small (new size is @code{@ref{FL_SMALL_SIZE}}).
+
+@item L
+Large (new size = current size + 6)
+
+@item M
+Medium (new size = current size + 4)
+
+@item S
+Small (new size = current size - 2).
+
+@item c
+Centered.
+
+@item r
+Right aligned.
+
+@item _
+Draw underlined text.
+
+@item -
+An engraved separator. Text following @code{'-'} is ignored.
+
+@item C
+The next number indicates the color index for this line.
+
+@item N
+Non-selectable line (in selectable browsers).
+
+@item ' '
+(a space character) Does nothing, can be used to separate between the
+digits specifying a color (following @code{"@@C"}, see above) and the
+text of a line starting with a digit.
+
+@item @@@@
+Regular @code{'@@'} character.
+@end table
+
+The modifiers (bold and itatic) work by adding
+@code{@ref{FL_BOLD_STYLE}} and @code{@ref{FL_ITALIC_STYLE}} to the
+current active font index to look up the font in the font table (you
+can modify the table using @code{@ref{fl_set_font_name()}} or
+@code{@ref{fl_set_font_name_f()}}).
+
+More than one option can be used by putting them next to each other.
+For example, @code{"@@C1@@l@@f@@b@@cTitle"} will give you the red,
+large, bold fixed font, centered word @code{"Title"}. As you can see
+the font change requests accumulate and the order is important, i.e.,
+@code{"@@f@@b@@i"} gives you a fixed bold italic font while
+@code{"@@b@@i@@f"} gives you a (plain) fixed font.
+
+Depending on the font size and style lines may have different heights.
+
+In some cases the character @code{'@@'} might need to be placed at the
+beginning of the lines without introducing the special meaning
+mentioned above. In this case you can use @code{"@@@@"} or change the
+special character to something other than @code{'@@'} using the
+following routine
+@findex fl_set_browser_specialkey()
+@anchor{fl_set_browser_specialkey()}
+@example
+void fl_set_browser_specialkey(FL_OBJECT *obj, int key);
+@end example
+
+To align different text fields on a line, tab characters (@code{'\t'})
+can be embedded in the text. See @code{@ref{fl_set_tabstop()}} on how
+to set tabstops.
+
+There are two functions to turn the scrollbars on and off:
+@findex fl_set_browser_hscrollbar()
+@anchor{fl_set_browser_hscrollbar()}
+@findex fl_set_browser_vscrollbar()
+@anchor{fl_set_browser_vscrollbar()}
+@example
+void fl_set_browser_hscrollbar(FL_OBJECT *obj, int how);
+void fl_set_browser_vscrollbar(FL_OBJECT *obj, int how);
+@end example
+@noindent
+@code{how} can be set to the following values:
+@table @code
+@tindex FL_ON
+@item FL_ON
+Always on.
+@tindex FL_OFF
+@item FL_OFF
+Always off.
+@tindex FL_AUTO
+@item FL_AUTO
+On only when needed (i.e., there are more lines/chars than could be
+shown at once in the browser).
+@end table
+@noindent
+@code{FL_AUTO} is the default.
+
+Please note that when you switch the scrollbars off the text can't be
+scrolled by the user anymore at all (i.e., also not using methods
+that don't use scrollbars, e.g., using the cursor keys).
+
+Sometimes, it may be desirable for the application to obtain the
+scrollbar positions when they change (e.g., to use the scrollbars of
+one browser to control other browsers). There are two ways to achieve
+this. You can use these functions:
+@tindex FL_BROWSER_SCROLL_CALLBACK
+@findex fl_set_browser_hscroll_callback()
+@anchor{fl_set_browser_hscroll_callback()}
+@findex fl_set_browser_vscroll_callback()
+@anchor{fl_set_browser_vscroll_callback()}
+@example
+typedef void (*FL_BROWSER_SCROLL_CALLBACK)(FL_OBJECT *, int, void *);
+void fl_set_browser_hscroll_callback(FL_OBJECT *obj,
+                                     FL_BROWSER_SCROLL_CALLBACK cb,
+                                     void *cb_data);
+void fl_set_browser_vscroll_callback(FL_OBJECT *obj,
+                                     FL_BROWSER_SCROLL_CALLBACK cb,
+                                     void *cb_data);
+@end example
+@noindent
+After scroll callbacks are set whenever the scrollbar changes position
+the callback function is called as
+@example
+cb(ob, offset, cb_data);
+@end example
+@noindent
+The first argument to the callback function @code{cb} is the browser
+object, the second argument is the new xoffset for the horizontal
+scrollbar or the new top line for the vertical scrollbar. The third
+argument is the callback data specified as the third argument in the
+function calls to install the callback.
+
+To uninstall a scroll callback, use a @code{NULL} pointer as the
+callback function.
+
+As an alternative you could request that the browser object gets
+returned (or a callback invoked) when the the scrollbar positions are
+changed. This can be done e.g., by passing
+@code{@ref{FL_RETURN_CHANGED}} (if necessary @code{OR}'ed with flags
+for also returning on selection/deselections). Within the code for
+dealing with the event you could check if this is a change event by
+using the function
+@findex fl_get_object_return_state()
+@example
+int fl_get_object_return_state(FL_OBJECT *obj);
+@end example
+and test if @code{@ref{FL_RETURN_CHANGED}} is set in the return
+value (by just logically @code{AND}'ing both) and then handle
+the change.
+
+By default, the scrollbar size is based on the relation between the
+size of the browser and the size of the text. To change the default,
+use the following routine
+@findex fl_set_browser_scrollbarsize()
+@anchor{fl_set_browser_scrollbarsize()}
+@example
+void fl_set_browser_scrollbarsize(FL_OBJECT *obj, int hh, int vw);
+@end example
+@noindent
+where @code{hh} is the horizontal scrollbar height and @code{vw} is
+the vertical scrollbar width. Use 0 to indicate the default.
+
+The default scrollbar type is @code{FL_THIN_SCROLLBAR}. There are two
+ways you can change the default. One way is to use
+@code{@ref{fl_set_defaults()}} or @code{@ref{fl_set_scrollbar_type()}}
+to set the application wide default, another way is to use
+@code{@ref{fl_get_object_component()}} to get the object handle to the
+scrollbars and change the the object type forcibly. The first method
+is preferable because the user can override the setting via resources.
+Although the second method of changing the scrollbar type is not
+recommended, the object handle obtained can be useful in changing the
+scrollbar colors etc.
+
+Finally there is a routine that can be used to obtain the browser size
+in pixels for the text area
+@findex fl_get_browser_dimension()
+@anchor{fl_get_browser_dimension()}
+@example
+void fl_get_browser_dimension(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
+                              FL_COORD *w, FL_COORD *h);
+@end example
+@noindent
+where @code{x} and @code{y} are measured from the top-left corner of
+the form (or the smallest enclosing window). To establish the
+relationship between the text area (a function of scrollbar size,
+border with and text margin), you can compare the browser size and
+text area size.
+
+
+Finally, the functions
+@findex fl_get_browser_scrollbar_repeat()
+@anchor{fl_get_browser_scrollbar_repeat()}
+@findex fl_set_browser_scrollbar_repeat()
+@anchor{fl_set_browser_scrollbar_repeat()}
+@example
+int fl_get_browser_scrollbar_repeat(FL_OBJECT *obj);
+void fl_set_browser_scrollbar_repeat(FL_OBJECT *obj, int millisec);
+@end example
+@noindent
+allows to determine and control the time delay (in milliseconds)
+between jumps of the scrollbar knob when the mouse button is kept
+pressed down on the scrollbar outside of the knobs area. The default
+value is @w{100 ms}. The delay for the very first jump is twice
+that long in order to avoid jumping to start too soon when only a
+single click was intended but the user is a bit slow in releasing
+the mouse button.
+
+
+
+
+@node Browser Remarks
+@subsection Remarks
+
+Since version 1.0.92 there isn't a limit on the maximum length of
+lines in a browser anymore. (The macro @code{FL_BROWSER_LINELENGTH}
+still exists and is set to 2048 for backward compatibility but has no
+function anymore).
+
+See @file{fbrowse1.c} for an example program using a
+@code{@ref{FL_NORMAL_BROWSER}} to view files. @file{browserall.c}
+shows all different browsers. @file{browserop.c} shows the insertion
+and deletion of lines in a @code{@ref{FL_HOLD_BROWSER}}.
+
+For the browser class, especially multi browsers, interaction via
+callbacks is strongly recommended.

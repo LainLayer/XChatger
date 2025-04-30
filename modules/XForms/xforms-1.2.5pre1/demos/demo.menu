@@ -1,0 +1,108 @@
+# Menu description file for the generic demo program
+#
+# Each line consists of three fields, separated by :
+#
+# - menu name	: To which the item belongs (starts with @)
+# - item name	: Placed on button. (use \n for newline)
+# - command name: To be executed. Use a menu name to define a submenu.
+#
+# @main indicates the main menu.
+#
+
+@main:Simple\nDemos:@simple
+	@simple:Push Me:pushme
+	@simple:A Question:yesno
+	@simple:A Slider:demo05
+	@simple:Input\nFields:demo06
+
+@main:Object\nClasses:@objects
+	@objects:Buttons:@buttons
+		@buttons:Push\nButtons:pushbutton
+		@buttons:Touch\nButtons:touchbutton
+		@buttons:Different\nButtons:buttonall
+		@buttons:Button\nTypes:butttypes
+		@buttons:Arrow\nButtons:arrowbutton
+		@buttons:Radio\nButtons:demo06
+	@objects:Sliders\nand\nScrollbars:@sliders
+		@sliders:Simple\nSlider:demo05
+		@sliders:Inverted\nSlider:invslider
+		@sliders:All\nSliders\nTypes:sliderall
+		@sliders:All\nScrollbars\nTypes:scrollbar
+		@sliders:Non-Active\nSlider:sldinactive
+		@sliders:Slider\nSize:sldsize
+	@objects:Input\nFields:@input
+		@input:Simple\nInput:demo06
+		@input:Multiline\nInput:minput
+		@input:Secret\nInput:secretinput
+		@input:All\nInput:inputall
+	@objects:Browsers:@browsers
+		@browsers:Simple\nBrowser:fbrowse1
+		@browsers:Browser\nTypes:browserall
+		@browsers:Changing\nBrowser\nLines:browserop
+	@objects:Charts:@chart
+		@chart:All\nCharts:chartall
+		@chart:Strip\nCharts:chartstrip
+	@objects:Tabbed\nFolder:folder
+        @objects:Dial:@dial
+		@dial:Normal\nDial:ndial
+		@dial:Fill\nDial:fdial
+		@dial:Line\nDial:ldial
+        @objects:Counter:@counter
+                @counter:Normal\nCounter:counter
+	@objects:Other\nObjects:@other
+		@other:Menus\nAnd\nChoices:@menu
+		  @menu:Nmenu:nmenu
+		  @menu:Select:select
+		  @menu:Choice\n(deprecated):choice
+		@other:Canvas:@canvas
+		    @canvas:Normal\nCanvas:canvas
+		    @canvas:OpenGL\nCanvas:gl
+		@other:Positioner:@positioner
+		    @positioner:Normal\nPositioner:positioner
+		    @positioner:Overlay\nPositioner:positioner_overlay
+                @other:XYPlot:@xyplot
+	            @xyplot:XYPlot\nTypes:xyplotall
+	            @xyplot:Active\nXYPlot:xyplotactive
+	            @xyplot:Overlayed\nXYPlot:xyplotover
+                @other:PopUp\nMenus:pup
+		@other:Timer\nObjects:@Timer
+		    @Timer:Timer:timer
+		    @Timer:Timer\nAccuracy:timerprec
+	        @other:New Object:newbutton
+                @other:Free\nObject:free1
+                @other:More\nObjects:@more
+                   @more:Bitmaps:demo33
+
+@main:Attributes:@attribs
+	@attribs:All\nBoxtypes:boxtype
+	@attribs:Border\nWidth:borderwidth
+	@attribs:All\nSymbols:symbols
+	@attribs:Fonts and\nSizes:fonts
+        @attribs:Scaling\nForms:rescale
+	@attribs:Multi-Line\nLabels:multilabel
+	@attribs:Long\nLabels:longlabel
+	@attribs:Activating\nObjects:objinactive
+	@attribs:Label\nAlign:lalign
+
+@main:Goodies:@goodies
+	@goodies:Simple\nGoodies:goodies
+#	@goodies:Soft\nButtonbox:demo26
+
+@main:Nice\nDemos:@nice
+	@nice:Drawing\nProgram:demo27
+	@nice:File\nBrowser:fbrowse
+	@nice:Color\nEditor:ldial
+	@nice:Nicer\nDrawing\nProgram:freedraw
+	@nice:Color\nMap:colsel1
+	@nice:Color\nBrowser:colbrowser
+	@nice:Pixmap\nBrowser:pmbrowse
+	@nice:WWW\nbrowser\nLauncher:wwwl
+
+@main:Miscellaneous\nDemos:@Misc
+	@Misc:Iconify\nvia WM:iconify
+	@Misc:Cursor:cursor
+	@Misc:Preemptive\nHandler:preemptive
+	@Misc:Object\nReturn\nBehaviour:objreturn
+	@Misc:Move\nObject:objpos
+	@Misc:Object\nGroups:group
+    @Misc:Form\nResizing:grav

@@ -1,0 +1,60 @@
+.\"
+.\" $Id: iconvert.1,v 1.2 2003/09/09 00:28:25 leeming Exp $
+.\"
+.\" Use the following command to generate viewable man page
+.\"   tbl fdesign.1 | {nt}roff -man
+.\"
+.\"   ul | more -fsk to view
+.\"
+.\"
+.TH ICONVERT 1L "March 1999" "Version 0.11" "Forms Library"
+.SH NAME
+iconvert \-  Forms Library Image Support demo
+.\"
+.\" setup
+.de Cr
+.ie n (c)
+.el \(co
+..
+.SH SYNOPSIS
+.if n iconvert
+.if t  \{
+.B iconvert
+\}
+[-options] input output [fmt]
+.SH DESCRIPTION
+.I iconvert
+is a demo program based on
+.BR  "Forms Library" 's
+image support. The program can be used to convert image formats.
+The input image file, if is in one of the supported format, is automatically
+recognized and read, then the output file is written into a format
+specified by the extension of the output file name
+or by the parameter fmt if present.
+.SH OPTIONS
+.I iconvert
+accepts the following command line options
+.TP 6
+.B \-help
+Prints a brief summary of all command line options.
+.TP
+.B \-version
+Prints the current version of
+.I iconvert
+and exits.
+.TP
+.B \-verbose
+Specifies verbose mode where each phase of the conversion is printed
+to stderr.
+
+.SH EXIT STATUS
+The command exits with status 0 if the conversion is successful;
+1 if the command line is bad, and 3 if conversion failed.
+.SH SEE ALSO
+xforms(5), fdesign(1L)
+.SH AUTHOR
+Copyright
+.Cr
+1999 T.C. Zhao (tc_zhao@yahoo.com)
+.SH HOME PAGE
+http://bragg.phys.uwm.edu/xforms

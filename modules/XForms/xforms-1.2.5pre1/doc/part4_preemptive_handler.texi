@@ -1,0 +1,76 @@
+@node Part IV Using a Pre-emptive Handler
+@chapter Using a Pre-emptive Handler
+
+Pre-emptive handlers came into being due to reasons not related to
+developing new classes. They are provided for the application programs
+to have access to the current state or event of a particular object.
+However, with some care, this preemptive handler can be used to
+override parts of the original built-in handler thus yielding a new
+class of objects.
+
+As mentioned earlier, an object module communicates with the main
+module via events. Central part of the module is the event handler,
+which determines how an object responds to various events such as
+mouse clicks or a key presses. Now a pre-emptive handler is a function
+which, if installed, gets called first by the main module when an
+event for the object occurs. The pre-emptive handler has the option to
+override the built-in handler by informing the main module not to call
+the built-in handler (and a possibly also installed post handler),
+thus altering the behavior of the object. A post handler, on the other
+hand, is called when the object handler has finished its tasks and
+thus does not offer the capability of overriding the built-in handler.
+It is much safer, however.
+
+The API to install a pre- or post-handler for an object is as follows
+@tindex FL_HANDLEPTR
+@findex fl_set_object_prehandler()
+@anchor{fl_set_object_prehandler()}
+@findex fl_set_object_posthandler()
+@anchor{fl_set_object_posthandler()}
+@example
+typedef int (*FL_HANDLEPTR)(FL_OBJECT *obj, int event,
+                            FL_Coord mx, FL_Coord my,
+                            int key, void *raw_event);
+
+void fl_set_object_prehandler(FL_OBJECT *obj,
+                              FL_HANDLEPTR pre_handler);
+void fl_set_object_posthandler(FL_OBJECT *obj,
+                               FL_HANDLEPTR post_handler);
+@end example
+@noindent
+@code{event} is a generic event of the Forms Library, that is,
+@code{@ref{FL_DRAW}}, @code{@ref{FL_ENTER}} etc. Parameters @code{mx}
+and @code{my} are the mouse position and @code{key} is the key
+pressed. The last parameter @code{raw_event} is a pointer to the
+XEvent (cast to a void pointer due to the different types of Xevents)
+that caused the invocation of the pre- or post-handler. But note: not
+all events of the Form Library have a corresponding Xevent and thus
+dereferencing of @code{xev} should only be done after making sure it
+is not @code{NULL}.
+
+The pre- and post-handler have the same function prototype as the
+built-in handler. Actually they are called with exactly the same
+parameters by the event dispatcher. The pre-handler should return
+@tindex FL_PREEMPT
+@anchor{FL_PREEMPT}
+@code{FL_PREEMPT} to prevent the dispatcher from calling the normal
+object handler for events and @code{!FL_PREEMPT} if the objects
+handler for is to be invoked next. The post-handler may return
+whatever it wants since the return value is not used. Note that a
+post-handler will receive all events even if the object the
+post-handler is registered for does not. For example, a post-handler
+for a box (a static object that only receives @code{@ref{FL_DRAW}})
+receives all events.
+
+Note that when an object has been de-activated using
+@code{@ref{fl_deactivate_object()}} (or the whole form the object
+belongs to is de-activated via calls of
+@code{@ref{fl_deactivate_form()}} or
+@code{@ref{fl_deactivate_all_forms()}}) also pre-emptive and
+post-handlers won't get invoked for the object.
+
+See the demo programs @file{preemptive.c} and @file{xyplotall.c} for
+examples. Bear in mind that modifying the built-in behavior is in
+general not a good idea. Using a pre-emptive handler for the purpose
+of "peeking", however, is quite legitimate and can be useful in some
+situations.

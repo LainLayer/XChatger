@@ -1,0 +1,194 @@
+@node Part IV Global Structure
+@chapter Global Structure
+
+The Forms Library defines the basic architecture of an object class.
+This architecture allows different object classes developed by
+different programmers to work together without complications.
+
+The Forms Library consists of a main module and a number of object
+class modules. The object class modules are completely independent
+from the main module. So new object class modules can be added without
+any change (nor recompilation) of the main module. The main module
+takes care of all the global bookkeeping and the handling of events.
+The object class modules have to take care of all the object specific
+aspects, like drawing the object, reacting to particular types of user
+actions, etc. For each class there exists a file that contains the
+object class module. For example, there are files @file{slider.c},
+@file{box.c}, @file{text.c}, @file{button.c}, etc.
+
+The main module communicates with the object class modules by means of
+events (messages if you prefer). Each object has to have a handle
+routine known to the main module so that it can be called whenever
+something needs to be done. One of the arguments passed to the handle
+routine is the type of event, e.g., @code{FL_DRAW}, indicating that the
+object needs to be redrawn.
+
+Each object class consists of two components. One component, both its
+data and functions, is common to all object classes in the Forms
+Library. The other component is specific to the object class in
+question and is typically opaque. So for typical object classes, there
+should be routines provided by the object class to manipulate the
+object class specific data. Since C lacks inheritance as a language
+construct, inheritance is implemented in the Forms Library by pointers
+and the global function @code{@ref{fl_make_object()}}@footnote{There
+are other ways to simulate inheritance, such as including a pointer to
+generic objects as part of the instance specific data.}. It is helpful
+to understand the global architecture and the object-oriented approach
+of the Forms Library, it makes reading the C code easier and also adds
+perspective on why some of the things are implemented the way they
+are.
+
+In this chapter it is assumed that we want to create a new class with
+the name @code{NEW}. Creating a new object class mainly consists of
+writing the handle routine. There also should be a routine that adds
+an object of the new class to a form and associates the handle routine
+to it. This routine should have the following basic form:
+@example
+FL_OBJECT *fl_add_NEW(int type, FL_Coord x, FL_Coord y,
+                      FL_Coord w, FL_Coord h, const char *label);
+@end example
+
+This routine must add an object of class @code{NEW} to the current
+form. It receives the parameters @code{type}, indicating the type of
+the object within the class (see below), @code{x}, @code{y}, @code{w},
+and @code{h}, indicating the bounding box of the object in the current
+active units (mm, point or pixels), and @code{label} which is the
+label of the object. This is the routine the programmer uses to add an
+object of class @code{NEW} to a form. See below for the precise
+actions this routine should take.
+
+One of the tasks of @code{fl_add_NEW()} is to bind the event handling
+routine to the object. For this it will need a routine:
+@example
+static int handle_NEW(FL_OBJECT *obj, int event,
+                      FL_Coord mx, FL_Coord my,
+                      int key, void *xev);
+@end example
+
+This routine is the same as the handle routine for free objects and
+should handle particular events for the object. @code{mx} and
+@code{my} contain the current mouse position and @code{key} the key
+that was pressed (if this information is related to the event).
+@xref{Part IV Events, , Events}, for the types of events and the
+actions that should be taken. @code{xev} is the XEvent that caused the
+invocation of the handler. Note that some of the events may have a
+@code{NULL} @code{xev} parameter, so @code{xev} should be checked
+before dereferencing it.
+
+The routine should return whether the status of the object is changed,
+i.e., whether the event dispatcher should invoke this object's
+callback or, if no callback is set for the object, whether the object
+is to be returned to the application program by
+@code{@ref{fl_do_forms()}} or @code{@ref{fl_check_forms()}}. What
+constitutes a status change is obviously dependent on the specific
+object class and possibly its types within this class. For example, a
+mouse push on a radio button is considered a status change while it is
+not for a normal button where a status change occurs on release.
+
+Moreover, most classes have a number of other routines to change
+settings of the object or get information about it. In particular the
+following two routines often exist:
+@example
+void fl_set_NEW(FL_OBJECT *obj, ...);
+@end example
+@noindent
+that sets particular values for the object and
+@example
+fl_get_NEW(FL_OBJECT *obj, ...);
+@end example
+@noindent
+that returns some particular information about the object. See e.g.,
+the routines @code{@ref{fl_set_button()}} and
+@code{@ref{fl_get_button()}}.
+
+@ifnottex
+
+@menu
+* The Routine fl_add_NEW()::
+@end menu
+
+@end ifnottex
+
+
+@node The Routine fl_add_NEW()
+@section The Routine @code{fl_add_NEW()}
+
+@code{fl_add_NEW()} has to add a new object to the form and bind its
+handle routine to it. To make it consistent with other object classes
+and also more flexible, there should in fact be two routines:
+@code{fl_create_NEW()} that creates the object and @code{fl_add_NEW()}
+that actually adds it to the form. They normally look as follows:
+@example
+typedef struct @{
+     /* instance specific record */
+@} SPEC;
+
+FL_OBJECT *fl_create_NEW(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label) @{
+    FL_OBJECT *obj;
+
+    /* create a generic object */
+    obj = fl_make_object(FL_COLBOX, type, x, y, w, h, label,
+                         handle_NEW);
+
+    /* fill in defaults */
+    obj->boxtype = FL_UP_BOX;
+
+    /* allocate instance-specific storage and fill it with defaults */
+    obj->spec_size = sizeof SPEC;
+    obj->spec = fl_calloc(1, obj->spec_size);
+    return obj;
+@}
+@end example
+
+The constant @code{FL_NEW} will indicate the object class. It should
+be an integer. The numbers 0 to
+@tindex FL_USER_CLASS_START
+@code{FL_USER_CLASS_START - 1} (1000) and
+@tindex FL_BEGIN_GROUP
+@code{FL_BEGIN_GROUP} (10000) and higher are reserved for the system
+and should not be used. Also it is preferable to use
+@findex fl_malloc()
+@anchor{fl_malloc()}
+@findex fl_calloc()
+@anchor{fl_calloc()}
+@findex fl_realloc()
+@anchor{fl_realloc()}
+@findex fl_free()
+@anchor{fl_free()}
+@code{fl_malloc()}, @code{fl_calloc()}, @code{fl_realloc()} and
+@code{fl_free()} to allocate/free the memory for the instance specific
+structures. These routines have the same prototypes and work the same
+way as those in the standard library and may offer additional
+debugging capabilities in future versions of the Forms Library. Also
+note that these functions are actually function pointers, and if
+desired, the application is free to assign these pointers to its own
+memory allocation routines.
+
+There's also a version equivalent to the @code{strdup()} POSIX
+function which used @code{@ref{fl_malloc()}}:
+@findex fl_strdup()
+@anchor{fl_strdup()}
+@example
+char * fl_strdup(const char *s);
+@end example
+
+The object pointer returned by @code{@ref{fl_make_object()}} will have
+all of its fields set to some defaults (@pxref{Part IV The Type
+FL_OBJECT, , The Type @code{FL_OBJECT}}). In other words, the newly
+created object inherits many attributes of a generic one. Any class
+specific defaults that are different from the generic one can be
+changed after @code{@ref{fl_make_object()}}. Conversion of units, if
+different from the default pixel, is performed within
+@code{@ref{fl_make_object()}} and a class module never needs to know
+what the prevailing unit is. After the object is created, it has to be
+added to a form:
+@example
+FL_OBJECT *fl_add_NEW(int type, FL_Coord x, FL_Coord y,
+                      FL_Coord w, FL_Coord h, const char *label) @{
+     FL_OBJECT *obj;
+     obj = fl_create_NEW(type, x, y, w, h, label);
+     fl_add_object(fl_current_form, obj);
+     return obj;
+@}
+@end example

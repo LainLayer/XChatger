@@ -1,0 +1,324 @@
+@node Part II Saving and Loading Forms
+@chapter Saving and Loading Forms
+
+To save the set of forms created select the item "Save" or "Save As"
+from the "File" menu. You will be prompted for a file name using the
+file selector if the latter is selected. Choose a name that ends with
+@code{.fd}, e.g., @file{ttt.fd}.
+
+The program will now generate three files: @file{ttt.c}, @file{ttt.h}
+and @file{ttt.fd}. If these files already exist, backup copies of
+them are made (by appending @code{.bak} to the already existing file
+names). @file{ttt.c} contains a piece of C-code that builds up the
+forms and @file{ttt.h} contains all the object and form names as
+indicated by the user. It also contains declaration of the defined
+callback routines.
+
+Depending on the options selected from the "Options" menu, two more
+files may be emitted, namely the main program and callback function
+templates. They are named @file{ttt_main.c} and @file{ttt_cb.c}
+respectively.
+
+There are two different kind of formats for the C-code generated. The
+default format allows more than one instance of the form created and
+uses no global variables. The other format, activated by the
+@code{altformat} option given on the command line or switched on via
+the "Options" menu by selecting "Alt Format", uses global variables
+and does not allow more than one instantiation of the designed forms.
+However, this format has a global routine that creates all the forms
+defined, which by default is named @code{create_the_forms()} but that
+can be changed (see below).
+
+Depending on which format is output, the application program typically
+only needs to include the header file and call the form creation
+routine.
+
+To illustrate the differences between the two output formats and the
+typical way an application program is setup, we look at the following
+hypothetical situation: We have two forms, @code{foo} and @code{bar},
+each of which contains several objects, say @code{fnobj1},
+@code{fnobj2} etc. where @code{n = 1, 2}. The default output format
+will generate the following header file (@file{foobar.h}):
+@example
+#ifndef FD_foobar_h_
+#define FD_foobar_h_
+
+/* call back routines if any */
+
+extern void callback(FL_OBJECT *, long);
+
+typedef struct @{
+    FL_FORM *   foo;
+    void *      vdata;
+    char *      cdata;
+    long        ldata;
+    FL_OBJECT * f1obj1;
+    FL_OBJECT * f1obj2;
+@} FD_foo;
+
+typedef struct @{
+    FL_FORM *   bar;
+    void *      vdata;
+    char *      cdata;
+    long        ldata;
+    FL_OBJECT * f2obj1;
+    FL_OBJECT * f2obj2;
+@} FD_bar;
+
+extern FD_foo *create_form_foo(void);
+extern FD_bar *create_form_bar(void);
+
+#endif /* FD_foobar_h */
+@end example
+@noindent
+ and the corresponding C file:
+@example
+#include <forms.h>
+#include "foobar.h"
+
+FD_foo *create_form_foo(void) @{
+    FD_foo *fdui = fl_calloc(1, sizeof *fdui);
+
+    fdui->foo = fl_bgn_form(....);
+    fdui->f1obj1 = fl_add_aaaa(....);
+    fdui->f1obj1 = fl_add_bbbb(....);
+    fl_end_form();
+
+    fdui->foo->fdui = fdui;
+    return fdui;
+@}
+
+FD_bar *create_form_foo(void) @{
+    FD_bar *fdui = fl_calloc(1, sizeof *fdui);
+
+    fdui->bar = fl_bgn_form(....);
+    fdui->f2obj1 = fl_add_cccc(....);
+    fdui->f2obj2 = fl_add_dddd(....);
+    fl_end_form();
+
+    fdui->bar->fdui = fdui;
+    return fdui;
+@}
+@end example
+
+The application program would look something like the following:
+@example
+#include <forms.h>
+#include "foobar.h"
+
+/* add call back routines here */
+
+int main(int argc, char *argv[]) @{
+    FD_foo *fd_foo;
+    FD_bar *fd_bar;
+
+    fl_initialize(...);
+    fd_foo = create_form_foo();
+    init_fd_foo(fd_foo);  /* application UI init routine */
+
+    fd_bar = create_form_bar();
+    init_fd_bar(fd_bar)   /* application UI init routine */
+
+    fl_show_form(fd_foo->foo, ...);
+
+    /* rest of the program */
+@}
+@end example
+
+As you see, @code{fdesign} generates a structure that groups together
+all objects on a particular form and the form itself into a structure
+for easy maintenance and access. The other benefit of doing this is
+that the application program can create more than one instance of the
+form if needed.
+
+It is difficult to avoid globals in an event-driven callback scheme
+with most difficulties occurring inside the callback function where
+another object on the same form may need to be accessed. The current
+setup makes it possible and relatively painless to achieve this.
+
+There are a couple of ways to do this. The easiest and most robust way
+is to use the member @code{form->fdui}, which fdesign sets up to point
+to the @code{FD_} structure of which the form (pointer) is a member.
+To illustrate how this is done, let's take the above two forms and try
+to access a different object from within a callback function.
+@example
+fd_foo = create_form_foo();
+...
+@end example
+@noindent
+and in the callback function of @code{ob} on form @code{foo}, you can
+access other objects as follows:
+@example
+void callback(FL_OBJECT *obj, long data) @{
+    FD_foo *fd_foo = obj->form->fdui;
+    fl_set_object_dddd(fd_foo->f1obj2, ....);
+@}
+@end example
+
+Of course this setup still leaves the problems accessing objects on
+other forms unsolved although you can manually set the @code{form->u_vdata}
+to the other @code{FD_} structure:
+@example
+fd_foo->form->u_vdata = fd_bar;
+@end example
+@noindent
+or use the @code{vdata} field in the @code{FD_} structure itself:
+@example
+fd_foo->vdata = fd_bar;
+@end example
+
+The other method, not as easy as using @code{form->fdui} (because you
+get no help from fdesign), but just as workable, is simply using the
+@code{u_vdata} field in the @code{FD_} structure to hold the address
+of the object that needs to be accessed. In case of need to access
+multiple objects, there is a field @code{u_vdata} in both the
+@code{FL_FORM} and @code{FL_OBJECT} structures you can use. You simply
+use the field to hold the @code{FD_} structure:
+@example
+fd_foo = create_form_foo();
+fd_foo->foo->u_vdata = fd_foo;
+...
+@end example
+@noindent
+and in the callback function you can access other objects as follows:
+@example
+void callback(FL_OBJECT *obj, long data) @{
+    FD_foo *fd_foo = obj->form->u_vdata;
+    fl_set_object_dddd(fd_foo->f1obj2, ....);
+@}
+@end example
+
+Not pretty, but adequate for practical purposes. Note that the
+@code{FD_} structure always has a pointer to the form as the first
+member, followed by @code{vdata}, @code{cdata} and @code{ldata}.
+There's also a @code{typedef} for a structure of type @code{FD_Any}
+in @code{forms.h}:
+@example
+typedef struct @{
+    FL_FORM * form;
+     void *   vdata;
+     char *   cdata;
+     long     ldata;
+@} FD_Any;
+@end example
+@noindent
+you can use a cast to a specific @code{FD_} structure to get at
+@code{vdata} etc. Another alternative is to use the @code{FD_}
+structure as the user data in the callback@footnote{Unfortunately,
+this scheme isn't legal C as a pointer may be longer than a long, but
+in practice, it should work out ok on virtually all platforms.}
+@example
+fl_set_object_callback(obj, callback, (long) fdui);
+@end example
+@noindent
+and use the callback as follows
+@example
+void callback(FL_OBJECT *obj, long arg) @{
+    FD_foo *fd_foo = (FD_foo *) arg;
+    fl_set_object_lcolor(fd + foo->f1obj1, FL_RED);
+    ...
+@}
+@end example
+
+Avoiding globals is, in general, a good idea, but as everything else,
+also an excess of a good things can be bad. Sometimes simply making
+the @code{FD_} structure global makes a program clearer and more
+maintainable.
+
+There still is another difficulty that might arise with the current
+setup. For example, in @code{f1obj1}'s callback we change the state of
+some other object, say, @code{f1obj2} via @code{@ref{fl_set_button()}}
+or @code{@ref{fl_set_input()}}. Now the state of @code{f1obj2} is
+changed and it needs to be handled. You probably don't want to put
+much code for handling @code{f1obj2} in @code{f1obj1}'s callback. In
+this situation, the following function is handy
+@example
+void fl_call_object_callback(FL_OBJECT *obj);
+@end example
+@noindent
+@code{fl_call_object_callback(fdfoo->f1obj2)} will invoke the callback
+for @code{f1obj2} callback in exactly the same way the main loop would
+do and as far as @code{f1obj2} is concerned, it just handles the state
+change as if the user changed it.
+
+The alternative format outputs something like the following:
+@example
+/* callback routines */
+extern void callback(FL_OBJECT *, long);
+
+extern FL_FORM *foo,
+               *bar;
+ extern FL_OBJECT *f1obj1,
+                  *f1obj2,
+                  ...;
+extern FL_OBJECT *f2obj1,
+                 *f2obj2,
+                 ...;
+
+extern void create_form_foo(void);
+extern create_form_bar(void);
+extern void create_the_forms(void);
+@end example
+
+The C-routines:
+@example
+FL_FORM *foo,
+        *bar;
+
+FL_OBJECT *f1obj1,
+          *f1obj2,
+          ...;
+FL_OBJECT *f2obj1,
+          *f2obj2,
+          ...;
+
+void create_form_foo(void) @{
+    if (foo)
+        return;
+    foo = fl_bgn_form(....);
+    ...
+@}
+
+void create_form_bar(void) @{
+    if (bar)
+        return;
+    bar = fl_bgn_form(....);
+    ...
+@}
+
+void create_the_forms(void) @{
+    create_form_foo();
+    create_form_bar();
+@}
+@end example
+
+Normally the application program would look something like this:
+@example
+#include <forms.h>
+#include "foobar.h"
+
+/* Here go the callback routines */
+....
+
+int main(int argc, char *argv[]) @{
+    fl_initialize(....);
+    create_the_forms();
+    /* rest of the program follows*/
+    ...
+@}
+@end example
+
+Note that although the C-routine file in both cases is easily
+readable, editing it is strongly discouraged. If you were to do so,
+you will have to redo the changes whenever you call fdesign again to
+modify the layout.
+
+The third file created, @file{ttt.fd}, is in a format that can be read
+in by the Form Designer. It is easy readable ASCII but you had better
+not change it because not much error checking is done when reading it
+in. To load such a file select the "Open" item from the "File" menu.
+You will be prompted for a file name using the file selector. Press
+your mouse on the file you want to load and press the button labeled
+"Ready". The current set of forms will be discarded, and replaced by
+the new set. You can also merge the forms in a file with the current
+set. To this end select "Merge" from the "File" menu.

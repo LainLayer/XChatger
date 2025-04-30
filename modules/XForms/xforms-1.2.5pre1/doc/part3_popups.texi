@@ -1,0 +1,1304 @@
+@node Part III Popups
+@chapter Popups
+
+Popup is not an object class. In contrast to normal objects popups are
+only shown for a short time in their own window and, while they are
+shown, no interaction with other objects is possible. So they don't
+fit directly into the normal event loop where one waits for user
+actions via @code{@ref{fl_do_forms()}}. Instead, when used stand-alone
+(e.g., for a context menu) they are shown on a call of the function
+@code{@ref{fl_popup_do()}}, which returns when the the user is done
+with the popup and it has been removed from the screen. Only idle
+callbacks and timers etc.@: are executed in the background while a
+popup is being shown.
+
+Popups are the building blocks for menu and selector objects, which
+internally create and use popups. Thus it might be helpful to
+understand how popups work to get the most out of these objects.
+
+All functions dealing with popups have names starting with
+@code{'fl_popup_'}, functions for individual entries start with
+@code{'fl_popup_entry_'} and typedefs as well as macros with
+@code{'FL_POPUP_'}. 
+
+@ifnottex
+
+@menu
+* Adding Popups:          Adding Popups
+* Popup Interaction:      Popup Interaction
+* Other Popup Routines:   Other Popup Routines
+* Popup Attributes:       Popup Attributes
+@end menu
+
+@end ifnottex
+
+@node Adding Popups
+@section Adding Popups
+
+There are two ways to create and populate a popup with entries. The
+first method, that allows more fine-grained control consists of first
+generating a popup and then adding entries. Using this method all the
+properties of entries can be set immediately. The second method, to be
+discussed later, is simpler and may be sufficient for many
+applications, and internally uses the first method.
+
+To define a new popup using the more general interface call
+@findex fl_popup_add()
+@anchor{fl_popup_add()}
+@example
+FL_POPUP *fl_popup_add(Window win, const char *title);
+@end example
+@noindent
+The function returns the address of the new popup on success and
+@code{NULL} on failure. @code{win} is the window of a parent object
+(use @code{@ref{FL_ObjWin()}} to find out about it). You can also use
+@code{@ref{fl_root}} for the root window, with @code{None} having the
+same effect . @code{title} is an optional string that gets shown at
+the top of the popup in a framed box. If not wanted pass an empty
+string or @code{NULL}. The function returns a pointer to a new popup
+or @code{NULL} on failure.
+
+The title may contain embedded newline characters, this allows to
+create titles that span more than one line.)
+
+There is no built-in limit to the number of popups that can be
+created.
+
+Once you have popup you may add one or more entries by using
+@findex fl_popup_add_entries()
+@anchor{fl_popup_add_entries()}
+@example
+FL_POPUP_ENTRY *fl_popup_add_entries(FL_POPUP *popup,
+                                     const char *entries, ...);
+@end example
+@noindent
+On success the return value is the address of the first entry created
+and @code{NULL} on failure. The first argument, @code{entries}, is a
+pointer to the popup the new entry (or entries) is added to. The
+second argument, @code{entries}, encodes information about the entries
+to add. In the most simple case it consists just of the entries texts,
+separated by @code{|} characters, e.g., @w{@code{"Item 1|Item 2|Item
+3"}}. This would create three simple entries in the popup with labels
+@code{"Item 1"}, @code{"Item 2"} and @code{"Item 3"}.
+
+The @code{entries} string may contain newline characters which allows
+to create entries that span more than a single line.
+
+There's no built-in limit to the number of entries than be added to a
+popup. @code{@ref{fl_popup_add_entries()}} can be called repeatedly to
+append further entries to a popup.
+
+It often is necessary to have more complex entries. E.g., one may
+want to have keyboard shortcuts for entries, which are shown on the
+right hand side of an entry, one may want to have sub-popups or set
+callbacks etc. This can be achieved by embedding special character
+sequences within the string describing the entries and passing further
+arguments to the function, similar to the use of a format string in
+e.g., @code{printf(3)}. All special sequences start with a @code{%}.
+
+The following sequences are recognized:
+@table @code
+@item %x
+Set a value of type @code{long int} that's passed to all callback
+routines for the entry. The value must be given in the arguments
+following the @code{entries} string.
+
+@item %u
+Set a @code{user_void} pointer that's passed to all callbacks of the
+entry. The pointer must be specified in the arguments following the
+@code{entries} string.
+
+@item %f
+Set a callback function that gets called when the entry is selected.
+The function is of type
+@example
+int callback(FL_POPUP_RETURN *r);
+@end example
+Information about the entry etc.@: gets passed to the callback function
+via the @code{FL_POPUP_RETURN} structure (see below) and the return
+value of the function can be used to keep the selection being reported
+back to the caller of @code{@ref{fl_popup_do()}} by returning a value
+of @code{FL_IGNORE} (-1). The functions address must be given in the
+arguments following the @code{entries} string.
+
+@item %E
+Set a callback routine that gets called each time the mouse enters the
+entry (as long as the entry isn't disabled or hidden). The type of the
+function is the same as that of the callback function for the
+selection of the item but it's return value is never used. The
+functions address must be given in the arguments following the
+@code{entries} string.
+
+@item %L
+Set a callback routine that gets called each time the mouse leaves the
+entry. The type of the function is the same as that of the callback
+function for the selection of the entry but it's return value is never
+used. The functions address must be given in the arguments following
+the @code{entries} string.
+
+@item %m
+When this is specified a sub-popup gets opened when the mouse enters the
+entry (the entry itself thus can't be selected). The sub-popup to be
+opened must be an already existing popup and its address must be given
+in the arguments following the @code{entries} string. A triangle will
+be drawn on the right of the entry to indicate that it's an entry
+for a sub-popup.
+
+Mutually exclusive with @code{%t}, @code{%T}, @code{%r}, @code{%R}
+and @code{%l}.
+
+@item %t
+@itemx %T
+This makes the entry a "toggle" entry, an entry that represents binary
+states and gets a check-mark drawn on its left if in "on" state. If
+created with @code{%t} its in "off" state at the start, if created with
+@code{"T"} its in "on" state. Switching states happens automatically
+when the entry is selected.
+
+Mutually exclusive with @code{%m}, @code{%r}, @code{%R} and @code{%l}.
+
+@item %r
+@itemx %R
+This makes the entry a "radio" entry, i.e., it becomes part of a
+group of entries of which only one can be "on" at a time. The group,
+an integer value (don't use @code{INT_MIN} and @code{INT_MIN}), must
+be given in the arguments following the @code{entries} string.
+
+Radio entries are drawn with a small circle to the left, with the one
+for the entry in "on" state filled with a color (blue per default).
+When a radio entry is selected by the user that was in "off" state the
+entry of the group that was is "on" state before is automatically
+switched to "off" state.
+
+If the entry gets created with @code{%r} the entry is in "off" state,
+if created with @code{%R} it's in "on" state (in that case all entries
+created before in "on" state are reset to "off" state, i.e., the
+one created last "wins").
+
+Mutually exclusive with @code{%m}, @code{%t}, @code{%T} and @code{%l}.
+
+@item %l
+This creates not a real entry but indicates that a line is to be drawn 
+to visually group other entries. While other properties can be set for
+such an "entry" only the "hidden" property (see below) is taken into
+acount.
+
+Mutually exclusive with @code{%m}, @code{%t}, @code{%T}, @code{%} and
+@code{%R}.
+
+@item %d
+Marks the entry as disabled, i.e., it can't be selected and its text is
+per default drawn in a different color
+@item %h
+Marks the entry as hidden, i.e., it is not shown while in this state.
+
+@item %S
+For entries with shortcut keys it's quite common to have them shown on
+the right hand side. Using @code{%S} you can split the entrys text
+into two parts, the first one (before @code{%S}) being drawn flushed
+left and the second part flushed right. Note that using this special
+sequence doesn't automatically sets a shortcut key, this still has to
+be done using @code{%s}.
+
+@item %s
+Sets one or more shortcut keys for an entry. Requires a string with
+the shortcuts in the arguments following the @code{entries} string,
+@pxref{Shortcuts} for details on how to define shortcuts. Please note
+that the character in the label identical to the shortcut character is
+only shown as underlined if @code{%S} isn't used.
+
+@item %%
+Use this to put a @code{%} character within the text of an entry.
+@end table
+
+Please note that since @code{@ref{fl_popup_add_entries()}} is a
+variadic function (i.e., it takes a variable number of arguments)
+only very limited error checking is possible and thus it is of
+importance that the arguments passed to the function have exactly the
+required types!
+
+The return value of @code{@ref{fl_popup_add_entries()}} is a pointer
+to the first of the entries created. Since entries are stored as a
+linked list this value can be used to iterate over the list (see below
+for more information about the @code{@ref{FL_POPUP_ENTRY}} structure).
+If the function returns @code{NULL} no entries were created.
+
+A typical piece of code creating a popup may look like this:
+@example
+int save_cb(FL_POPUP_RETURN *result) @{
+    ...
+@}
+
+int main(int argc, char *argv[]) @{
+   FL_POPUP *popup;
+   File *fp;
+
+   ...
+
+   popup = fl_popup_add(None, NULL);
+   fl_popup_add_entries(popup,
+                        "Save%SCtrl+S%s%f%u|"
+                        "Quit%SEsc%s|"
+                        "%l|"
+                        "Work Offline%SCtrl+O%T%s",
+                        "^S", save_cb, (void *) fp,
+                        "^[",
+                        "^O");
+    ...
+@}
+@end example
+@noindent
+This creates a popup with three entries. The first one has the label
+@code{"Save"} shown at the left and @code{"Ctrl+S"} at the right can
+be selected by pressing @code{<Ctrl>S}, in which case the function
+@code{save_cb()} will be invoked with a pointer to a structure that,
+beside other informations, contains the file pointer @code{fp}. The
+second entry has the labels @code{"Quit"} and @code{"Esc"} and it's
+shortcut key is set to @code{<Esc>}. Below this entry a separator line
+is drawn, followed by the third entry with labels @code{"Work
+Offline"} and @code{"Ctrl+O"} and shortcut key @code{<Ctrl>O}. This
+label is a "toggle" entry in "on" state, thus a check-marker is shown
+beside it.
+
+A few remarks about the callback routines. All have a type of
+@code{FL_POPUP_CB} as given by this @code{typedef}:
+@anchor{FL_POPUP_CB}
+@tindex FL_POPUP_CB
+@example
+typedef int (*FL_POPUP_CB)(FL_POPUP_RETURN *);
+@end example
+@noindent
+There are three kinds of callbacks, all with the same type. Whenever
+an item is entered (by moving the mouse on top of it or with the
+keyboard) its enter callback function is invoked (if one is set).
+Exceptions are entries that are disabled or hidden or entries, that
+just stand for separator lines. When an entry that can receive enter
+callbacks is left, its leave callback is invoked.
+
+Leave callbacks are not called when a selection has been made.
+Instead, only the selection callback for the selected entry is
+invoked.
+
+A "sub-popup entry", i.e., an entry that when entered results in a
+sub-popup to open, also can have an enter callback. Its leave
+callback is not called when the user moves the mouse onto the
+sub-popup but only once the sub-popup has been closed again and the
+mouse has been moved off the sub-popup entry.
+
+While enter and leave callback functions are defined to return an
+integer value, it's never used. But for the third kind of callback,
+invoked on selection of an entry, this isn't true. Instead, the
+callbacks return value is important: if it is @code{FL_IGNORE} (-1),
+the selection isn't reported back to the caller (and following
+callbacks also aren't called). This can be useful when the callback
+function already does everything required and nothing is left to be
+done.
+
+All callbacks receive a pointer to a structure of the type
+@code{FL_POPUP_RETURN}:
+@anchor{FL_POPUP_RETURN}
+@tindex FL_POPUP_RETURN
+@example
+typedef struct @{
+    long int              val;       /* value assigned to entry */
+    void                 *user_data; /* pointer to user data */
+    const char           *text;      /* text of selected popup entry */
+    const char           *label;     /* text drawn on left */        
+    const char           *accel;     /* text drawn on right */
+    const FL_POPUP_ENTRY *entry;     /* selected popup entry */
+    const FL_POPUP       *popup;     /* (sub-) popup it belongs to */
+@} FL_POPUP_RETURN;
+@end example
+
+@code{val} is the value set by @code{"%x"}. If @code{"%x"} wasn't
+given, it's an automatically generated value: when a popup is created
+with @code{@ref{fl_popup_add_entries()}} a counter is initalized to 0.
+Whenever an entry gets added the value of the counter is assigned to
+the entry and then incremented. Unless a different value is set
+explicitely via @code{"%x"} the first entry added to a popup thus gets
+a value @code{val} of 0, the second one gets 1 etc. This even holds
+for entries that just stand for separator lines. In simple situations
+the value of @code{val} is probably sufficient to identify which entry
+got selected.
+
+Please note: it is possible that by setting the @code{val} members two
+or more structures for items of the same popup get the same value. It
+is the programmers responsibility to avoid that (unless, of course,
+that's just what you intended).
+
+The @code{user_data} member of the structure is the @code{user_void}
+pointer set via @code{"%u"}. It allows to pass more complex data to
+the callback function (or have returned on selection of an entry.
+
+The @code{text} member is exactly the string used to create the entry,
+including all the special sequences starting with @code{'%'}.
+@code{label} is what's left after all those sequences as well as
+backspace characters have been removed, tabs replaced by single spaces
+and the string is split at @code{"%S"}. I.e., it's exactly what's
+drawn left-flushed for the entry in the popup. @code{accel} is then
+what's left after clean-up and came after @code{"%S"}, i.e., it's
+what appears as the right-flushed text of the entry. Please note that
+one or more of these pointers could under some circumstances be
+@code{NULL}.
+
+Finally, the two member @code{entry} and @code{popup} are pointers to
+the entry itself and the popup the callback function is invoked for -
+to find out the popup the selected entry itself belongs to use the
+@code{popup} member of the entrys @code{@ref{FL_POPUP_ENTRY}}
+structure.
+
+Please note: while in a callback you are only allowed to change the
+values of the @code{val} and @code{user_data} members. This can be
+useful in the case of a cascade of selection callback calls since all
+the selection callbacks receive the same structure (and this is also
+the structure that finally gets passed back to the caller of
+@code{@ref{fl_popup_do()}}) at the end in order to implement more
+complex information interchange between the callbacks involved.
+
+The elements of a @code{FL_POPUP_ENTRY} structure that might be of
+interest) are
+@anchor{FL_POPUP_ENTRY}
+@tindex FL_POPUP_ENTRY
+@example
+typedef @{
+    FL_POPUP_ENTRY *prev;    /* previous popup entry */
+    FL_POPUP_ENTRY *next;    /* next popup entry */
+    int             type;    /* normal, toggle, radio, sub-popup, line*/
+    unsigned int    state;   /* disabled, hidden, checked */
+    int             group;   /* group (for radio entries only) */
+    FL_POPUP       *sub;     /* sub-popup bound to entry */
+    ...
+@} FL_POPUP_ENTRY;
+@end example
+@noindent
+Note that you should not change the members of a
+@code{@ref{FL_POPUP_ENTRY}} structure directly! Use the appropriate
+functions documented below to modify them instead.
+
+@code{prev} and @code{next} are pointers to the previous and the
+following popup entry (or @code{NULL} if none exists).
+
+@code{type} tells what kind of popup entry this is. There are five
+different types:
+@table @code
+@anchor{FL_POPUP_NORMAL}
+@tindex FL_POPUP_NORMAL
+@item FL_POPUP_NORMAL
+Normal popup entry with no special properties
+@anchor{FL_POPUP_TOGGLE}
+@tindex FL_POPUP_TOGGLE
+@item FL_POPUP_TOGGLE
+"Toggle" or "binary" entry, drawn with a check-mark to its left if in
+"on" state
+@anchor{FL_POPUP_RADIO}
+@tindex FL_POPUP_RADIO
+@item FL_POPUP_RADIO
+Radio entry, drawn with a circle to its left (color-filled when "on".
+The @code{group} member of the @code{@ref{FL_POPUP_ENTRY}} structure
+determines to which group the entry belongs.
+@anchor{FL_POPUP_SUB}
+@tindex FL_POPUP_SUB
+@item FL_POPUP_SUB
+Entry for a sub-popup. The @code{sub} member of its
+@ref{FL_POPUP_ENTRY} structure is a pointer to the sub-popup
+that gets shown when the mouse enters the entry.
+@anchor{FL_POPUP_LINE}
+@tindex FL_POPUP_LINE
+@item FL_POPUP_LINE
+Not a "real" entry, just indicates that a separator line is to be
+drawn between the previous and the next entry.
+@end table
+
+Finally, the @code{state} member can have the following values:
+@table @code
+@anchor{FL_POPUP_NONE}
+@tindex FL_POPUP_NONE
+@item FL_POPUP_NONE
+No special state is set for the entry, the default.
+@anchor{FL_POPUP_DISABLED}
+@tindex FL_POPUP_DISABLED
+@item FL_POPUP_DISABLED
+The entry is disabled, i.e., isn't selectable (and normally is drawn in
+a way to indicate this).
+@anchor{FL_POPUP_HIDDEN}
+@tindex FL_POPUP_HIDDEN
+@item FL_POPUP_HIDDEN
+The entry is not drawn at all (and thus can't be selected).
+@anchor{FL_POPUP_CHECKED}
+@tindex FL_POPUP_CHECKED
+@item FL_POPUP_CHECKED
+Only relevant for toggle and radio entries. Indicates that the state of
+a toggle entry is "on" (drawn with a check-marker) and for a radio entry
+that it is the one in "on" state of its group.
+@end table
+@noindent
+The state can be a combination of the above constants by using a
+bitwise OR.
+
+The more interesting members of a @code{FL_POPUP} structure are
+@tindex FL_POPUP
+@example
+typedef struct @{
+    FL_POPUP       *next;        /* previously created popup */
+    FL_POPUP       *prev;        /* later created popup */
+    FL_POPUP       *parent;      /* for sub-popups: direct parent */
+    FL_POPUP       *top_parent;  /* and top-most parent */
+    Window          win;         /* window of the popup */
+    FL_POPUP_ENTRY *entries;     /* pointer to list of entries */
+    char           *title;       /* title string of the popup */
+    ...
+@} FL_POPUP;
+@end example
+@noindent
+Note again that you are not supposed to change the members of the
+structure.
+
+Like popup entries also popups are stored in a (doubly) linked list.
+Thus the @code{prev} and @code{next} members of the structure are
+pointers to popups created earlier or later. If a popup is a sub-popup
+of another popup then @code{parent} points to the next higher level
+popup (otherwise it's @code{NULL}). In case there's a cascade of
+popups the @code{top_parent} member points to the "root" popup (i.e.,
+the top-level popup), while for popups that aren't sub-popups it
+always points back to the popup itself (in that case @code{parent} is
+@code{NULL}).
+
+@code{win} is the window created for the popup. It's @code{None} (0)
+while the popup isn't shown, so it can be used to check if the popup
+is currently visible.
+
+The @code{entries} member points to the first element of the list of
+entries of the popup. See the @code{@ref{FL_POPUP_ENTRY}} structure
+documented above on how to iterate over all entries.
+
+Finally, @code{title} is the title shown at the top of the popup (if
+one is set). Never try to change it directly, there ars the functions
+@code{@ref{fl_popup_set_title()}} and
+@code{@ref{fl_popup_set_title_f()}}, described below, to do just that.
+
+To remove a popup entry use
+@findex fl_popup_entry_delete()
+@anchor{fl_popup_entry_delete()}
+@example
+int fl_popup_entry_delete(FL_POPUP_ENTRY *entry);
+@end example
+@noindent
+The function return 0 on success and -1 if it failed for some reasons.
+Note that the function for a sub-popup entry also deletes the popup
+that was associated with the entry!
+
+You may also insert one or more entries into a popup at
+arbitrary places using
+@tindex fl_popup_insert_entries()
+@example
+FL_POPUP_ENTRY *fl_popup_insert_entries(FL_POPUP *popup,
+                                        FL_POPUP_ENTRY *after,
+                                        const char *entries, ...);
+@end example
+@noindent
+@code{popup} is the popup the entries are to be inserted in,
+@code{after} is the entry after which the new entries are to be added
+(use @code{NULL} if the new entries are to be inserted at the very
+first position), and @code{entries} is the same kind if string as
+already used in @code{@ref{fl_popup_add_entries()}}, including all the
+available special sequences. The arguments indicated by @code{...}
+have to be given according to the @code{entries} string.
+
+Finally, when you don't need a popup anymore simply call
+@tindex fl_popup_delete()
+@example
+int fl_popup_delete(FL_POPUP *popup);
+@end example
+@noindent
+The function returns 0 on success and -1 on failure. It's not possible
+to call the function while the popup is still visible on the screen.
+Calling it from any callback function is problematic unless you know
+for sure that the popup to be deleted (and sub-popups of it) won't be
+used later and thus normally should be avoided.
+
+Above was described how to first generate a popup and then populate
+it. But there's also a (though less general) method to create and
+populate a popup in a single function call. For this use
+@findex fl_popup_create()
+@anchor{fl_popup_create()}
+@example
+FL_POPUP *fl_popup_create(Window win, const char *title,
+                          FL_POPUP_ITEM *items);
+@end example
+@noindent
+The @code{win} and @code{title} arguments are the same as used in
+@code{@ref{fl_popup_add()}}, i.e., they are parent window for the
+popup (or @code{@ref{fl_root}} or @code{None}) and the (optional, can
+be @code{NULL}) title for the popup.
+
+@code{items} is a pointer to an array of structures of the following
+form:
+@anchor{FL_POPUP_ITEM}
+@tindex FL_POPUP_ITEM
+@example
+typedef struct @{
+    const char  *text;        /* text of entry */
+    FL_POPUP_CB  callback;    /* (selection) callback */
+    const char  *shortcut;    /* keyboard shortcut description */
+    int          type;        /* type of entry */
+    int          state;       /* disabled, hidden, checked */
+@} FL_POPUP_ITEM;
+@end example
+@noindent
+The array must contain one structure for each entry of the popup and
+must end in a structure where at least the @code{text} member is set
+to @code{NULL}.
+
+The @code{text} member describes the text of the entry. If it contains
+the string @code{"%S"} the text is split up at this position and the
+first part is used as the label drawn left-flushed for the entry and
+the second part for the right-flushed part (for showing accelerator
+keys etc.). Two more characters have a special meaning if they appear
+at the very start of the string (and which then do not become part of
+the label shown):
+@table @code
+@item '_'
+Draw a separator line above this entry.
+@item '/'
+This entry is a sub-popup entry and the following elements of the
+@code{items} array (until the first element with @code{text} set to
+@code{NULL} define the entries of the sub-popup.
+@end table
+@noindent
+Both @code{'_'} and @code{'/'} can appear at the start of the string,
+it doesn't matter which one comes first.
+
+The @code{callback} member is a function to be invoked when the entry
+is selected (irrelevant for sub-popup entries). @code{shortcut} is a
+string, encoding which keyboard shortcut keys can be used to select
+the item (@pxref{Shortcuts} for details on how such a string has to
+be assembled).
+
+@code{type} describes the type of the entry and must be one of
+@code{@ref{FL_POPUP_NORMAL}}, @code{@ref{FL_POPUP_RADIO}} (all radio
+entries automatically belong to the same group (numbered
+@code{INT_MIN}). You can't use @code{@ref{FL_POPUP_LINE}} or
+@code{@ref{FL_POPUP_SUB}}. If you want a sub-popup entry use
+@code{@ref{FL_POPUP_NORMAL}} and set @code{'/'} as the first character
+of the @code{text} member of the structure. If you need a separator
+line put a @code{'_'} at the start of the @code{text} member string of
+the entry which comes after the separator line.
+
+Finally, the @code{state} member can be 0 or the bitwise or of
+@code{@ref{FL_POPUP_DISABLED}}, @code{@ref{FL_POPUP_HIDDEN}} and
+@code{@ref{FL_POPUP_CHECKED}}. The first one makes the entry appear
+disabled and non-selectable, the second will keep the entry from being
+drawn at all, and the third one puts the entry into "on" state
+(relevant for toggle and radio entries only). If you try to set
+@code{@ref{FL_POPUP_CHECKED}} for more than a single radio entry the
+last one you set if for "wins", i.e., only this one will be in "on"
+state. See below for a more detailed discussion of these entry
+properties.
+
+@code{@ref{fl_popup_create()}} does not allow to associate values or
+pointers to user data to individual entries, set titles for
+sub-popups, have radio entries belong to different groups or set enter
+or leave callback functions (though there exist a number of functions
+to remedy the situation in case such things are needed).
+
+The function returns a pointer to the newly created popup (or
+@code{NULL} on failure). You are guaranteed that each entry has been
+assigned a unique value, starting at 0 and which is identical to the
+index of corresponding element in the @code{items} array, i.e., the
+first element results in an entry assigned 0, the second entry gets
+1 etc.
+
+All functions working on popups or entries can, of course, be used on
+popups and their entries generated via @code{@ref{fl_popup_create()}}.
+They can be employed to remedy some of the limitations imposed by the
+simpler popup creation API.
+
+Here's an example of how to create a popup using
+@code{fl_popup_create()}:
+@example
+FL_POPUP *popup;
+
+FL_POPUP_ITEMS items[] = @{
+  @{"Item 1%S^1", NULL, "^1", FL_POPUP_NORMAL, FL_POPUP_NONE    @},
+  @{"Item 2%S^2", NULL, "^2", FL_POPUP_RADIO,  FL_POPUP_CHECKED @},
+  @{"Item 3%S^3", NULL, "^3", FL_POPUP_RADIO,  FL_POPUP_NONE    @},
+  @{"_/Item 4",   NULL, NULL, FL_POPUP_NORMAL, FL_POPUP_NONE    @},
+    @{"Sub-item A",  cbA, "^A", FL_POPUP_NORMAL, FL_POPUP_DISABLED@},
+    @{"Sub-item B",  cbB, "^B", FL_POPUP_TOGGLE, FL_POPUP_NONE    @},
+    @{NULL,         NULL, NULL, 0,               0                @},
+  @{"Item 5",     NULL, NULL, FL_POPUP_NORMAL, FL_POPUP_NONE    @},
+  @{NULL,         NULL, NULL, 0,               FL_POPUP_NONE    @}
+@};
+
+popup = fl_popup_create(None, "Test", items);
+@end example
+@noindent
+This creates a new popup with the title @code{"Test"} and 5 entries as
+well as a a sub-popup with two entries, that gets opened when the
+mouse is over the entry labeled @code{"Item 4"}.
+
+The first entry in the main popup has the label @code{"Item 1"} on the
+left and @code{"^1"} of the right side. It has no callback routine and
+can be selected via the @code{<Crtl>1} shortcut. It's just a normal
+menu entry.
+
+The second entry has the label @code{"Item 2"} on the left and
+@code{"^2"} of the right side, also no callack and @code{<Crtl>2} as
+its keyboard shortcut. It's a radio entry that is in "on" state. The
+third entry is like the second, labels are @code{"Item 3"} and
+@code{"^3"} and it reacts to @code{<Crtl>3}, except that it's in "off"
+state. The second and third label belong to the same group (with the
+group number set to @code{INT_MIN}), i.e., when the third entry gets
+selected the second one gets switched to "off" state (and vice versa).
+
+Before the fourth entry a separator line will be drawn (that's the
+effect of its text starting with @code{'_'}. It's a sub-popup entry
+(due to the @code{'/'} at the start of its text). It's label is simply
+@code{"Item 4"} and no right hand label (but that isn't supposed to
+indicate that sub-entries couldn't have shortcuts!). It has no
+selection callback (which wouldn't sense make sense for a sub-popup
+entry anyway).
+
+The following three elements of the @code{items} array are for the
+sub-popup that gets opened when the mouse is over the fourth item of
+the main popup. In the sub-popup we first have an normal entry with
+label @code{"Sub-item A"}. The function @code{cbA()} will be called
+when this entry of the sub-popup is selected. Then we have a second
+entry, labled @code{"Sub-item B"}, which is a currently disabled
+toggle entry in "off" state. If it weren't disabled its selection
+would result in the callback function @code{cbB()} getting called. The
+next element of the @code{items} array, having @code{NULL} as its
+@code{text} member, signifies the end of the sub-popup.
+
+Now that we're done with the sub-popup another entry in the main popup
+follows, a normal entry with just a left-label of @code{Item 5}. The
+final element of @code{items}, where @code{text} is set to @code{NULL}
+then signifies that this is the end of the popup.
+
+As there are functions to append to and insert entries into a popup with
+a kind of format string, followed by a variable list of arguments,
+there are also functions for adding and inserting entries using an
+array of @code{@ref{FL_POPUP_ITEM}}. These are
+@anchor{fl_popup_add_items()}
+@findex fl_popup_add_items()
+@anchor{fl_popup_insert_items()}
+@findex fl_popup_insert_items()
+@example
+FL_POPUP_ENTRY *fl_popup_add_items(FL_POPUP *popup,
+                                   FL_POPUP_ITEM *items);
+FL_POPUP_ENTRY *fl_popup_insert_items(FL_POPUP *popup,
+                                      FL_POPUP_ENTRY *after,
+                                      FL_POPUP_ITEM  *items);
+@end example
+@noindent
+Both functions return the address of the first entry created on
+success and @code{NULL} on error. The first argument is the popup the
+entries are to be appended to or inserted into, the last argument the
+array of items (as in the case of @code{@ref{fl_popup_create()}} at
+least the @code{text} member of the last element must be a @code{NULL}
+pointer to indicate the end). @code{fl_popup_insert_items()} takes
+another argument, @code{after}, the entry after which the new entries
+are to be inserted (if called with @code{after} set to @code{NULL} the
+new entries are inserted at the very start of the popup).
+
+
+@node Popup Interaction
+@section Popup Interaction
+
+A popup will be drawn on the screen when the function
+@tindex fl_popup_do()
+@anchor{fl_popup_do()}
+@example
+FL_POPUP_RETURN *fl_popup_do(FL_POPUP *popup);
+@end example
+@noindent
+is called. It only returns when the user either selects an entry or
+closes it in some other way (e.g., by clicking outside the popup's
+area). When a selection was made the function returns a pointer to a
+@code{@ref{FL_POPUP_RETURN}} structure with information about the
+entry that was selected (please note that the structure is internal
+storage belonging to the Forms Library and is re-used when the popup
+is shown again, so copy out all data you may need to keep). If no
+selection was made (or one of the invoked callback routines returned a
+value of @code{FL_IGNORE} (-1) @code{NULL} is returned.
+
+While the popup is shown the user can interact with the popup using
+the mouse or the keyboard. When the mouse is hovering over a
+selectable entry of the popup the entry is highlighted, when the mouse
+reaches an entry for a sub-popup, the associated sub-popup
+automatically gets opened. A selection is made by clicking on an entry
+(or, in case that the popup was opened while a mouse button was
+pressed down, when the mouse button is released). Clicking outside the
+popups window (or, depending on the "policy", see below, releasing the
+mouse button somewhere else than over a selectable item) closes the
+popup without a selection being made.
+
+Popups also can be controlled via the keyboard. First of all, on
+pressing a key, the shortcuts set for items are evaluated and, if a
+match is found, the corresponding entry is returned as selected (if
+the popup currently shown is a sub-popup, first the shortcuts for this
+sub-popup are checked, then those of its parent etc.@: until the
+top-most popup has been reached and checked for). The user can also
+navigate through the selectable entires using the @code{<Up>} and
+@code{<Down>} arrow keys and open and close sub-popups with the
+@code{<Right>} and @code{<Left>} cursor keys. Pressing the
+@code{<Home>} key highlights the first (selectable) entry in the
+popup, @code{<End>} the last one. By using the @code{<Esc>} key (or
+@code{<Cancel>} if available) the currently shown popup is closed (if
+an entry in a sub-popup was highlighted just this sub-popup is
+closed). Finally, pressing @code{<Return>} while on a selectable entry
+results in this entry being reported as selected.
+
+Once the user has selected an entry its callback function is invoked
+with a @code{@ref{FL_POPUP_RETURN}} structure as the argument. When
+this function returns, the callback for the popup the entry belongs to
+is called with exactly the same structure. If the popup is a
+sub-popup, next the callback for its "parent" popup is invoked, again
+with the same structure (except that the @code{popup} member is
+changed each time to indicate which popup the call is made for).
+Repeat until the callback for the top-most popup has been called.
+Finally the structure used in all those callback invocations is
+returned from @code{@ref{fl_popup_do()}}. This chain of callback calls
+is interrupted when one of the callbacks returns a value of
+@code{FL_IGNORE} (-1). In that case no further callbacks are invoked
+and @code{@ref{fl_popup_do()}} returns @code{NULL}, i.e., from the
+callers perspective it looks as if no selection has been made. This
+can be useful when one of the callbacks was already was able to do all
+the work required on a selection.
+
+Per default a popup stays open when the user releases the mouse button
+anywhere else than on a selectable entry. It only gets closed when the
+user either selects an entry or clicks somewhere outside of the popup
+area. An alternative is a "drag-down" popup that gets closed whenever
+the mouse button is released, even if the mouse isn't on the area of
+the popup or a selectable entry. To achieve this effect you can change
+the "policy" using the function
+@findex fl_popup_set_policy()
+@anchor{fl_popup_set_policy()}
+@example
+int fl_popup_set_policy(FL_POPUP *popup, int policy);
+@end example
+@noindent
+There are two values @code{policy} can have:
+@table @code
+@anchor{FL_POPUP_NORMAL_SELECT}
+@tindex FL_POPUP_NORMAL_SELECT
+@item FL_POPUP_NORMAL_SELECT
+Default, popup stays open until mouse button is released on a
+selectable entry or button is clicked outside the popups area.
+@anchor{FL_POPUP_DRAG_SELECT}
+@tindex FL_POPUP_DRAG_SELECT
+@item FL_POPUP_DRAG_SELECT
+Popup is closed when the mouse button is released anywhere.
+@end table
+@noindent
+The function can be called with either a (valid) popup address, in
+which case the policy for that popup is changed, or with a @code{NULL}
+pointer to change the default setting of the policy, used in the
+creation of new popups. The function returns the previous policy value
+or -1 on errors.
+
+It's also possible to determine the policy setting by using
+@findex fl_popup_get_policy()
+@anchor{fl_popup_get_policy()}
+@example
+int fl_popup_get_policy(Fl_POPUP *popup);
+@end example
+If called with the address of a (valid) popup the policy for this
+popup (or its parent if one exists) gets returned. If called with a
+@code{NULL} pointer the default policy used in creating new popups is
+returned. On error -1gets returned.
+
+Calling the function with @code{NULL} as the @code{popup} argument
+changes the default setting for the popups created afterwards.
+
+If the popup is partially off-screen the user can push the mouse at
+the screen borders in the direction of the currently invisible popup
+entries. This results in the popups window getting moved so that
+previosuly invisible entries become accessible. The popup window gets
+shifted vertically in single entry steps, in horizontal direction by a
+tenth of the screen width. The delay between shifts is about @w{100
+ms}.
+
+
+@node Other Popup Routines
+@section Other Popup Routines
+
+When @code{@ref{fl_popup_do()}} is called the popup per default is
+shown with its left upper corner at the mouse position (unless the
+popup wouldn't fit onto the screen). Using
+@findex fl_popup_set_position()
+@anchor{fl_popup_set_position()}
+@example
+void fl_popup_set_position(FL_POPUP *popup, int x, int y);
+@end example
+@noindent
+the position where the popup is drawn can be changed (but if it
+wouldn't fit onto the screen at that position it will also changed
+automatically). @code{x} and @code{y}. to be given relative to the
+root window, define the position of the upper left hand corner. Using
+this function for sub-popups is useless, they always get opened as
+near as possible to the corresponding sub-popup entry.
+
+When setting the position of a popup it can be useful to know the
+exact sizes of its window in advance. These can be obtained by calling
+@findex fl_popup_get_size()
+@anchor{fl_popup_get_size()}
+@example 
+int fl_popup_get_size(FL_POPUP *popup, unsigned int *w, unsigned int
+*h);
+@end example
+@noindent
+The function returns 0 on success and -1 on error (in case the
+supplied @code{popup} argument isn't valid). Please note that the
+reported values are only valid until the popup is changed, e.g., by
+adding, deleting or changing entries or changing the appearance of the
+popup. 
+
+A callback function @code{cb()} of type @code{@ref{FL_POPUP_CB}}, to
+be called when a entry (or an entry of a sub-popup) is selected, can
+be associated with a popup (or changed) using
+@findex fl_popup_set_callback()
+@anchor{fl_popup_set_callback()}
+@example
+typedef int (*FL_POPUP_CB)(FL_POPUP_RETURN *);
+FL_POPUP_CB fl_popup_set_callback(FL_POPUP *popup, FL_POPUP_CB cb);
+@end example
+@noindent
+The function returns the old setting of the callback routine (on error
+@code{NULL} is returned, which may indistinguishable from the case
+that no callback was set before).
+
+For an entry all three associated callback functions can be set via
+@findex fl_popup_entry_set_callback()
+@anchor{fl_popup_entry_set_callback()}
+@findex fl_popup_entry_set_enter_callback()
+@anchor{fl_popup_entry_set_enter_callback()}
+@findex fl_popup_entry_set_leave_callback()
+@anchor{fl_popup_entry_set_leave_callback()}
+@example
+FL_POPUP_CB fl_popup_entry_set_callback(FL_POPUP_ENTRY *entry,
+                                        FL_POPUP_CB cb);
+FL_POPUP_CB fl_popup_entry_set_enter_callback(FL_POPUP_ENTRY *entry,
+                                              FL_POPUP_CB enter_cb)
+FL_POPUP_CB fl_popup_entry_set_leave_callback(FL_POPUP_ENTRY *entry,
+                                              FL_POPUP_CB leave_cb);
+@end example
+@noindent
+The first function sets the callback invoked when the entry is
+selected, the second when the mouse enters the area of the entry and
+the third, when the mouse leaves that area. All function return the
+previously set callback or @code{NULL} when none was set or an error
+occured. @code{NULL} also gets returned on errors.
+
+There are three properties that can be set for a popup entry
+@table @code
+@tindex FL_POPUP_DISABLED
+@item FL_POPUP_DISABLED
+The entry is is shown as disabled and can't be selected.
+@tindex FL_POPUP_HIDDEN
+@item FL_POPUP_HIDDEN
+The entry is not shown when the popup is opened.
+@tindex FL_POPUP_CHECKED
+@item FL_POPUP_CHECKED
+Relevant only for toggle and redio entries. When set beside the label
+of a toggle entry a check-marker is drawn while the circle beside a
+radio button is drawn colored.
+@end table
+@noindent
+The "state" of an entry is the binary OR of these values which can be
+set and queried using the functions
+@findex fl_popup_entry_set_state()
+@anchor{fl_popup_entry_set_state()}
+@findex fl_popup_entry_get_state()
+@anchor{fl_popup_entry_get_state()}
+@example
+unsigned int fl_popup_entry_set_state(FL_POPUP_ENTRY *entry,
+                                      unsigned int state);
+unsigned int fl_popup_entry_get_state(FL_POPUP_ENTRY *entry);
+@end example
+@noindent
+@code{@ref{fl_popup_entry_set_state()}} returns the previous state on
+success and @code{UINT_MAX} (a value with all bits set) on failure.
+
+Note that when setting @code{@ref{FL_POPUP_CHECKED}} for a radio entry
+all other radio entries belonging to the same group automatically lose
+their "on" (checked) property.
+
+There are also three convenience function for clearing, raising and
+toggling bits in the state of an entry. Normally to clear a certain
+bit of the state you have to first call
+@code{@ref{fl_popup_entry_get_state()}}, then clear the bit in the
+return value and finally call @code{@ref{fl_popup_entry_set_state()}}
+with the result to set the new state. Use of these convenience
+functions allows to change state bits in a single call.
+@findex fl_popup_entry_clear_state()
+@anchor{fl_popup_entry_clear_state()}
+@findex fl_popup_raise_clear_state()
+@anchor{fl_popup_raise_clear_state()}
+@findex fl_popup_toggle_clear_state()
+@anchor{fl_popup_toggle_clear_state()}
+@example
+unsigned int fl_popup_entry_clear_state(FL_POPUP_ENTRY *entry,
+                                        unsigned int what);
+unsigned int fl_popup_entry_raise_state(FL_POPUP_ENTRY *entry,
+                                        unsigned int what);
+unsigned int fl_popup_entry_toggle_state(FL_POPUP_ENTRY *entry,
+                                         unsigned int what);
+@end example
+The @code{what} argument can be any value resulting from a bitwise OR
+of @code{@ref{FL_POPUP_DISABLED}}, @code{@ref{FL_POPUP_HIDDEN}} and
+@code{@ref{FL_POPUP_CHECKED}} (thus you can clear, set or toggle one
+or more bits of the state in a single call). The functions all return
+the original value of the state.
+
+You may search for an entry in a popup by different criteria (please
+note that the search also includes sub-popups of the popup, you can
+identify them by checking the @code{popup} member of the
+@ref{FL_POPUP_ENTRY} structure). The search obviously will only
+deliver reasonable results if what you're searching for is unique
+between all the entries.
+
+First, you can ask for the entry that had been created with a certain
+text, including all the special sequences, by calling
+@findex fl_popup_entry_get_by_text()
+@anchor{fl_popup_entry_get_by_text()}
+@findex fl_popup_entry_get_by_text_f()
+@anchor{fl_popup_entry_get_by_text_f()}
+@example
+FL_POPUP_ENTRY *fl_popup_entry_get_by_text(FL_POPUP *popup,
+                                           const char *text);
+FL_POPUP_ENTRY *fl_popup_entry_get_by_text_f(FL_POPUP *popup,
+                                             const char *fmt, ...);
+@end example
+@noindent
+The functions returns either a pointer to the entry found or
+@code{NULL} on failure (because either no entry with this text was
+found or the popup doesn't exist). (The functions differ in that
+the first one accepts just a simple string while the second assembles
+the text from a format  string, just as it's used for @code{printf()}
+etc., and an appropriate number of following arguments.)
+
+You may as well search by the left-flushed label parts of the entries
+as shown on the screen (note that tab characters @code{'\t'}
+originally embedded in the text used when creating the label have been
+replaced by single spaces and backspace characters @code{'\b'} were
+removed as well as all special sequences)
+@findex fl_popup_entry_get_by_label()
+@anchor{fl_popup_entry_get_by_label()}
+@findex fl_popup_entry_get_by_label_f()
+@anchor{fl_popup_entry_get_by_label_f()}
+@example
+FL_POPUP_ENTRY *fl_popup_entry_get_by_label(FL_POPUP *popup,
+                                            const char *label);
+FL_POPUP_ENTRY *fl_popup_entry_get_by_label_f(FL_POPUP *popup,
+                                              const char *fmt, ...);
+@end example
+@noindent
+Thus, since an entry created via a string like
+@code{"I\bt%Tem\t1%SCtrl+X"} will shown with a left-flushed label part
+of @code{"Item 1"}, this will be found when searching with either this
+string or a format string fo e.g., @code{"Item %d"} and a following
+integer argument of @code{1}.
+
+Another way to search for an entry is by its value as either specified
+via the @code{"%x"} special sequence or assigned automatically by
+@findex fl_popup_entry_get_by_value()
+@anchor{fl_popup_entry_get_by_value()}
+@example
+FL_POPUP_ENTRY *fl_popup_entry_get_by_value(FL_POPUP *popup,
+                                            long value);
+@end example
+
+Also the @code{user_data} pointer associated with the entry can be
+used as the search criterion:
+@findex fl_popup_entry_get_by_user_data()
+@anchor{fl_popup_entry_get_by_user_data()}
+@example
+FL_POPUP_ENTRY *fl_popup_entry_get_by_user_data(FL_POPUP *popup,
+                                                void *user_data);
+@end example
+
+Finally one can try to find an entry by its current position in the
+popup (note that here sub-popups aren't taken into consideration since
+that would make the meaning of "position" rather hard to define) by
+@findex fl_popup_entry_get_by_position()
+@anchor{fl_popup_entry_get_by_position()}
+@example
+FL_POPUP_ENTRY *fl_popup_entry_get_by_position(FL_POPUP *popup,
+                                               long position);
+@end example
+@noindent
+where @code{posistion} is starting with 0, so when called with 0 the
+first entry will be returned, when called with 1 you get the second
+entry etc. Note that separator lines aren't counted but entries
+currently being hidden are.
+
+
+@node Popup Attributes
+@section Popup Attributes
+
+Using
+@findex fl_popup_set_title()
+@anchor{fl_popup_set_title()}
+@findex fl_popup_set_title_f()
+@anchor{fl_popup_set_title_f()}
+@findex fl_popup_get_title()
+@anchor{fl_popup_get_title()}
+@example
+void fl_popup_set_title(FL_POPUP *popup, const char *title);
+void fl_popup_set_title_f(FL_POPUP *popup, const char *fmt, ...);
+const char *fl_popup_set_title(FL_POPUP *popup);
+@end example
+@noindent
+the title of a popup can be changed or the currently set title
+determined. (The two functions for setting the title are just
+different in the way the title is passed: the first one receives
+a simple string while the second one assembles the title from a
+format string just like the one used with @code{printf()} etc.
+and an appropriate number of following arguments.)
+
+To query or set the font the popups title is drawn in use
+@findex fl_popup_get_title_font()
+@anchor{fl_popup_get_title_font()}
+@findex fl_popup_set_title_font()
+@anchor{fl_popup_set_title_font()}
+@example
+void fl_popup_get_title_font(FL_POPUP *popup, int *size, int *style);
+void fl_popup_set_title_font(FL_POPUP *popup, int size, int style);
+@end example
+@noindent
+@xref{Label Attributes and Fonts}, for details about the sizes and
+styles that should be used. The default size and style are
+@code{@ref{FL_NORMAL_SIZE}} and @code{@ref{FL_EMBOSSED_STYLE}}. This
+setting also applies to sub-popups of the popup, thus setting a title
+font for sub-popups is useless.
+
+When called with the @code{popup} argument set to @code{NULL} the
+default settings for popups generated later are returned or set.
+
+Also the font for the entries of a popup can be queried or and set via
+@findex fl_popup_entry_set_font()
+@anchor{fl_popup_entry_set_font()}
+@example
+void fl_popup_entry_get_font(FL_POPUP *popup, int *style, int *size);
+void fl_popup_entry_set_font(FL_POPUP *popup, int style, int size);
+@end example
+@noindent
+The defalt size is @code{@ref{FL_NORMAL_SIZE}} and the default style
+is @code{@ref{FL_NORMAL_STYLE}}. Again, the returned or set values
+also apply to all sub-popups, so calling the function for sub-popups
+doesn't make sense.
+
+When called with @code{popup} set to @code{NULL} the default settings
+for popups are returned or changed.
+
+The width of a popup is calculated using the widths of the title
+and the entries. You can influence this width by setting a minimum
+width a popup should have. There are two functions for the minimum
+width:
+@findex fl_popup_get_min_width()
+@anchor{fl_popup_get_min_width()}
+@findex fl_popup_set_min_width()
+@anchor{fl_popup_set_min_width()}
+@example
+int fl_popup_get_min_width(FL_POPUP *popup);
+int fl_popup_set_min_width(FL_POPUP *popup, int min_width);
+@end example
+@noindent
+The first one returns the currently set minimum width (a negative
+return value indicates an error). The second allows sets a new minimum
+width. Setting the minimum width to 0 or a negative value switches the
+use of the minimum width off. It returns the previous value (or a
+negative value on error).
+
+You can query or set the border width popups are drawn width (per
+default it's set to @code{1}). To this purpose call
+@findex fl_popup_get_bw()
+@anchor{fl_popup_get_bw()}
+@findex fl_popup_set_bw()
+@anchor{fl_popup_set_bw()}
+@example
+int fl_popup_get_bw(FL_POPUP *popup);
+int fl_popup_set_bw(FL_POPUP *popup, int bw);
+@end example
+@noindent
+Please note that the border width setting is automatically applied
+also to sub-popups, so there's no good reason to call these functions
+for sub-popups. The default border width is the same as that for
+objects.
+
+The functions can also be called with @code{popup} set to @code{NULL}
+in which case the default setting for the border width is returned or
+set, respectively.
+
+To change the cursor that is displayed when a popup is shown use
+@findex fl_popup_set_cursor()
+@anchor{fl_popup_set_cursor()}
+@example
+void fl_popup_set_cursor(FL_POPUP *popup, int cursor_name);
+@end example
+@noindent
+Use one of the symbolic cursor names (shapes) defined by standard X or
+the integer value returned by @code{@ref{fl_create_bitmap_cursor()}}
+or one of the Forms Library's pre-defined symbolic names for the
+@code{cursor_name} argument.
+
+Per default the cursor named @code{"XC_sb_right_arrow"} is used. If
+the function is called with @code{popup} set to @code{NULL} the
+default cursor for popups generated afterwards is changed.
+
+There are several colors used in drawing a popup. These can be set
+or queried with the functions
+@findex fl_popup_set_color()
+@anchor{fl_popup_set_color()}
+@findex fl_popup_get_color()
+@anchor{fl_popup_get_color()}
+@example
+FL_COLOR fl_popup_set_color(FL_POPUP *popup, int type,
+                            FL_COLOR color);
+FL_COLOR fl_popup_get_color(FL_POPUP *popup, int type);
+@end example
+@noindent
+where @code{type} can be one of the following values:
+@table @code
+@anchor{FL_POPUP_BACKGROUND_COLOR}
+@tindex FL_POPUP_BACKGROUND_COLOR
+@item FL_POPUP_BACKGROUND_COLOR
+Background color of the popup, default is @code{FL_MCOL}.
+@anchor{FL_POPUP_HIGHLIGHT_COLOR}
+@tindex FL_POPUP_HIGHLIGHT_COLOR
+@item FL_POPUP_HIGHLIGHT_COLOR
+Backgroud color an entry is drawn with when it's selectable and the
+mouse is on top of it, default is @code{FL_BOTTOM_BCOL}.
+@anchor{FL_POPUP_TITLE_COLOR}
+@tindex FL_POPUP_TITLE_COLOR
+@item FL_POPUP_TITLE_COLOR
+Color used for the title text of a popup, default is @code{FL_BLACK}.
+@anchor{FL_POPUP_TEXT_COLOR}
+@tindex FL_POPUP_TEXT_COLOR
+@item FL_POPUP_TEXT_COLOR
+Color normal used for entry texts, default is @code{FL_BLACK}.
+@anchor{FL_POPUP_HIGHLIGHT_TEXT_COLOR}
+@tindex FL_POPUP_HIGHLIGHT_TEXT_COLOR
+@item FL_POPUP_HIGHLIGHT_TEXT_COLOR
+Color of the entry text when it's selectable and the mouse is on top
+of it, default is @code{FL_WHITE}.
+@anchor{FL_POPUP_DISABLED_TEXT_COLOR}
+@tindex FL_POPUP_DISABLED_TEXT_COLOR
+@item FL_POPUP_DISABLED_TEXT_COLOR
+Color for drawing the text of disabled entries, default is
+@code{FL_INACTIVE_COL}.
+@anchor{FL_POPUP_RADIO_COLOR}
+@tindex FL_POPUP_RADIO_COLOR
+@item FL_POPUP_RADIO_COLOR
+Color the circle drawn for radio entris in "on" state is drawn in.
+@end table
+
+When setting a new color the color previously used is returned by
+@code{@ref{fl_popup_set_color()}}. Calling these functions for
+sub-popups doesn't make sense since sub-popups are always drawn in the
+colors set for the parent popup.
+
+When called with @code{popup} set to @code{NULL} the functions return
+or set the default colors of popups created afterwards.
+
+To change the text of a popup entry call
+@findex fl_popup_entry_set_text()
+@anchor{fl_popup_entry_set_text()}
+@example
+int fl_popup_entry_set_text(FL_POPUP_ENTRY *entry, const char *text);
+@end example
+@noindent
+Please note that in the text no special sequences except @code{"%S"}
+(at which place the text is split to make up the left- and
+right-flushed part of the label drawn) are recognized.
+
+The shortcut keys for a popup label can be changed using
+@findex fl_popup_entry_set_shortcut()
+@anchor{fl_popup_entry_set_shortcut()}
+@example
+void fl_popup_entry_set_shortcut(FL_POPUP_ENTRY *entry,
+                                 const char *shortcuts);
+@end example
+@noindent
+@xref{Shortcuts}, for details on how such a string has to look like.
+
+The value assigned to a popup entry can be changed via
+@findex fl_popup_entry_set_value()
+@anchor{fl_popup_entry_set_value()}
+@example
+long fl_popup_entry_set_value(FL_POPUP_ENTRY *entry, long value);
+@end example
+@noindent
+The function returns the previous value.
+
+Also the user data pointer associated with a popup entry can
+be modified by calling
+@findex fl_popup_entry_set_user_data()
+@anchor{fl_popup_entry_set_user_data()}
+@example
+void *fl_popup_entry_set_user_data(FL_POPUP_ENTRY *entry,
+                                   void *user_data);
+@end example
+@noindent
+The function returns the previous setting of @code{user_data}.
+
+To determine to which group a radio entry belongs call
+@findex fl_popup_entry_get_group()
+@anchor{fl_popup_entry_get_group()}
+@example
+int fl_popup_entry_get_group(FL_POPUP_ENTRY *entry);
+@end example
+@noindent
+Obviously, this function only makes much sense when applied to radio
+entries. It returns the group number on success and @code{INT_MAX} on
+failure (that's why @code{INT_MAX} shouldn't be used for group
+numbers).
+
+To assign a radio entry to a different group call
+@findex fl_popup_entry_set_group()
+@anchor{fl_popup_entry_set_group()}
+@example
+int fl_popup_entry_set_group(FL_POPUP_ENTRY *entry, int group);
+@end example
+@noindent
+Again, for obvious reasons, the function should normally only be
+called for radio entries. It returns the previous group number on
+success and @code{INT_MAX} on failure. If one of the entries of the new
+group was in "on" state the entries state will be reset to "off" if
+necessary.
+
+For entries other than radio entries the group isn't used at all. So,
+theoretically, it could be used to store a bit of additional
+information. If that would be good programming practice is another
+question...
+
+Finally, the sub-popup associated with a sub-popup-entry can be
+queried or changed using the functions
+@findex fl_popup_entry_get_subpopup()
+@anchor{fl_popup_entry_get_subpopup()}
+@findex fl_popup_entry_set_subpopup()
+@anchor{fl_popup_entry_set_subpopup()}
+@example
+FL_POPUP *fl_popup_entry_get_subpopup(FL_POPUP_ENTRY *entry);
+FL_POPUP *fl_popup_entry_get_subpopup(FL_POPUP_ENTRY *entry,
+                                      FL_POPUP *subpopup);
+@end example
+@noindent
+Obviously, calling these functions only makes sense for sub-popup
+entries.
+
+@code{@ref{fl_popup_entry_get_subpopup()}} returns the address of the
+sub-popup associated with the entry or @code{NULL} on failure.
+
+To change the sub-popup of an entry a valid sub-popup must be passed
+to @code{@ref{fl_popup_entry_set_subpopup()}}, i.e., the sub-popup
+must not already be a sub-popup of another entry or the popup the
+entry belongs to itself. You also can't set a new sub-popup while the
+old sub-popup associated with the entry or the popup to become the new
+sub-popup is shown. On success the address of the new sub-popup is
+returned, on failure @code{NULL}.
+
+Note that this function deletes the old sub-popup that was associated
+with the popup.

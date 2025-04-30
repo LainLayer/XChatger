@@ -1,0 +1,41 @@
+This dorectory contains a number of programs demonstrating the
+usage and appearance of object classes in the XForms Library.
+Note that these programs also serve as testing/QA programs, so
+if you have a problem with a particular object, see if the same
+object works in the demo program. On the other hand, if one of
+the demo programs doesn't work you have rather likely found a
+bug in XForms. Please report it!
+
+If this directory was installed from the documentation package
+for XForms of a distribution you have to modify and compile the
+programs first before you can run them. This requires that the
+developm,ent package is also installed.
+
+
+1) cd into the fd subdirectory and run
+
+     fdesign -convert *.fd
+
+
+2) In the program you want to compile replace the line with
+
+     #include "include/forms.h"
+
+   by
+
+     #include <forms.h>
+
+3) Compile the program, typically it just needs
+
+     gcc -o xyz xyz.c -lforms
+
+   Some programs also need to be compiled with a C file from
+   the fd subdirectory. This is usually simple to figure out:
+   if a C file includes a header file from the fd subdirectory
+   then you need to compile including the correspoding C file
+   from the fd subdirectory.
+   
+OpenGL/Mesa demos may not work if you configured XForms to be
+built without GL support (via the '--disable-gl' option of
+'configure').
+

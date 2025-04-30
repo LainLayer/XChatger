@@ -1,0 +1,2307 @@
+@node Part VI Images
+@chapter Images
+
+Although images are not typically a part of the GUI, they are often
+part of an application. For this reason and others, image support is
+part of Forms Library. It is not unusual that the users of a graphical
+user interface want some graphics support.
+
+The most important reason to have image support in the library is the
+amount of questions/requests on the  mailing list of the Forms Library
+about images. It convinced us that having image support will make many
+Forms Library users life easier.
+
+The second reason has something to do with image support in X, which
+at best is cumbersome to use as the API reflects the underlying
+hardware, which, at the level of Xlib, is quite appropriate, but not
+quite what an application programmer wants to deal with. Image support
+in Forms Library for the large part is hardware independent. This is
+possible because xforms makes distinction between the real image it
+keeps and the image being displayed. At the expense of some
+flexibility and memory requirement, the high-level image support API
+should prove to be useful for most situations.
+
+The third reason is that image support as it is now in the library is
+well isolated and is only linked into an application when it is
+actually being used. This is not a trivial point in the consideration
+to include image support in the library proper.
+
+@ifnottex
+
+@menu
+* The Basic Image Support API::
+* The FL_IMAGE Structure::
+* Supported image types::
+* Creating Images::
+* Supported Image Formats::
+* Setup and Configuration::
+* Simple Image Processing::
+* Utilities::
+@end menu
+
+@end ifnottex
+
+@node The Basic Image Support API
+@section The Basic Image Support API
+
+
+Reading and displaying images are quite easy. It can be as simple as a
+couple of lines of code:
+@example
+FL_IMAGE *image;
+
+if ((image = flimage_load("imagefilename"))
+    image->display(image, win);
+@end example
+@noindent
+In this example, an image is created from a file, then the image is
+displayed in a window, @code{win}. For most casual uses, this is
+really what is needed to load and display an image.
+
+As you may have guessed, an image in Forms Library is represented by a
+structure of type @code{FL_IMAGE}. In addition to the pixels in the
+image, it also keeps a variety of information about the image such as
+its type, dimension, lookup tables etc. Further, if the image can not
+be displayed directly on the display hardware (for example, the image
+is 24 bits, while the display is only capable of 8 bits), a separate
+displayable image is created and displayed. Any manipulation of the
+image is always performed on the original high-resolution image, and a
+new displayable image will be created if necessary.
+
+Writing an image is just as simple
+@example
+if (flimage_dump(image, "filename", "jpeg") < 0)
+    fprintf(stderr,"image write failed");
+@end example
+@noindent
+In this code snippet, an image in memory is written to a file in JPEG
+format. As you might have noticed by now, all image routines start
+with flimage. The exact APIs for reading and writing an image are as
+follows
+@findex flimage_load()
+@anchor{flimage_load()}
+@findex flimage_dump()
+@anchor{flimage_dump()}
+@example
+FL_IMAGE *flimage_load(const char *filename);
+int flimage_dump(FL_IMAGE *im, const char *filename, const char *fmt);
+@end example
+@noindent
+The function @code{@ref{flimage_load()}} takes a filename and attempts
+to read it. If successful, an image (or multiple images) is created
+and returned. If for any reason the image can't be created (no
+permission to read, unknown file format, out of memory etc), a null
+pointer is returned. As will be documented later, error reporting and
+progress report can be configured so these tasks are performed inside
+the library.
+
+The function @code{@ref{flimage_dump()}} takes an image, either
+returned by @code{@ref{flimage_load()}} (possibly after some
+processing) or created on the fly by the application, attempts to
+create a file to store the image. The image format written is
+controlled by the third parameter @code{fmt}q, which should be either
+the formal name or the short name of one of the supported formats
+(such as jpeg, ppm, gif, bmp etc., see section 23.3) or some other
+formats the application knows how to write. If this parameter is
+@code{NULL}, the original format the image was in is used. If the
+image is successfully written, a non-negative number is returned,
+otherwise a negative number. Depending on how the image support is
+configured, error reporting may have already occurred before the
+function returns.
+
+Given these two routines, a file converter (i.e., changing the image
+file format) is simple
+@example
+if ((image = flimage_load("inputfile"))
+    flimage_dump(image, "outfile", "newformat");
+@end example
+@noindent
+See the demo program @file{iconvert.c} for a flexible and usable image
+converter.
+
+To free an image, use the following routine
+@findex flimage_free()
+@anchor{flimage_free()}
+@example
+void flimage_free(FL_IMAGE *image);
+@end example
+@noindent
+The function first frees all memory allocated for the image, then the
+image structure itself. After the function returns, the image should
+not be referenced.
+
+The following routines are available to display an image in a window
+@findex flimage_display()
+@anchor{flimage_display()}
+@findex flimage_sdisplay()
+@anchor{flimage_sdisplay()}
+@example
+int flimage_display(FL_IMAGE *image, FL_WINDOW win);
+int flimage_sdisplay(FL_IMAGE *image, FL_WINDOW win);
+@end example
+@noindent
+where @code{win} is a window ID. If the image(s) is successfully
+displayed, a non-negative integer is returned, a negative integer
+otherwise. The difference between the two display routines is that
+@code{@ref{flimage_sdisplay()}} only displays a single image while
+@code{@ref{flimage_display()}}, built on top of
+@code{flimage_sdisplay()}, can display single or multiple images. For
+typical use, @code{@ref{flimage_display()}} or @code{image->display}
+should be used. @code{@ref{flimage_sdisplay()}} is useful only if
+you're coding your own multi-image display routine. For example,
+@code{@ref{flimage_display()}} is built roughly like the following
+@example
+int flimage_display(FL_IMAGE *im, FL_WINDOW win) @{
+    int err;
+
+    for (err = 0; err >=0 && im; im = im->next) @{
+        err = flimage_sdisplay(im, win);
+        fl_update_display(0);
+        fl_msleep(im->setup->delay);
+    @}
+
+    return err;
+@}
+@end example
+And you can build your own multi-frame image display routine to suit
+your application's needs.
+
+Despite the display routine's simple look, this function performs
+tasks that involve the details of dealing with different hardware
+capabilities, a daunting task for beginners. For PseudoColor displays
+(i.e., using color maps or color lookup tables), a color quantization
+or dithering step may be performed by the function to reduce the
+number of colors in the image (of course, the colorreduced image is
+kept only for display, the original image is untouched so future
+processing is carried out on the original full resolution image,
+rather than the displayed, an approximate of the original image). In
+general, when the information in an image is reduced in order to
+display it, the original image is not altered in any way. For example,
+this function can display a 24bit image on a 1bit display without
+losing any information on the original 24bit image.
+
+By default, the entire image is displayed at the top-left corner of
+the window. To display the image at other locations within the window
+(perhaps to center it), use the @code{image->wx} and @code{image->wy}
+fields of the @code{FL_IMAGE} structure. These two fields specify
+where in the window the origin of the image should be. By repeatedly
+changing @code{image->wx} and @code{image->wy} and displaying, image
+panning can be implemented.
+
+It is also possible to display a subimage by specifying non-zero value
+for @code{(image->sx,image->sy)} and @code{(image->sw, image->sh)}.
+You can view the image as a 2D space with the origin at the top left
+corner. The positive y axis of the image space is pointing downward.
+@code{(image->sx,image->sy)} specify the subimage offset into the
+image (they must be non-negative) and @code{(image->sw,image->sh)}
+specify the width and height of the subimage. Taken the window offset
+and the subimage together, the more accurate statement of the
+functionality of the the function @code{@ref{flimage_display()}} is
+that it displays a subimage specified by @code{(image->sx,image->sy)}
+and @code{(image->sw,image->sh)} starting at @code{(image->wx,
+image->wy)}.
+
+You can also use clipping to display a subimage by utilizing the
+following functions and @code{image->gc}
+@example
+fl_set_gc_clipping(image->gc, x, y, w, h);
+fl_unset_gc_clipping(image->gc);
+@end example
+@noindent
+where the coordinates are window coordinates. Of course, by
+manipulating @code{image->gc} directly, more interesting clipping or
+masking can be achieved. Since the GC is visual dependent, a newly
+created image before displaying may not yet have a valid GC assoiated
+with it. If you must set some clipping before displaying, you can set
+the @code{image->gc} yourself beforehand. Note that you if you free
+the GC, make sure you reset it to @code{None}.
+
+To display an image in a canvas, the following can be used
+@example
+flimage_display(image, FL_ObjWin(canvas));
+@end example
+@noindent
+Since this function only knows about window IDs, and writes to the
+window directly, it may not be sensitive to the status of the form the
+canvas is on, e.g., a frozen form. In your application, you should
+check the status of the form before calling this function.
+
+Sometimes it may be useful to find out if a specific file is an image
+file before attempting to read it (for example, as a file filter). To
+this end, the following routine exists
+@findex flimage_is_supported()
+@anchor{flimage_is_supported()}
+@example
+int flimage_is_supported(const char *file);
+@end example
+@noindent
+The function returns true if the specified file is a known image file.
+If the file is not a known image or not readable for any reason, the
+function return 0.
+
+@node The FL_IMAGE Structure
+@section The @code{FL_IMAGE} Structure
+
+Before we go into more details on image support, some comments on the
+image structure are in order. The image structure contains the
+following basic fields that describe fully the image in question and
+how it should be displayed.
+@tindex FL_IMAGE
+@tindex FL_PCBITS
+@tindex FL_PCMAX
+@tindex FL_PACKED
+@example
+typedef unsigned char FL_PCTYPE;         /* primary color type */
+#define FL_PCBITS     8                  /* primary color bits */
+#define FL_PCMAX      ((1<<FL_PCBITS)-1) /* primary color max val */
+typedef unsigned int  FL_PACKED;         /* packed RGB(A) type */
+
+typedef struct flimage_ @{
+    int               type;
+    int               w,
+                      h;
+    void            * app_data;
+    void            * u_vdata;
+    unsigned char  ** red;
+    unsigned char  ** green;
+    unsigned char  ** blue;
+    unsigned char  ** alpha;
+    unsigned short ** ci;
+    unsigned short ** gray;
+    FL_PACKED      ** packed;
+    short           * red_lut;
+    short           * green_lut;
+    short           * blue_lut;
+    short           * alpha_lut;
+    int               map_len;
+    int               colors;
+    int               gray_maxval;
+    int               app_background;
+    int               wx,
+                      wy;
+    int               sx,
+                      sy;
+    int               sw,
+                      sh;
+    char            * comments;
+    int              comments_len;
+    void            * io_spec;
+    int               spec_size;
+    int               (*display) (struct flimage_ *, FL_WINDOW win);
+    struct flimage_ * next;
+    int               double_buffer;
+    unsigned long     pixmap;
+    /* more stuff omitted */
+@} FL_IMAGE;
+@end example
+
+The meaning of each field is as follows:
+@table @code
+@item type
+This field specifies the current image type and storage (1bit, 24bit
+etc. See next section for details). The image type also indicates
+implicitly which of the pixel fields should be used.
+@item w,h
+The width and height of the image.
+@item app_data
+A field that's initialized at image creation. Its value can be set by
+the application prior to any existence of image. Once set, all images
+created thereafter will have the same value for this field. See
+Section later. The Forms Library does not modify or reference it once
+it's initialized.
+@item u_vdata
+A field for use by the application. This field is always initialize to
+null. The Forms Library does not reference or modify it.
+@item red, green, blue, alpha
+This first three fields are the color components of a @w{24 bit}
+image, each of which is a 2-dimensional array. The 2D array is
+arranged so the image runs from left to right and top to bottom. For
+example, the 3rd pixel on the 10th row is composed of the following
+RGB elements: @code{(red[9][2],green[9][2],blue[9][2])}. Note however,
+these fields are meaningful only if the image type is
+@code{FL_IMAGE_RGB}. Although it's always allocated for a 24bit image,
+@code{alpha} is currently not used by the Forms Library
+@item ci
+The field are the pixel values for a color index image (image type
+@code{FL_IMAGE_CI}). The field is also a 2-dimensional array arranged
+in the same way as the fields @code{red}, @code{green} and
+@code{blue}, i.e., the image runs from left to right, top to bottom.
+For example, @code{ci[3][9]} should be used to obtain the 10th pixel
+on the 4th row. To obtain the RGB elements of a pixel, the pixel value
+should be used as an index into a lookup table specified by the fields
+@code{red_lut}, @code{green_lut} and @code{blue_lut}. Although
+@code{ci} can hold an unsigned short, only the lower @code{FL_LUTBITS}
+(12) bits are supported, i.e., the color index should not be bigger
+than 4095.
+@item gray
+This field, again a 2-dimensional array, holds the pixels of a gray
+image. The pixel values are interpreted as intensities in a linear
+fashion. Two types of gray images are supported, @w{8 bit}
+(@code{FL_IMAGE_GRAY}) and @w{16 bit} (@code{FL_IMAGE_GRAY16}). For
+@w{16 bit} gray image, the actual depths of the image is indicated by
+member @code{gray_maxval}. For example, if @code{gray_maxval} is 4095,
+it is assumed that the actual pixel value ranges from 0 to 4095, i.e.,
+the gray scale image is @w{12 bit}. For @w{8 bit} grayscale image,
+@code{gray_maxval} is not used. This means that the type
+@code{FL_IMAGE_GRAY} is always assumed to be @w{8 bit}, the loading
+and creating routine should take care to properly scale data that are
+less than @w{8 bit}.
+@item gray_maxval
+This field is meaningful only if the image type is
+@code{FL_IMAGE_GRAY16}. It specifies the actual dynamic range of the
+gray intensities. Its value should be set by the image loading
+routines if the gray image depth is more than @w{8 bits}.
+@item ci_maxval
+This field by default is 256, indicating the maximum value of the
+color index.
+@item packed
+This field (a 2-dimensional array) holds a @w{24 bit}/@w{32 bit} image
+in a packed format. Each element of the 2D array is an unsigned
+integer (for now) that holds the RGB, one byte each, in the lower
+@w{24 bits} of the integer. The topmost byte is not used. The macro
+@code{FL_PACK(r, g, b)} should be used to pack the triplet @code{(r,
+g, b)} into a pixel and @code{FL_UNPACK(p, r, g, b)} should be used to
+unpack a pixel. To obtain individual primary colors, the macros
+@code{FL_GETR(p)}, @code{FL_GETG(p)} and @code{FL_GETB(p)} are
+available.
+
+Note that the use of the macros to pack and unpack are strongly
+recommended. It will isolate the application program from future
+changes of the primary color type (for example, 16-bit resolution for
+R,G and B).
+@item red_lut, green_lut, blue_lut, alpha_lut
+These are the lookup tables for a color index image. Each of the table
+is a 1D array of length @code{image->map len}. Although @code{alpha
+lut} is always allocated for a color index image, it's currently not
+used by the Forms Library.
+@item map_len
+The length of the colormap (lookup table).
+@item app_background
+A packed RGB value indicating the preferred color to use for the
+background of an image (also known as transparent color). This field
+is initialized to an illegal value. Since there is no portable way to
+obtain the window background the application has to set this field if
+transparency is to be achieved. In future versions of image support,
+other means of doing transparency will be explored and implemented.
+@item wx, wy
+The window offset to use to display the image.
+@item sx, sy, sw, sh
+The subimage to display.
+@item comments
+This is typically set by the loading routines to convey some
+information about the image. The application is free to choose how to
+display the comment, which may have embedded newlines in it.
+@item io_spec
+This field is meant for the reading/writing routine to place format
+specific state information that otherwise needs to be static or
+global.
+@item spec_size
+This field should be set to the number of bytes @code{io_spec}
+contains.
+@item display
+A function you can use to display an image. The image loading routine
+sets this function.
+@item next
+This is a link to the next image. This is how
+@code{@ref{flimage_load()}} chains multiple image together.
+@item double_buffer
+If true, the display function will double-buffer the image by using a
+pixmap. For typical image display it's not necessary to enable
+double-buffering as it is very expensive (memory and speed).
+Double-buffering may be useful in image editing.
+@item pixmap
+The backbuffer pixmap if double-buffered.
+@end table
+
+Although it is generally not necessary for an application to access
+individual pixels, the need to do so may arise. In doing so, it is
+important to consult the @code{image->type} field before dereferencing
+any of the pixel field. That is, you should access @code{image->ci}
+only if you know that the image type is @code{FL_IMAGE_CI} or
+@code{FL_IMAGE_MONO}.
+
+
+@node Supported image types
+@section Supported image types
+
+Forms Library supports all common and not-so-common image types. For
+example, the supported images range from the simple @w{1 bit} bitmap
+to full @w{24 bit} RGB images. @w{12 bit} gray scale images (common in
+medical imaging) are also supported.
+
+The supported image types are denoted using the following constants,
+all of them (except @code{FL_IMAGE_FLEX}) using a different bit, so
+they can be bitwise ORed together:
+@tindex FL_IMAGE_MONO
+@tindex FL_IMAGE_GRAY
+@tindex FL_IMAGE_GRAY16
+@tindex FL_IMAGE_CI
+@tindex FL_IMAGE_RGB
+@tindex FL_IMAGE_PACKED
+@tindex FL_IMAGE_FLEX
+@example
+FL_IMAGE_MONO,    /* 1 bit bitmaps */
+FL_IMAGE_GRAY,    /* gray-scale image (8 bit) */
+FL_IMAGE_GRAY16,  /* gray-scale image (9 to 16 bit) */
+FL_IMAGE_CI,      /* generic color index image */
+FL_IMAGE_RGB,     /* 24 bit RGB(A) image */
+FL_IMAGE_PACKED,  /* 24 bit RGB(A) image. Packed storage */
+FL_IMAGE_FLEX,    /* All of the above */
+@end example
+
+For the @w{24 bit} variety another @w{8 bit} (@code{image->alpha} and
+the top-most byte of the packed integer) is available for the
+application, perhaps storing the alpha values into it. The Forms
+Library does not modify or reference this extra byte.
+
+Mono (b&w) images are stored as a colormap image with a lut of length
+2.
+
+The @code{FL_IMAGE_FLEX} type is mainly for the reading and loading
+routines to indicate the types they are capable of handling. For
+example, if you're coding an output routine, you use
+@code{FL_IMAGE_FLEX} to indicate that the output routine can take any
+type the image. Otherwise the driver will convert the image type before
+handing the image over to the actual output routine.
+
+In displaying an image of type @code{FL_IMAGE_GRAY16}, window
+leveling, a technique to visualize specific ranges of the data, is
+employed. Basically, you specify a window level (@code{level}) and a
+window width (@code{wwidth}) and the display function will map all
+pixels that fall within @code{level-width/2} and @code{level+width/2}
+linearly to the whole dynamic range of the intensities the hardware is
+capable of displaying. For example, if the display device can only
+display 256 shades of gray, @code{level-width/2} is mapped to 0 and
+@code{level+width/2} is mapped to 255, and pixels values between
+@code{level-width/2} and @code{level+width/2} are linearly mapped to
+values between 0 and 255. Pixel values that fall below
+@code{level-width/2} are mapped to zero and those that larger than
+@code{level+width/2} are mapped to 255.
+
+Use the following routine to set the window level
+@findex flimage_windowlevel()
+@anchor{flimage_windowlevel()}
+@example
+int flimage_windowlevel(FL_IMAGE *im, int level, int wwidth);
+@end example
+@noindent
+The function returns 1 if window level parameters are modified,
+otherwise 0 is returned. Setting @code{wwidth} to zero disables window
+leveling. Note that if @code{im} points to a multiple image, window
+level parameters are changed for all images.
+
+To obtain the image type name in string format, e.g., for reporting
+purposes, use the following routine
+@findex flimage_type_name()
+@anchor{flimage_type_name()}
+@example
+const char *flimage_type_name(int type);
+@end example
+
+To convert between different types of images, the following routine is
+available
+@findex flimage_convert()
+@anchor{flimage_convert()}
+@example
+int flimage_convert(FL_IMAGE *image, int newtype, int ncolors);
+@end example
+@noindent
+The parameter @code{newtype} should be one of the supported image
+types mentioned earlier in this section. Parameter @code{ncolors} is
+meaningful only if @code{newtype} is @code{FL_IMAGE_CI}. In this case,
+it specifies the number of colors to generate, most likely from a
+color quantization process. If the conversion is successful a
+non-negative integer is returned, otherwise a negative integaer.
+Depending on which quantization function is used, the number of
+quantized colors may not be more than 256.
+
+To keep information loss to a minimum, @code{@ref{flimage_convert()}}
+may elect to keep the original image in memory even if the conversion
+is successful. For example, converting a full color image (@w{24 bit})
+into a @w{8 bit} image and then converting back can lose much
+information of the image if the converting function does not keep the
+original image.
+
+What this means is that the following sequence gets back the original
+image
+@example
+/* the current image is RGB. Now we reduce the full color
+   image to 8 bit color index image. The conversion routine
+   will keep the 24 bit color. */
+
+flimage_convert(image, FL_IMAGE_CI, 256);
+
+/* Now convert back to RGB for image processing. The con-
+   version routine will notice that the input image was
+   originally converted from a 24bit image. Instead of
+   doing the conversion, it simply retrieves the saved
+   image and returns. */
+
+flimage_convert(image, FL_IMAGE_RGB, 0);
+@end example
+@noindent
+This behavior might not always be what the application wants. To
+override it, you can set @code{image->force_convert} to 1 before
+calling the conversion routine. Upon function return the flag is
+reset to zero.
+
+@node Creating Images
+@section Creating Images
+
+With the basic fields in the image structure and image types
+explained, we're now in a position to tackle the problem of creating
+images on the fly. The data may have come from some simulations or
+some other means, the task now is to create an image from the data and
+try to display/visualize it.
+
+The first task involved in creating an image is to create an image
+structure that is properly initialized. To this end, the following
+routine is available
+@findex flimage_alloc()
+@anchor{flimage_alloc()}
+@example
+FL_IMAGE *flimage_alloc(void);
+@end example
+@noindent
+The function returns a pointer to a piece of dynamically allocated
+memory that's properly initialized.
+
+The task next is to put the existing data into the structure. This
+involves several steps. The first step is to figure out what type of
+image to create. For scalar data, there are two logical choices,
+either a gray-scale intensity image or a color index image with the
+data being interpreted as indices into some lookup table. Both of
+these may be useful. Gray-scale imagse are straight forward to create
+and the meaning of the pixel values is well defined and understood. On
+the other hand with color-mapped image you can selectively enhance the
+data range you want to visualize by choosing appropriate color-maps.
+For vector data, RGB image probably makes most sense. In any case it's
+strictly application's decision. All that is needed to make it work
+with Forms Library is to set the @code{image->type} field to a valid
+value. Of course the image dimension (width and height) also needs to
+be set. Once this is done, we need to copy the data into the image
+structure.
+
+Before we copy the data we create the destination storage using one
+of the following routines
+@findex fl_get_matrix()
+@anchor{fl_get_matrix()}
+@findex flimage_getmem()
+@anchor{flimage_getmem()}
+@example
+void *fl_get_matrix(int nrows, int ncols, unsigned int elem_size);
+int flimage_getmem(FL_IMAGE *image);
+@end example
+@noindent
+The @code{@ref{fl_get_matrix()}} function creates a 2-dimensional
+array of entities of size @code{elem_size}. The array is of
+@code{nrows} by @code{ncols} in size. The 2D array can be passed as a
+pointer to pointer and indexed as a real 2D arrays. The
+@code{@ref{flimage_getmem()}} routine allocates the proper amount of
+memory appropriate for the image type, including colormaps when
+needed.
+
+After the destination storage is allocated, copying the data into it
+is simple
+@example
+image->type = FL_IMAGE_GRAY;
+image->w    = data_columns;
+image->h    = data_row;
+flimage_getmem(image);
+/* or you can use the instead
+  im->gray = fl_get_matrix(im->h, im->w, sizeof **im->gray);
+*/
+
+for (row = 0; row < image->h; row++)
+    for (col = 0; col < image->w; col++)
+        image->gray[row][col] = data_at_row_and_col;
+@end example
+
+Of course, if data is stored row-by-row, a @code{memcpy(3)} instead of
+a loop over columns may be more efficient. Also if your data are
+stored in a single array, @code{@ref{fl_make_matrix()}} might be a lot
+faster as it does not copy the data.
+
+If the created image is a color index image, in addition to copying
+the data to @code{image->ci}, you also need to set the lookup table
+length @code{image->map_len}, which should reflect the dynamic range
+of the data:
+@example
+image->type    = FL_IMAGE_CI;
+image->w       = A;
+image->h       = B;
+image->map_len = X;
+flimage_getmem(image);  /* this will allocate ci and lut */
+
+for (row = 0; row < image->h; row++)
+    for (col = 0; col < image->w; col++)
+        image->ci[row][col] = data;
+
+for (i = 0; i < image->map_len; i++) @{
+   image->red_lut[i]   = some_value_less_than_FL_PCMAX;
+   image->green_lut[i] = some_value_less_than_FL_PCMAX;
+   image->blue_lut[i]  = some_value_less_than_FL_PCMAX;
+@}
+@end example
+
+If the type is @code{FL_IMAGE_GRAY16}, you also need to set
+@code{image->gray_maxval} to the maximum value in the data.
+
+Now we're ready to display the image
+@example
+flimage_display(image, win);
+@end example
+
+As mentioned before, the display routine may create a buffered,
+display hardware specific and potentially lower-resolution image than
+the original image. If for any reason, you need to modify the image,
+either the pixels or the lookup tables, you need to inform the library
+to invalidate the buffered image:
+@example
+image->modified = 1;
+@end example
+
+
+@node Supported Image Formats
+@section Supported Image Formats
+
+ There are many file formats for image storage. The popularity,
+flexibility and cleanness of the different formats varies. Forms
+Library supports several popular ones, but these are not the only ones
+that are popular. Toward the end of this section, it will be outlined
+how to extend the image support in the Forms Library so more image
+file can be read by @code{@ref{flimage_load()}}.
+
+
+@ifnottex
+
+@menu
+* Built-in support::
+* Adding New Formats::
+* Queries::
+@end menu
+
+@end ifnottex
+
+
+@node Built-in support
+@subsection Built-in support
+
+ Each image file format in Forms Library is identified by any one of
+three pieces of information, the formal name, the short name, and the
+file extension. For example, for the GIF format, the formal name is
+@code{"CompuServe GIF"}@footnote{The Graphics Interchange Format (c)
+is the Copyright property of CompuServe Incorporated. GIF(sm) is a
+Service Mark property of CompuServe Incorporated.}, the short name is
+@code{"GIF"}, and file extension is @code{"gif"}. This information is
+used to specify the output format for @code{@ref{flimage_dump()}}.
+
+The following table summarizes the supported file formats with comments
+@multitable @columnfractions 0.35 0.2 0.2 0.3
+@headitem FormalName
+@tab ShortName
+@tab Extension
+@tab Comments
+@item Portable Pixmap
+@tab ppm
+@tab ppm
+@item Portable Graymap
+@tab pgm
+@tab pgm
+@item Portable Bitmap
+@tab pbm
+@tab pbm
+@item CompuServe GIF
+@tab gif
+@tab gif
+@item Windows/OS2 BMP file
+@tab bmp
+@tab bmp
+@item JPEG/JFIF format
+@tab jpeg
+@tab jpg
+@item X Window Bitmap
+@tab xbm
+@tab xbm
+@item X Window Dump
+@tab xwd
+@tab xwd
+@item X PixMap
+@tab xpm
+@tab xpm
+@tab XPM3 only
+@item NASA/NOST FITS
+@tab fits
+@tab fits
+@tab Standard FITS and IMAGE extension
+@item Portable Network Graphics
+@tab png
+@tab png
+@tab needs netpbm
+@item SGI RGB format
+@tab iris
+@tab rgb
+@tab need pbmplus/netpbm package
+@item PostScript format
+@tab ps
+@tab ps
+@tab needs gs for reading
+@item Tagged Image File Format
+@tab tiff
+@tab tif
+@tab no compression support
+@end multitable
+
+@findex flimage_enable_bmp()
+@anchor{flimage_enable_bmp()}
+@findex flimage_enable_pnm()
+@anchor{flimage_enable_pnm()}
+@findex flimage_enable_genesis()
+@anchor{flimage_enable_genesis()}
+@findex flimage_enable_fits()
+@anchor{flimage_enable_fits()}
+@findex flimage_enable_gif()
+@anchor{flimage_enable_gif()}
+@findex flimage_enable_gzip()
+@anchor{flimage_enable_gzip()}
+@findex flimage_enable_jpeg()
+@anchor{flimage_enable_jpeg()}
+@findex flimage_enable_png()
+@anchor{flimage_enable_png()}
+@findex flimage_enable_ps()
+@anchor{flimage_enable_ps()}
+@findex flimage_enable_sgi()
+@anchor{flimage_enable_sgi()}
+@findex flimage_enable_tiff()
+@anchor{flimage_enable_tiff()}
+@findex flimage_enable_xbm()
+@anchor{flimage_enable_xbm()}
+@findex flimage_enable_xpm()
+@anchor{flimage_enable_xpm()}
+@findex flimage_enable_xwd()
+@anchor{flimage_enable_xwd()} To avoid executable bloating with
+unnecessary code, only ppm, pgm, pbm and compression filters (gzip and
+compress) are enabled by default. To enable other formats, call
+@code{flimage_enable_xxx()} once anywhere after
+@code{@ref{fl_initialize()}}, where @code{xxx} is the short name for
+the format. For example, to enable BMP format,
+@code{flimage_enable_bmp()} should be called.
+
+Further, if you enable GIF support, you're responsible for any
+copyright/patent and intellectual property dispute arising from it.
+Under no circumstance should the authors of the Forms Library be
+liable for the use or misuse of the GIF format.
+
+Usually there are choices on how the image should be read and written.
+The following is a rundown of the built-in options that control some
+aspects of image support. Note that these options are persistent in
+nature and once set they remain in force until reset.
+@tindex FLIMAGE_JPEG_OPTIONS
+@findex flimage_jpeg_output_options()
+@anchor{flimage_jpeg_output_options()}
+@example
+typedef struct @{
+    int quality;
+    int smoothing;
+@} FLIMAGE_JPEG_OPTIONS;
+
+void flimage_jpeg_output_options(FLIMAGE_JPEG_OPTIONS *option);
+@end example
+@noindent
+The default quality factor for JPEG output is 75. In general, the
+higher the quality factor rhe better the image is, but the file size
+gets larger. The default smoothing factor is 0.
+
+@findex flimage_pnm_output_options()
+@anchor{flimage_pnm_output_options()}
+@example
+void flimage_pnm_output_options(int raw_format);
+@end example
+For PNM (ppm, pgm, and pbm) output, two variants are supported, the
+binary (raw) and ASCII format. The raw format is the default. If the
+output image is of type @code{FL_IMAGE_GRAY16}, ASCII format is always
+output.
+
+@findex flimage_gif_output_options()
+@anchor{flimage_gif_output_options()}
+@example
+void flimage_gif_output_options(int interlace);
+@end example
+@noindent
+If @code{interlace} is true, an interlaced output is generated.
+Transparency, comments, and text are controlled, respectively, by
+@code{image->tran_rgb}, @code{image->comments} and @code{image->text}.
+
+PostScript options affect both reading and writing.
+@findex flimage_ps_options()
+@anchor{flimage_ps_options()}
+@example
+FLIMAGE_PS_OPTION *flimage_ps_options(void);
+@end example
+@noindent
+where the control structure has the following members
+@table @code
+@item int orientation
+The orientation of the generated image on paper. Valid options are
+@code{FLPS_AUTO}, @code{FLPS_PORTRAIT} and @code{FLPS_LANDSCAPE}. The
+default is @code{FLPS_AUTO}.
+@item int auto_fit
+By default, the output image is scaled to fit the paper if necessary.
+Set it to false (0) to turn auto-scaling off.
+@item float xdpi, ydpi
+These two are the screen resolution. Typical screens these days have
+resolutions about @w{80 dpi}. The settings of these affect both
+reading and writing.
+@item float paper_w
+The paper width, in inches. The default is @w{8.5 in}.
+@item float paper_h
+The paper height, in inches. The default is @w{11.0 in}
+@item char* tmpdir
+A directory name where temporary working files go. The default is
+@file{/tmp}.
+@item float hm, vm
+Horizontal and vertical margins, in inches, to leave when writing
+images. The default is @w{0.4 in} (about @w{1 cm}).
+@item float xscale
+Default is 1.0.
+@item float yscale
+Default is 1.0.
+@item int first_page_only
+If set, only the first page of the document will be loaded even if the
+document is multi-paged. The default setting is false.
+@end table
+
+To change an option, simply call @code{@ref{flimage_ps_options()}} and
+change the field from the pointer returned by the function:
+@example
+void SetMyPageSize(float w, float h) @{
+    FLIMAGE_PS_OPTION *options = flimage_ps_options();
+
+    options->paper_w = w;
+    options->paper_h = h;
+@}
+@end example
+
+All these option setting routines can be used either as a
+configuration routine or an image-by-image basis by always calling one
+of these routines before @code{@ref{flimage_dump()}}. For example,
+@example
+flimage_jpeg_output_options(option_for_this_image);
+flimage_dump(im, "file","jpeg");
+@end example
+
+You can also utilize the @code{image->pre_write} function to set the
+options. This function, if set, is always called inside
+@code{@ref{flimage_dump()}} before the actual output begins.
+
+
+@node Adding New Formats
+@subsection Adding New Formats
+
+It is possible for application to add new formats to the library so
+@code{@ref{flimage_load()}} and @code{@ref{flimage_dump()}} know how
+to handle them. Basically, the application program tells the library
+how to identify the image format, and the image dimension, and how to
+read and write pixels.
+
+The API for doing so is the following
+@tindex FLIMAGE_Identify
+@tindex FLIMAGE_Description
+@tindex FLIMAGE_Read_Pixels
+@tindex FLIMAGE_Write_Image
+@findex flimage_add_format()
+@anchor{flimage_add_format()}
+@example
+typedef int (*FLIMAGE_Identify) (FILE *);
+typedef int (*FLIMAGE_Description) (FL_IMAGE *);
+typedef int (*FLIMAGE_Read_Pixels) (FL_IMAGE *);
+typedef int (*FLIMAGE_Write_Image) (FL_IMAGE *);
+
+int flimage_add_format(const char *formal_name,
+                       const char *short_name,
+                       const char *extension,
+                       int type,
+                       FLIMAGE_Identify identify,
+                       FLIMAGE_Description description,
+                       FLIMAGE_Read_Pixels read_pixels,
+                       FLIMAGE_Write_Image write_image);
+@end example
+@noindent
+where we have
+@table @code
+@item formal_name
+The formal name of the image format
+@item short_name
+An abbreviated name for the image format
+@item extension
+File extension, if this field is @code{NULL}, @code{short_name} will
+be substituted
+@item type
+The image type. This field generally is one of the supported image
+types (e.g., @code{FL_IMAGE_RGB}), but it does not have to. For image
+file formats that are capable of holding more than one type of images,
+this field can be set to indicate this by ORing the supported types
+together (e.g., @code{FL_IMAGE_RGB|FL_IMAGE_GRAY}). However, when
+description returns, the image type should be set to the actual type
+in the file.
+@item identify
+This function should return 1 if the file pointed to by the file
+pointer passed in is the expected image format (by checking signature
+etc.). It should return a negative number if the file is not
+recognized. The decision if the file pointer should be rewound or not
+is between this function and the description function.
+@item description
+This function in general should set the image dimension and type
+fields (and colormap length for color index images) if successful, so
+the driver can allocate the necessary memory for read pixel. Of
+course, if @code{read_pixels} elects to allocate memory itself, the
+@code{description} function does not have to set any fields. However,
+if reading should continue, the function should return 1 otherwise a
+negative number.
+
+The function should read from input file stream @code{image->fpin}.
+
+It is likely that some information obtained in this function needs to
+be passed to the actual pixel reading routine. The easiest way is, of
+course, to make these information static within the file, but if a GUI
+system is in place, all the reading routines should try to be
+reentrant. The method to avoid static variables is to use the
+@code{image->io_spec} field to keep these information. If this field
+points to some dynamically allocated memory, you do not need to free
+it after @code{read_pixels} function finishes. However, if you free it
+or this field points to static memory, you should set to this field to
+@code{NULL} when finished.
+
+The following is a short example showing how this field may be utilized.
+@example
+typedef struct @{
+    int bits_per_pixel;
+    int other_stuff;
+@} SPEC;
+
+static int description(FL_IMAGE *im) @{
+    SPEC *sp = fl_calloc(1, sizeof *sp);
+
+    im->io_spec        = sp;
+    im->spec_size      = sizeof *sp;
+    sp->bits_per_pixel = read_from_file(im->fpin);
+
+    return 0;
+@}
+
+static int read_pixels(FL_IMAGE *im) @{
+    SPEC *sp = im->io_spec;
+
+     int bits_per_pixel = sp->bits_per_pixel;
+
+     read_file_based_on_bits_per_pixel(im->fpin);
+
+     /* You don't have to free im->io_spec, but if you do
+        remember to set it to NULL before returning */
+
+     return 0;
+@}
+@end example
+@item read_pixels
+This function reads the pixels from the file and fills one of the
+pixel matrix in the image structure depending on the type. If reading
+is successful, a non-negative number should be returned otherwise a
+negative number should be returned.
+
+Upon entry, @code{image->completed} is set to zero.
+
+The function should not close the file.
+@item write_image
+This function takes an image structure and should write the image out
+in a format it knows. Prior to calling this routine, the driver will
+have already converted the image type to the type it wants. The
+function should return 1 on success and a negative number otherwise.
+If only reading of the image format is supported this parameter can be
+set to @code{NULL}.
+
+The function should write to file stream @code{image->fpout}.
+@end table
+
+By calling @code{@ref{flimage_add_format()}} the newly specified image
+format is added to a "recognized image format" pool in the library.
+When @code{@ref{flimage_load()}} is called the library, after
+verifying that the file is readable, loops over each of the formats
+and calls the @code{identify} routine until a format is identified or
+the pool exhausted. If the file is recognized as one of the supported
+formats the @code{description} routine is called to obtain the image
+dimension and type. Upon its return the library allocates all memory
+needed, then calls @code{read_pixels}. If the image format pool is
+exhausted before the file is recognized @code{@ref{flimage_load()}}
+fails.
+
+On output, when @code{@ref{flimage_dump()}} is called, the requested
+format name is used to look up the output routine from the image
+format pool. Once an output routine for the requested format is found,
+the library looks the image type the output is capable of writing. If
+the current image type is not among the types supported by the format
+the library converts image to the type needed prior to calling the
+output routine @code{write_image()}. So what
+@code{@ref{flimage_dump()}} does is
+@example
+int flimage_dump(FL_IMAGE *im, const char *filename,
+                 const char *formatName) @{
+    format = search_image_format_pool(formatName);
+    if (!format)
+        return -1;
+
+    im->fpout = fopen(filename);
+    if (im->pre_write)
+        im->pre_write(im);
+
+    convert image type if necessary(im);
+    format->write_pixels(im);
+    ...
+@}
+@end example
+
+If the name of the image format supplied by
+@code{@ref{flimage_add_format()}} is identical to one that is already
+supported, the new routines replace those that are in the pool. This
+way, the application can override the built-in supports.
+
+For a non-trivial example of adding a new format, see file
+@file{flimage_jpeg.c}. Another way of adding image formats is through
+external filters that convert an unsupported format into one that is.
+All you need to do is inform the library what external filter to use.
+@code{pbmplus} or @code{netpbm} are excellent packages for this
+purpose.
+
+The library has two functions that deal with external filters
+@findex flimage_description_via_filter()
+@anchor{flimage_description_via_filter()}
+@findex flimage_write_via_filter()
+@anchor{flimage_write_via_filter()}
+@example
+int flimage_description_via_filter(FL_IMAGE * im, char *const *cmds,
+                                   const char *what, int verbose);
+int flimage_write_via_filter(FL_IMAGE *im, char *const *cmds,
+                             char *const formats[], int verbose);
+@end example
+@noindent
+where @code{cmds} are a list of shell commands (filters) that convert
+the format in question into one of the supported formats. Parameter
+@code{what} is for reporting purposes and parameter @code{verbose}
+controls if some information and error messages should be printed.
+This is mainly for debugging purposes.
+
+Let us go through one example to show how this filter facility can be
+used. In this example, we support SGI's rgb format via the @code{netpbm}
+package.
+
+As with regular image format, we first define a function that
+identifies the image format:
+@example
+static int IRIS_identify(FILE *fp) @{
+    char buf[2];
+
+    fread(buf, 1, 2, fp);
+    return    (buf[0] == '\001' && buf[1] == '\332')
+           || (buf[0] == '\332' && buf[1] == '\001');
+@}
+@end example
+
+Then we need to define the filter(s) that can convert a RGB file into
+one that's supported. Here we use @code{sgitopnm}, but you can use
+diferent filters if available. Function
+@code{@ref{flimage_description_via_filter()}} will try all the filters
+specified until one of them succeeds. If none does an error code is
+returned:
+@example
+static int IRIS_description(FL_IMAGE *im) @{
+    static char *cmds[] = @{"sgitopnm %s > %s",
+                           NULL  /* sentinel, indicating end of
+                                    list of filters */ @};
+    return flimage_description_via_filter(im, cmds,
+                                           "Reading RGB...", 0);
+@}
+@end example
+
+All commands should be suitable format strings for function
+@code{sprintf()} and contain @code{%s} twice. The first one will be
+replaced by the input file name, the second by a filename which will
+be supplied by the library to hold the converted image. The list
+must be terminate with a @code{NULL} element.
+
+In the above example, @code{sgitopnm %s > %s} specifies the external
+command, @code{sgitopnm}, and how it operates. Basically, the library
+will do a @code{sprintf(cmdbuf, cmd[i], irisfile, tmpfile)} and then
+execute @code{cmdbuf}.
+
+There is really no need for a load function as the filter will have
+already invoked the correct load function when it returns. For the
+record of capability queries, a dummy load function is needed:
+@example
+static int IRIS_load(FL_IMAGE * im) @{
+     fprintf(stderr, "We should never get here...\n");
+     return -1;
+@}
+@end example
+
+Writing an image is similar:
+@example
+static int IRIS_dump(FL_IMAGE *im) @{
+    static char *cmds[] = @{"pnmtosgi %s > %s",
+                           NULL@};
+    static char *cmds_rle[] = @{"pnmtosgi -rle %s > %s",
+                               NULL@};
+    static char *formats[] = @{"ppm", "pgm", "pbm", NULL@};
+
+    return flimage_write_via_filter(im, rle ? cmds_rle : cmds,
+                                    formats, 0);
+@}
+@end example
+
+Again, the external commands should accept two arguments. The first
+argument will be supplied by the library, a temporary file that holds
+the converted image in a format the filter understands, and the second
+argument will be the requested output filename.
+
+For output, an additional argument is required. The additional
+argument @code{formats} specifies the image format accepted by the
+external filter. In this case, this is the pnm format. It is important
+that if the filter accepts more than one format, you should specify
+the formats in decreasing generality, i.e., ppm, pgm, pbm.
+
+With these functions in place, finally we're ready to add iris support
+into the library
+@example
+void add_iris(void) @{
+    flimage_add_format("SGI Iris", "iris", "rgb",
+                       FL_IMAGE_RGB|FL_IMAGE_GRAY|FL_IMAGE_MONO,
+                       IRIS_identify,
+                       IRIS_description,
+                       IRIS_load,
+                       IRIS_dump);
+@}
+@end example
+@noindent
+After a call of @code{add_iris()} you can now use
+@code{@ref{flimage_load()}} and @code{@ref{flimage_dump()}} to read
+and write SGI iris format just like any other format.
+
+@node Queries
+@subsection Queries
+
+Since the number of formats supported by the library is dynamic in
+nature, some query routines are available to obtain support
+information.
+
+To obtain the number of currently supported image formats, use the
+routine
+@findex flimage_get_number_of_formats()
+@anchor{flimage_get_number_of_formats()}
+@example
+int flimage_get_number_of_formats(void);
+@end example
+@noindent
+The functions returns the number of formats supported, for reading or
+writing or both. To obtain detailed information for each format, the
+following can be used
+@tindex FLIMAGE_FORMAT_INFO
+@findex flimage_get_format_info()
+@anchor{flimage_get_format_info()}
+@example
+typedef struct @{
+    const char * formal_name;
+    const char * short_name;
+    const char * extension;
+    int          type;
+    int          read_write;
+    int          annotation;
+@} FLIMAGE_FORMAT_INFO;
+
+const FLIMAGE_FORMAT_INFO *flimage_get_format_info(int n);
+@end example
+where parameter @code{n} is an integer between 1 and the return value
+of @code{@ref{flimage_get_number_of_formats()}} . Upon function return
+a static buffer is returned containing the basic information about the
+image. The read_write field can be one of the following combinations
+thereof
+@table @code
+@item FLIMAGE_READABLE
+supports reading
+@item FLIMAGE_WRITABLE
+supports writing
+@end table
+@noindent
+or the bitwise OR of both.
+
+These two routines are most useful for reporting or presenting
+capabilities to the user
+@example
+FLIMAGE_FORMAT_INFO *info;
+int n = flimage_get_number_of_formats();
+
+fprintf(stderr,"FL supports the following format\n");
+for (; n; n--) @{
+    info = flimage_get_format_info(n);
+    fprintf(stderr,"%s format\t(%c%c)\n",
+            info->short_name,
+            (info->read_write & FLIMAGE_READABLE) ? 'r' : ' ',
+            (info->read_write & FLIMAGE_WRITABLE) ? 'w' : ' ');
+@}
+@end example
+
+@node Setup and Configuration
+@section Setup and Configuration
+
+Although the image support is designed with integration into a GUI
+system in mind, it neither assumes what the GUI system is nor does it
+need a GUI system to work. As a matter of fact, for the most part it
+doesn't even need an X connection to work (obviously without a
+connection, you won't be able to display images). For this reason,
+some of the typical (and necessary) tasks, such as progress and error
+reporting, are by default implemented only to use text output (i.e.,
+to @code{stderr}). Obviously, with a GUI in place this is not quite
+adequate. Hooks are available for application program to re-define
+what to do with these tasks.
+
+The interface to the library configuration is as follows
+@findex flimage_setup()
+@anchor{flimage_setup()}
+@example
+void flimage_setup(FLIMAGE_SETUP *setup);
+@end example
+@noindent
+where the parameter @code{setup} is a pointer to a structure defined
+as follows:
+@tindex FLIMAGE_SETUP
+@example
+typedef struct @{
+    void       * app_data;
+    int          (*visual_cue) (FL_IMAGE *im, const char *msg);
+    void         (*error_message) (FL_IMAGE *im, const char *msg);
+    const char * rgbfile;
+    int          do_not_clear;
+    int          max_frames;
+    int          delay;
+    int          double_buffer;
+    int          add_extension;
+@} FLIMAGE_SETUP;
+@end example
+@noindent
+with
+@table @code
+@item app_data
+The application can use this field to set a value so the field
+@code{image->app_data} in all image structures returned by the library
+will have this value. It's most useful to set this field to something
+that's persistent during the application run, such as the @code{fdui}
+structure of the main control panel.
+
+Note that @code{image->app_data} is different from
+@code{image->u_vdata} in that all image structures returned by the
+library have the same value of @code{image->app_data}, which is set by
+the library. In contrast, @code{image->u_vdata} is set by the
+application on an image-by-image basis.
+@item visual_cue
+This is the function that will be called by all image reading, writing
+and processing routines. The function is meant to give the user some
+visual feedback about what is happening. For lengthy tasks, this
+function is called repeatedly and periodically to indicate what
+percentage of the task is completed and to give the application
+program a chance to check and process GUI activities (for example, via
+@code{@ref{fl_check_forms()}}).
+
+The first parameter to the function is the image currently being
+worked on and the second parameter is a short message, indicating the
+name of the task, such as "Reading JPG" etc.
+
+Two fields in the image structure can be used to obtain progress
+information. The member fields @code{image->total} indicates the total
+amount of work to be done in some arbitrary units (usually number of
+rows in the image). @code{image->completed} indicates how much of the
+task has been completed. The percentage of how much is completed is
+then simply the ratio of @code{image->completed} and
+@code{image->total}, multiplied by 100.
+
+At the begin of a task @code{image->completed} is set to a value less
+or equal 1, and at the end of the task, @code{image->completed} is set to
+@code{image->total}.
+
+A special value of -1 for @code{image->completed} may be used to
+indicate a task of unknown length.
+
+@item error_message
+This is a function that is called when an error (of all severities) has
+occurred inside the library. It is recommanded that the application
+provide a means to show the messages to the user by sypplying this
+function.
+
+The first parameter is a pointer to the image that's being worked on,
+and the second parameter is a brief message, such as "memory
+allocation failed" etc.
+
+A convenience function,
+@findex flimage_error()
+@anchor{flimage_error()}
+@code{@ref{flimage_error()}}, is provided to
+call the error message handler.
+@item rgbfile
+This field should be set to the full path to the color name database
+(@file{rgb.txt}) if your system has it in non-standard locations. On
+most systems, this file is @file{/usr/lib/X11/rgb.txt}, which is the
+default if this field is not set.@footnote{The routine where this
+field is used searches some more locations than the default and
+should work on most systems automagically.}
+@item do_not_clear
+By default, @code{@ref{flimage_display()}} clears the window before
+displaying the image. Set this member to 1 to disable window clearing.
+@item no_auto_extension
+By default, @code{@ref{flimage_dump()}} changes the filename extension
+to reflect the format. Set this member to 1 to disable extension
+substitution.
+@item double_buffer
+If set, all image display will by default double-buffered.
+Double-buffering an image is very expensive (in terms of both resource
+and speed) as the backbuffer is simulated using a pixmap. If there are
+no annotations, double-buffering an image does not really improve
+anything.
+
+It is far better to turn double-buffering on and off on a
+image-by-image basis using the @code{image->double_bufffer} field.
+@item max_frames
+This field specifies the maximum number of frames to read by
+@code{@ref{flimage_load()}}. The default maximum is 30 frames.
+@item delay
+This field specifies the delay (in milliseconds) between successive
+frames. It is used by the @code{@ref{flimage_display()}} routine.
+@end table
+
+Note that it is always a good idea to clear the setup structure before
+initializing and using it
+@example
+FLIMAGE_SETUP mysetup;
+memset(mysetup, 0, sizeof mysetup);
+
+mysetup.max_frames = 100;
+mysetup.delay      = 10;
+
+flimage_setup(&mysetup);
+@end example
+
+It is possible to modify the image loading process by utilizing the
+following routines @code{@ref{flimage_load()}} is based on:
+@findex flimage_open()
+@anchor{flimage_open()}
+@example
+FL_IMAGE *flimage_open(const char *name);
+@end example
+@noindent
+This function takes a file name and returns an image sturcture pointer
+if the file is a recognized image file. Otherwise @code{NULL} is
+returned.
+
+The function 
+@findex flimage_read()
+@anchor{flimage_read()}
+@example
+FL_IMAGE *flimage_read(FL_IMAGE *im);
+@end example
+@noindent
+takes an image structure returned by @code{@ref{flimage_open()}} and
+fills the image structure. Between @code{@ref{flimage_open()}} and
+@code{@ref{flimage_read()}} you can inspect or modify fields in the
+image structure.
+
+@findex flimage_close()
+@anchor{flimage_close()}
+@example
+int flimage_close(FL_IMAGE *im);
+@end example
+@noindent
+This function closes all file streams used to create the image.
+
+
+@node Simple Image Processing
+@section Simple Image Processing
+
+Some simple image processing capabilities are present in the Forms
+Library image support. All the image processing routines take an image
+as a parameter and process it in place. If appropriate, only the
+subimage specified by @code{(image->subx, image->suby)} and
+@code{(image->subw, image->subw)} is affected (note these are
+different fields from those for subimage displaying). The subimage
+fields are best set via user interaction, perhaps by having a rubber
+band that the user can drag to set the size.
+
+In the following, each routine will be briefly explained.
+
+@ifnottex
+
+@menu
+* Convolution::
+* Tint::
+* Rotation::
+* Image Flipping::
+* Cropping::
+* Scaling::
+* Warping::
+* General Pixel Transformation::
+* Image Annotation::
+* Write Your Own Routines::
+@end menu
+
+@end ifnottex
+
+@node Convolution
+@subsection Convolution
+
+Convolution or filtering can be done easily using the following
+routine
+@findex flimage_convolve()
+@anchor{flimage_convolve()}
+@example
+int flimage_convolve(FL_IMAGE *im, int **kernel,
+                     int krow, int kcol);
+@end example
+
+This function takes a convolution kernel of @code{krow} by @code{kcol}
+and convolves it with the image. The result replaces the input image.
+The kernel size should be odd. If successful, the function returns a
+positive integer, otherwise a negative number. The kernel should be
+allocated by @code{@ref{fl_get_matrix()}}. To use a kernel that's a C
+2-dimensional array (cast to a pointer to int), use the following
+function
+@findex flimage_convolvea()
+@anchor{flimage_convolvea()}
+@example
+int flimage_convolvea(FL_IMAGE *im, int *kernel,
+                      int krow, int kcol);
+@end example
+
+The difference between these two functions is in their usage syntax:
+@example
+int **kernel1 = fl_get_matrix(sizeof **kernel, n, m);
+int kernel2[n][m];
+kernel1[x][y] = z;
+kernel2[x][y] = z;
+flimage_convolve(im, kernel1, n, m);
+flimage_convolvea(im, (int*) kernel2, n, m); /* note the cast */
+@end example
+
+Two special built-in kernels are designated with the following
+symbolic constants
+@table @code
+@tindex FLIMAGE_SMOOTH
+@item FLIMAGE_SMOOTH
+indicates a 3 by 3 smoothing kernel
+@tindex FLIMAGE_SHARPEN
+@item FLIMAGE_SHARPEN
+indicates a 3 by 3 sharpening kernel
+@end table
+
+
+@node Tint
+@subsection Tint
+
+Tint as implemented in the Forms Library emulates the effect of
+looking at an image through a piece of colored glass. You can specify
+the color and transparency of the glass:
+@findex flimage_tint()
+@anchor{flimage_tint()}
+@example
+int flimage_tint(FL_IMAGE *im, unsigned int packed, double opacity);
+@end example
+where the parameter @code{packed} is a packed RGB color, specifying
+the color of the glass. @code{opacity} specifies how much the color of
+the image is absorbed by the glass. A value of 0 means the glass is
+totally transparent, i.e., the glass has no effect3, while a value of
+1.0 means total opaqueness, i.e., all you see is the color of the
+glass. Any value between these two extremes results in a color that is
+a combination of the pixel color and the glass color. For example, to
+tint a part of the image bluish, you can set @code{packed} to
+@code{FL_PACK(0,0,200)} and use an opacity of 0@footnote{Strictly
+speaking, a piece of glass that is totally transparent can't have
+colors.}.
+
+Tint is most useful in cases where you want to put some annotations on
+the image, but do not want to use a uniform and opaque background that
+completely obscures the image behind. By using tint, you can have a
+background that provides some contrast to the text, yet not obscures
+the image beneath completely.
+
+Tint operation uses the subimage settings.
+
+
+@node Rotation
+@subsection Rotation
+
+Image rotation can be easily done with the following routine
+@findex flimage_rotate()
+@anchor{flimage_rotate()}
+@example 
+int flimage_rotate(FL_IMAGE *im, int angle, int subpixel);
+@end example
+@noindent
+where @code{angle} is the angle in one-tenth of a degree (i.e., a 45
+degree rotation should be specified as 450) with a positive sign for
+counter-clock rotation. The parameter @code{subpixel} should be one of
+the following, specifying if subpixel sampling should be enabled. It
+can be set to either
+@tindex FLIMAGE_NOSUBPIXEL
+@code{FLIMAGE_NOSUBPIXEL} or
+@tindex FLIMAGE_SUBPIXEL
+@code{FLIMAGE_SUBPIXEL}.
+
+If subpixel sampling is enabled, the resulting image pixels are
+interpolated from the original pixels. This usually has an
+"anti-aliasing" effect that leads to less severe jagged edges and
+similar artifacts commonly encountered in rotations. However, it also
+means that a color indexed image gets converted to a RGB image. If
+preserving the pixel value is important, you should not turn subpixel
+sampling on.
+
+@code{@ref{flimage_rotate()}} return a negative number if it for some
+reason (usually due to running out of memory) fails to perform the
+rotation.
+
+Since the rotated image has to be on a rectangular grid, the regions
+that are not occupied by the image are filled with a fill color, where
+the default is black. If a different fill color is desired you can set
+the @code{image->fill_ccolor} field to a packed RGB color before
+calling the rotation function. Note that even for color indexed images
+the fill color should be specified in RGB. The rotation function will
+search the colormap for the appropriate index if no subpixel sampling
+is used.
+
+Repeated rotations should be avoided if possible. If you have to call
+it more than once it's a good idea to crop after rotations in order to
+get rid of the regions that contain only fill color.
+
+
+@node Image Flipping
+@subsection Image Flipping
+
+Image flipping refers to the mirror operation in x- or y-direction at
+the center. For example, to flip the columns of an image, the left and
+right of the image are flipped (just like having a vertical mirror in
+the center of the image) thus the first pixel on any given row becomes
+the last, and the last pixel becomes the first etc.
+
+The API for flipping is as follows
+@findex flimage_flip()
+@anchor{flimage_flip()}
+@example
+int flimage_flip(FL_IMAGE *im, int what);
+@end example
+@noindent
+where @code{what} can be @code{'c'} or @code{'r'}. indicating if
+column and row flipping is desired.
+
+
+@node Cropping
+@subsection Cropping
+
+There are two functions available to crop an image
+@findex flimage_autocrop()
+@anchor{flimage_autocrop()}
+@findex flimage_crop()
+@anchor{flimage_crop()}
+@example
+int flimage_autocrop(FL_IMAGE *im, unsigned int background);
+int flimage_crop(FL_IMAGE *im, int xl, int yt, int xr, int yb);
+@end example
+
+The first function, as its name suggests, automatically crops an image
+using the background as the color to crop. The function works by
+searching the image from all four sides and removing all contiguous
+regions of the uniform background from the sides. The image is
+modified in place. If cropping is successful, a non-negative integer
+is returned, otherwise -1. If @code{background} is specified as the
+constant
+@tindex FLIMAGE_AUTOCOLOR
+@code{FLIMAGE_AUTOCOLOR}, the background is chosen as the first pixel
+of the image.
+
+The second function uses the parameters supplied by the user to crop
+the image. @code{xl} and @code{xr} are the offsets into the image from
+the left and the right sides, respectively, i.e., if both @code{xl}
+and @code{xr} are 1, the cropping removes the first column and the
+last column from the image. Parameters @code{yt} and @code{yb} specify
+the offsets into the image from the top and bottom of the image
+respectively.
+
+Note the offsets do not have to be positive. When they are negative,
+they indicate enlargement of the image. The additional regions are
+filled with the uniform color specified by @code{image->fill_color}, a
+packed RGB color. This can be quite useful to add a couple of pixels
+of border to an image. For example, the following adds a 1 pixel wide
+yellow border to an image
+@example
+image->fill_color = FL_PACK(255,255,0);
+flimage_crop(image, -1, -1, -1, -1);
+@end example
+
+Another function is available that can be used to obtain the
+auto-cropping offsets
+@findex flimage_get_autocrop()
+@anchor{flimage_get_autocrop()}
+@example
+int flimage_get_autocrop(FL_IMAGE *im, unsigned background,
+                         int *xl, int *yt, int *xl, int *yb);
+@end example
+@noindent
+This function works the same way as @code{@ref{flimage_autocrop()}},
+except that no actual cropping is performed. Upon function return the
+parameters @code{xl}, @code{yt}, @code{xl} and @code{yb} are set to
+the offsets found by the function. The application can then make
+adjustment to these offsets and call @code{@ref{flimage_crop()}}.
+
+
+@node Scaling
+@subsection Scaling
+
+An image can be scaled to any desired size with or without subpixel
+sampling. Without subpixel sampling simple pixel replication is used,
+otherwise a box average algorithm is employed that yields an
+anti-aliased image with much less artifacts. A special option is
+available that scales the image to the desired size but keeps the
+aspect ratio of the image the same by filling the part of the image
+that would otherwise be empty.
+
+The main entry point to the scaling function is
+@findex flimage_scale()
+@anchor{flimage_scale()}
+@example
+int flimage_scale(FL_IMAGE *im, int newwidth, int newheight,
+                  int option);
+@end example
+@noindent
+where the parameters @code{newwidth} and @code{newheight} specify the
+desired image size. Parameter @code{option}q can be one of the
+following constants or the bitwise OR of them:
+@table @code
+@tindex FLIMAGE_NOSUBPIXEL
+@item FLIMAGE_NOSUBPIXEL
+scale the image with no subpixel sampling
+@tindex FLIMAGE_SUBPIXEL
+@item FLIMAGE_SUBPIXEL
+scale the image with subpixel sampling
+@tindex FLIMAGE_ASPECT
+@item FLIMAGE_ASPECT
+scale the image with no aspect ratio change
+@tindex FLIMAGE_CENTER
+@item FLIMAGE_CENTER
+center the scaled image if aspect
+@tindex FLIMAGE_NOCENTER
+@item FLIMAGE_NOCENTER
+do not center the scaled image
+@end table
+
+For example, @code{FLIMAGE_ASPECT|FLIMAGE_SUBPIXEL} requests fitting
+the image to the new size with subpixel sampling.
+@code{FLIMAGE_ASPECT} specifies a scaling that results in an image of
+the requested size (even if the scales are different for width and
+height) without changing the aspect ratio of the original image by
+filling in the stretched regions with the fill color
+@code{image->fill_color}, a packed RGB color:
+
+@example
+im->fill_color = FL_PACK(255,0,0);
+flimage_scale(im, im->w+2, im->h, FLIMAGE_SUBPIXEL|FLIMAGE_ASPECT);
+@end example
+@noindent
+This code generates an image that is two pixels wider than the
+original image but with the same aspect ratio. The two additional
+pixel columns on each side of the image are filled with the fill color
+(red), yielding a red border. The fitting can be useful in turning a
+series of images of unequal sizes into images of equal sizes with no
+perceptible change in image quality.
+
+Depending on what the application requires, simple scaling (zooming)
+with no subpixel sampling is much faster than box averaging or
+blending, but subpixel sampling tends to yield smoother images with
+less scaling artifacts.
+
+
+@node Warping
+@subsection Warping
+
+Image warping (or texture mapping in 2D) refers to the transformation
+of pixel coordinates. Rotation, scaling and shearing etc. are examples
+of (linear and non-perspective) image warping. In typical applications
+some of the commonly used pixel coordinate transformations are
+implemented using more efficient algorithms instead of a general
+warping. For example, image rotation is often implemented using three
+shears rather than a general warp (Forms Library implements rotation
+via image warping).
+
+Non-perspective linear image warping in general is characterized by a
+2x2 warp matrix @code{W} and a translation vector @code{T} with two
+elements as follows
+@example
+       P' = W * P + T
+@end example
+where @code{P} is a vector describing a position via it's x and y
+coordinates and @code{P'} is the position after warping.
+
+The elements @code{w[i][j]} of the warp matrix are constants (if the
+warp matrix isn't constant or is of higher order, we usually call such
+a transformation morphing rather than warping). Since our destination
+for the warped image is an array of pixels rather than a properly
+defined coordinate system (such as a window) the translation has no
+meaning. For the following discussion, we assume the translation
+vector is zero. (In doing the actual warping, the warped image is
+indeed shifted so it starts at the (0,0) element of the array
+representing it).
+
+Although, theoretically, any 2D matrix can be used as a warp matrix,
+there are practical constraints in image warping due to the
+discreteness of pixel coordinates. First of all, we have to snap all
+pixel coordinates onto a 2D rectangular integer grid. This in general
+will leave holes in the warped image because two pixels may get mapped
+to a single destination location, leaving a hole in the destination
+image. Secondly, truncation or rounding the resulting floating point
+values introduces errors. Because of these reasons, image warping is
+performed in reverse. That is, instead of looping over all pixel
+coordinates in the original image and transforming those into new
+coordinates, we start from the new coordinates and use inverse warping
+to obtain the coordinates of the pixel in the original image. This
+requires that the inverse of the warp matrix must exist (which is the
+case if @code{w[0][0] * w[1][1] != w[0][1] * w[1][0]}, i.e., the warp
+matrix has a non-vanishing determinante). With inverse warping the
+transformation becomes a re-sampling of the original image, and
+subpixel sampling (anti-aliasing) can be easily implemented.
+
+The following function is available in the library to perform warping
+@findex flimage_warp()
+@anchor{flimage_warp()}
+@example
+int flimage_warp(FL_IMAGE *im, float matrix[][2],
+                 int neww, int newh, int subpixel);
+@end example
+@noindent
+where @code{matrix} is the warp matrix. @code{neww} and @code{newh}
+specify the warped image size. To have the warp function figure out
+the minimum enclosing rectangle of the warped image you can pass
+zeros for the new width and height. Nevertheless, you can specify
+whatever size you want and the warp function will fill the empty grid
+location with the fill color. This is how the aspect ratio preserving
+scaling is implemented.
+
+In general, the warped image will not be rectangular in shape. To make
+the image rectangular the function fills the empty regions. The fill
+color is specified by setting the @code{image->fill_color} field with
+a packed RGB color.
+
+The last argument, @code{subpixel} specifies if subpixel sampling
+should be used. Although subpixel sampling adds processing time, it
+generally improves image quality significantly. The valid values for
+this parameter is any logical OR of
+@tindex FLIMAGE_NOSUBPIXEL
+@tindex FLIMAGE_SUBPIXEL
+@tindex FLIMAGE_NOCENTER
+@code{FLIMAGE_NOSUBPIXEL}, @code{FLIMAGE_SUBPIXEL} and
+@code{FLIMAGE_NOCENTER}.
+
+@code{FLIMAGE_NOCENTER} is only useful if you specify an image
+dimension that is larger than the warped image, and in that case the
+warped image is flushed top-left within the image grid, otherwise it
+is centered.
+
+To illustrate how image warping can be used, we show how an image
+rotation by an angle @code{deg} can be implemented:
+@example
+float m[2][2];
+m[0][0] = m[1][1] = cos(deg * M_PI / 180.0);
+m[0][1] = sin(deg * M_PI / 180.0);
+m[1][0] = -m[0][1];
+
+flimage_warp(im, mat, 0, 0, FLIMAGE_SUBPIXEL); 
+@end example
+@noindent
+Please note that the transformation is done in-place, i.e., after the
+function returns the image structure pointer, @code{im}, points to the
+rotated image.
+
+If you specify a warp matrix with the off-diagonal elements being zero
+(scaling matrix), the image will only be scaled (in x-direction by
+@code{m[0][0]} and in y-direction by @code{m[1][1]}) without being
+also rotated.
+
+By experimenting with various warp matrices you can obtain some
+interesting images. Just keep in mind that large values of the warp
+matrix elements tend to make the final image larger.
+
+
+@node General Pixel Transformation
+@subsection General Pixel Transformation
+
+Many image processing tasks can be implemented as seperate RGB
+transformations. These transformations can be done very efficiently
+through the use of lookup tables. For this reason the following
+routine exists:
+@findex flimage_transform_pixels()
+@anchor{flimage_transform_pixels()}
+@example
+int flimage_transform_pixels(FL_IMAGE *im, int *red,
+                             int *green, int *blue);
+@end example
+@noindent
+where @code{red}, @code{green} and @code{blue} are the lookup tables
+of a length of at least @code{FL_PCMAX + 1} (typically 256). The
+function returns a postive number on success and the image will be
+replaced. Note that this routine notices the settings of the subimage,
+i.e., you can transform a portion of the image.
+
+To illustrate the use of this routine let's look at how a simple
+contrast adjustment may be implemented:
+@example
+#include <forms.h>
+#include <math.h>
+
+int AdjustContrast(FL_IMAGE *im) @{
+    int r[FL_PCMAX+1],
+        g[FL_PCMAX+1],
+        b[FL_PCMAX+1];
+    int i,
+        scale = 10;
+
+    /* in this example rgb are adjusted the same way */
+    for ( i = 0; i <= FL_PCMAX; i++)
+        r[i] = g[i] = b[i] = i * log10(1 + i * scale / FL_PCMAX )
+                             / log10( 1 + scale );
+
+    return flimage_transform_pixels(im, r, g, b);
+@}
+@end example
+
+
+@node Image Annotation
+@subsection Image Annotation
+
+You can annotate an image with text or simple markers (arrows etc.).
+The location of the annotation can either be in pixel coordinate
+system or some application defined coordinate system.
+
+@ifnottex
+
+@menu
+* Using Text Strings::
+* Using Markers::
+* Pixelizing the Annotation::
+@end menu
+
+@end ifnottex
+
+
+@node Using Text Strings
+@subsubsection Using Text Strings
+
+To place text into the image, use the following routine
+@findex flimage_add_text()
+@anchor{flimage_add_text()}
+@example
+int flimage_add_text(FL_IMAGE *im, const char *str, int len,
+                     int fstyle, int fsize, unsigned tcolor,
+                     unsigned bcolor, int nobk, double tx,
+                     double ty, int rotation);
+@end example
+@noindent
+where @code{fstyle} and @code{fsize} are the same as the label font
+style and size defined earlier in Section 3.11.3. @code{tcolor} and
+@code{bcolor} specify the colors to use for the text @code{str} and
+the background if the @code{nobk} argument is false. If @code{nobk} is
+true the text is drawn without a background. @code{tx} and @code{ty}
+specify the location of the text relative to the image origin. The
+location specified is the lower-right corner of the text. Note that
+the location specified can be in some physical space other than pixel
+space. For example, if the pixel-pixel distance represents 10 miles on
+a map, you'd like to be able to specify the text location in miles
+rather than pixels. The location is converted into pixel space using
+the following code
+@example
+    tx_pixel = im->xdist_scale * tx + im->xdist_offset;
+    ty_pixel = im->ydist_scale * ty + im->ydist_offset;
+@end example
+@noindent
+By default, the offsets @code{im->xdist_offset} and
+@code{im->yxdist_offset} are initialized to 0 and the scales
+@code{im->xdist_scale} and @code{im->ydist_scale} to 1.
+
+The function returns the current number of strings for the image. The
+interpretation of text used also used elsewhere applies, i.e., if
+@code{str} starts with character @code{@@} a symbol is drawn.
+
+There is another function, maybe more convenient depending on the
+application, that you can use
+@tindex FLIMAGE_TEXT
+@findex flimage_add_text_struct()
+@anchor{flimage_add_text_struct()}
+@example
+int flimage_add_text_struct(FL_IMAGE *im,
+                            const FLIMAGE_TEXT *text);
+@end example
+@noindent
+With this function instead of passing all the parameters individual;y
+you pass a @code{FLIMAGE_TEXT} structure to the function. The
+structure has the following fields:
+@table @code
+@item str
+The string to append to the image.
+@item len
+Length of the string in bytes.
+@item x, y
+A location relative to the image origin, given in pixels (no
+conversion from other coordinate systems is done)
+@item align
+Specifies the alignment of the string relative to the give location.
+@item style, size
+The font style and size to use.
+@item color
+The text color
+@item bcolor
+The background color
+@item nobk
+If true indicates that no background is to be drawn.
+@item angle
+Angle (in thenth of a degree) the text is to be rotated from the
+default horizontal orientation. Currently only PostScript output
+handles this correctly.
+@end table
+
+To delete the all texts you added to an image, use
+@findex flimage_delete_all_text()
+@anchor{flimage_delete_all_text()}
+@example
+void flimage_delete_all_text(FL_IMAGE *im);
+@end example
+
+You also can suppress the display of annotation text without deleting
+it. To do this, simply set @code{im->dont_display_text} to true.
+
+
+@node Using Markers
+@subsubsection Using Markers
+
+In addition to text strings you can also add simple markers (arrows,
+circles etc) to your image.
+
+To add a marker to an image use the following routines
+@findex flimage_add_marker()
+@anchor{flimage_add_marker()}
+@findex flimage_add_marker_struct()
+@anchor{flimage_add_marker_struct()}
+@example
+int flimage_add_marker(FL_IMAGE *im, const char *name,
+                       double x, double y, double w, double h,
+                       int linestyle, int fill, int rotation,
+                       FL_COLOR, FL_COLOR bcol);
+int flimage_add_marker_struct(FL_IMAGE *im, const FLIMAGE_MARKER *m);
+@end example
+@noindent
+where @code{name} is the marker name (see below for a list of built-in
+markers). The marker name must consist of regular ASCII characters.
+@code{linestyle} indicates the line style (@code{FL_SOLID}, @code{FL
+DOT} etc., see Chapter 27 for a complete list. @code{fill} indicates
+if the marker should be filled or not. @code{x} and @code{y} are the
+coordinates of the center of the marker in physical coordinates
+(i.e., the same transformation as described above for annotated texts
+is applied), @code{w} and @code{h} are the size of the bounding box of
+the marker, again in physical coordinates. Every marker has a natural
+orientation from which you can rotate it. The angle of rotation is
+given by @code{rotation} in tenth of a degree. @code{col} is the color
+of the marker, in packed RGB format. @code{bcol} is currently un-used.
+
+The second function takes a structure that specifies the marker. The
+members of the structure are as follows:
+@table @code
+@item name
+The name of the marker.
+@item x, y
+Position of center of the marker in pixel coordinates, relative to the
+origin of the image.
+@item w, h
+The size of the bounding box in pixel coordinates.
+@item color
+The color of the marker in packed RGB format.
+@item fill
+If true the marker is filled.
+@item thickness
+The line line thickness used for drawing.
+@item style
+The line style to be used for drawing.
+@item angle
+Angle of rotation in tenth of a degree from the marker's nature
+orientation.
+@end table
+
+If successful both functions return the number of markers that are currently
+associated with the image, otherwise a negative number.
+
+Some built-in markers in different orientations are shown in Fig.
+22.1.
+
+To delete all markers added to an image use the function
+@findex flimage_delete_all_markers()
+@anchor{flimage_delete_all_markers()}
+@example
+void flimage_delete_all_markers(FL_IMAGE *im);
+@end example
+
+
+Of course the library would not be complete without the ability for
+applications to define new markers. The following function is provided
+so you can define your own markers:
+@findex flimage_define_marker()
+@anchor{flimage_define_marker()}
+@example
+int flimage_define_marker(const char *name,
+                          void (*draw) (FLIMAGE_MARKER *marker),
+                          const char *psdraw);
+@end example
+@noindent
+When the marker is to be drawn the function @code{draw()} is called
+with the marker structure. In addition to the fields listed above the
+following fields are filled by the library to facilitate the operation
+of drawing the marker
+@table @code
+@item display
+The display to be drawn on.
+@item gc
+The GC to be used in drawing
+@item win
+The window to draw to.
+@item psdraw
+A string that draws a marker in a square with the corner coordinates
+(-1, -1), (-1, 1), (1, 1) and (1, -1) in PostScript. For example the
+rectangle marker has the following @code{psdraw} string:
+@example
+     -1 -1 moveto
+     -1  1 lineto
+      1  1 lineto 
+      1 -1 lineto
+      closepath
+@end example
+@end table
+
+Defining new markers is the preferred method of placing arbitary
+drawings onto an image as it works well with double-buffering and
+pixelization of the markers.
+
+@node Pixelizing the Annotation
+@subsubsection Pixelizing the Annotation
+
+Annotations placed on the image are kept seperate from the image
+pixels themselves. The reasons for doing so are twofold. First,
+keeping the annotation seperate makes it possible to later edit the
+annotations. The second reason is that typically the screen has a
+lower resolutions than other output devices. By keeping the annotations
+seperate from the pixels makes it possible to obtain better image
+qualities when the annotations are rendered on higher-resolution
+devices (for example a PostScript printer).
+
+If for some reason making the annotations a part of the image pixels
+is desired, use the following routine
+@findex flimage_render_annotation()
+@anchor{flimage_render_annotation()}
+@example
+int flimage_render_annotation(FL_IMAGE *image, FL_WINDOW win);
+@end example
+@noindent
+The function returns -1 if an error occurs. The parameter @code{win}
+is used to create the appropriate pixmap. After the function returns
+the annotations are rendered into the image pixels (thus an annotation
+or a part of it that was outside of the image is lost). Note that
+during rendering the image type may change depending on the
+capabilities of @code{win}. Annotations that were kept separately are
+deleted. Note that the image must have been displayed at least once
+prior to calling this function for it to work correctly.
+
+You can always enlarge the image first via the cropping function with
+some solid borders. Then you can put annotation outside of the
+original image but within the enlarged image.
+
+Not all image formats support the storage of text and markers. This
+means if you attempt to save an image that has associated text and
+markers into an image format that does not support it, you may lose
+the annotation. All pnm formats supports the storage of annotations.
+To find out if a particular format supports annotation storage, look
+at the annotation field of the @code{FLIMAGE_FORMAT_INFO} structure. A
+zero value indicates it does not support it.
+
+
+@node Write Your Own Routines
+@subsection Write Your Own Routines
+
+The only communication required between an image processing routine
+and the rest of the image routines is to let the display routine know
+that the image has been modified by setting @code{image->modified} to
+1. This information is used by the display routine to invalidate any
+buffered displayable images that were created from the original image.
+After displaying, @code{image->modified} is reset by the display
+routine.
+
+
+@node Utilities
+@section Utilities
+
+In the following some of the utilities that may come in handy when
+you're writing image manipulation routines are described.
+
+@ifnottex
+
+@menu
+* Memory Allocation::
+* Color Quantization::
+* Remarks::
+@end menu
+
+@end ifnottex
+
+
+@node Memory Allocation
+@subsection Memory Allocation
+
+To create a matrix to be used in several of the functions listed above
+use either @code{@ref{fl_get_matrix()}} described above or
+@findex fl_make_matrix()
+@anchor{fl_make_matrix()}
+@example
+void *fl_make_matrix(int nrow, int ncol, unsigned int esize,
+                      void *inMem);
+@end example
+@noindent
+where @code{nrow} and @code{ncol} are the number of rows and columns
+of the matrix respectively. @code{esize} is the size (in bytes) of each
+matrix element.
+
+Both functions return a two-dimensional array of entities of size
+@code{esize}. The first function initializes all elements to zero. The
+second function does not allocate nor initialize memory for the matrix
+itself. Instead it uses the memory with address @code{inMem} that is
+supplied by the caller, which should be a one-dimensional array of
+length @code{nrow * ncol * esize}.
+
+You can use the returned pointer as a regular two-dimensional
+array (@code{matrix[r][c]}) or as a single array of length
+@code{nrow *ncol}, starting from at @code{matrix[0]}:
+@example
+short **matrix = fl_get_matrix(nrow, ncol, sizeof **matrix);
+
+/* access the matrix as a 2-d array */
+matrix[3][4] = 5;
+
+/* or access it as 1D array */
+*(matrix[0] + 3 * ncol + 4) = 5;
+
+/* most useful in image processing to use it as 1D array */
+
+memcpy(saved, matrix, nrow * ncol * sizeof **matrix);
+@end example
+
+To free a matrix allocated using one the above functions, use
+@findex fl_free_matrix()
+@anchor{fl_free_matrix()}
+@example
+void fl_free_matrix(void *matrix);
+@end example
+@noindent
+The function frees all memory allocated. After the function returns
+the matrix cab not be de-referenced anymore. In the case where the
+matrix was created by @code{@ref{fl_make_matrix()}} the function will
+only free the memory that's allocated to hold the matrix indices but
+not the memory supplied by the caller. It is the caller's
+responsibility to free that part of the memory.
+
+There are also some useful functions that manipulate images directly.
+The following is a brief summary of them.
+
+@findex flimage_dup()
+@anchor{flimage_dup()}
+@example
+FL_IMAGE *flimage_dup(FL_IMAGE *im);
+@end example
+@noindent
+This function duplicates an image @code{im} and returns the duplicated
+image. At the moment, only the first image is duplicated even if the
+input image has multiple frames. Furthermore, markers and annotations
+are not duplicated.
+
+@findex flimage_to_pixmap()
+@anchor{flimage_to_pixmap()}
+@findex flimage_from_pixmap()
+@anchor{flimage_from_pixmap()}
+@example
+Pixmap flimage_to_pixmap(FL_IMAGE *im, FL_WINDOW win);
+int flimage_from_pixmap(FL_IMAGE *im, Pixmap pixmap);
+@end example
+
+The first function converts an image into a Pixmap (a server side
+resource) that can be used in the pixmap object (see pixmap-class???).
+
+The second function does the reverse. @code{im} must be a properly
+allocated image.
+
+
+@node Color Quantization
+@subsection Color Quantization
+
+In order to display a RGB image on a color-mapped device of limited
+depth, the number of colors in the original image will have to be
+reduced. Color quantization is one way of doing this.
+
+Two color quantization algorithms are available in the Forms Library.
+One uses Heckbert's median cut algorithm followed by Floyd-Steinberg
+dithering after which the pixels are mapped to the colors selected.
+The code implementing this is from the Independent JPEG Group's two
+pass quantizer (@file{jquant2.c} in the IJG's distribution), which
+under copyright (c) 1991-1996 by Thomas G. Lane and the IJG.
+
+Another method is based on the Octree quantization algorithm with no
+dithering and is implemented by Steve Lamont (@code{spl@@ucsd.edu})
+and is under vopyright (c) 1998 by Steve Lamont and the National
+Center for Microscopy and Imaging Research. This quantization library
+is available from
+@url{ftp://ncmir.ucsd.edu/pub/quantize/libquantize.html}. The
+quantizer based on this library is not compiled into the image
+support. The source code for using this quantizer is in @code{image}
+subdirectory.
+
+By default, the median cut algorithm is used. You can switch to the
+octree based algorithm using the following call
+@findex flimage_select_octree_quantizer()
+@anchor{flimage_select_octree_quantizer()}
+@example
+void flimage_select_octree_quantizer(void);
+@end example
+
+To switch back to the median cut quantizer use
+@findex flimage_select_mediancut_quantizer()
+@anchor{flimage_select_mediancut_quantizer()}
+@example
+void flimage_select_mediancut_quantizer(void);
+@end example
+
+The median-cut quantizer tends to give better images because of the
+dithering step. However, in this particular implementation, the number
+of quantized colors is limited to 256. There is no such limit with the
+octree quantizer implementation.
+
+
+@node Remarks
+@subsection Remarks
+
+See @file{itest.c} and @file{ibrowser.c} for example use of the image
+support in Forms Library. @file{iconvert.c} is a program that converts
+between different file formats and does not require an X connection.
+
+Due to access limitations, not all combinations of display depth and
+bits per pixel (bpp) are tested. Depths of @w{1 bit} (@w{1 bpp}), @w{4
+bits} (@w{8 bpp}), @w{8 bits} (@w{8 bpp}), @w{16 bits} (@w{16 bpp}),
+@w{24 bits} (@w{32 bpp}), @w{30 bits} (@w{32 bpp}) were tested.
+Although it works in @w{12 bit} PseudoColor mode, due to limitations
+of the default quantizer the display function does not take full
+advantage of the larger lookup table. Special provisions were made so
+a gray12 image will be displayed in 4096 shades of gray if the
+hardware supports 12-bit grayscale.
+
+If JPEG support (@file{image_jpeg.c}) is not compiled into the Forms
+Library, you can obtain the jpeg library source from
+@url{ftp://ftp.uu.net/graphics/jpeg}.

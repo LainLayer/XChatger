@@ -1,0 +1,13 @@
+@node Part IV
+@unnumbered @emph{Part IV - Designing Object Classes}
+
+@menu
+* Part IV Introduction::
+* Part IV Global Structure::
+* Part IV Events::
+* Part IV The Type FL_OBJECT::
+* Part IV Drawing Objects::
+* Part IV An Example::
+* Part IV New Buttons::
+* Part IV Using a Pre-emptive Handler::
+@end menu

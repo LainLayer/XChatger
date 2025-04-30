@@ -1,0 +1,186 @@
+\input texinfo
+
+@setfilename xforms.info
+@settitle XForms (Forms Library) - Version 1.2 (Rev. 4)@*A Graphical User Interface Toolkit for X
+@set lastupdate January 20, 2016
+@paragraphindent 0
+
+@titlepage
+@title XForms
+@sp 8
+@center @titlefont{XForms (Forms Library)}
+@sp 1
+@center @titlefont{A Graphical User Interface Toolkit for X}
+@sp 8
+@center Library Version 1.2 (Rev. 5)
+@sp 2
+@center January 2016
+@sp 8
+@end titlepage
+
+
+@dircategory Development
+@direntry
+* XForms: (xforms). A Graphical user interface toolkit for X
+@end direntry
+
+
+@contents
+
+
+@node Top
+@top
+
+@ifnottex
+
+@menu
+* Preface:                             Preface
+* Part I - Using The Forms Library:    Part I
+* Introduction:                        Part I Introduction
+* Getting Started:                     Part I Getting Started
+* Defining Forms:                      Part I Defining Forms
+* Doing Interaction:                   Part I Doing Interaction
+* Free Objects:                        Part I Free Objects
+* Free Objects:                        Part I Goodies
+* Part II - The Form Designer:         Part II
+* Introduction:                        Part II Introduction
+* Getting Started:                     Part II Getting Started
+* Command Line Arguments:              Part II Command Line Arguments
+* Creating Forms:                      Part II Creating Forms
+* Saving and Loading Forms:            Part II Saving and Loading Forms
+* Language Filters:                    Part II Language Filters
+* Generating Hardcopies:               Part II Generating Hardcopies
+* Part III - Object Classes:           Part III
+* Introduction:                        Part III Introduction
+* Static Objects:                      Part III Static Objects
+* Button-like Objects:                 Part III Button-like Objects
+* Valuator Objects:                    Part III Valuator Objects
+* Input Objects:                       Part III Input Objects
+* Choice Objects:                      Part III Choice Objects
+* Container Objects:                   Part III Container Objects
+* Other Objects:                       Part III Other Objects
+* Popups:                              Part III Popups
+* Deprecated Objects:                  Part III Deprecated Objects
+* Part IV - Designing Object Classes:  Part IV
+* Introduction:                        Part IV Introduction
+* Global Structure:                    Part IV Global Structure
+* Events:                              Part IV Events
+* The Type @code{FL_OBJECT}:           Part IV The Type FL_OBJECT
+* Drawing Objects:                     Part IV Drawing Objects
+* An Example:                          Part IV An Example
+* New Buttons:                         Part IV New Buttons
+* Using a Pre-emptive Handler:         Part IV Using a Pre-emptive Handler
+* Part V - General Informations:       Part V
+* Overview of Main Functions:          Part V Overview of Main Functions
+* Some Useful Functions:               Part V Some Useful Functions
+* Resources for Forms Library:         Part V Resources for Forms Library
+* Dirty Tricks:                        Part V Dirty Tricks
+* Trouble Shooting:                    Part V Trouble Shooting
+* Part VI - Image Supprt API:          Part VI
+* Part VI Images::
+
+@c There are three indexes, for functions, variables and constants.
+@c But for HTML we combine them into one - it's easier to search only
+@c one page instead of having to go to three of them and the second
+@c and third page are also a bit difficult to find...
+
+@ifnothtml
+* Index of Functions::
+* Index of Global Variables::
+* Index of Constants::
+@end ifnothtml
+
+@ifhtml
+* Index::
+@end ifhtml
+@end menu
+
+@end ifnottex
+
+@include part0_preface.texi
+
+@include part1.texi
+@include part1_introduction.texi
+@include part1_getting_started.texi
+@include part1_defining_forms.texi
+@include part1_doing_interaction.texi
+@include part1_free_objects.texi
+@include part1_goodies.texi
+
+@include part2.texi
+@include part2_introduction.texi
+@include part2_getting_started.texi
+@include part2_command_line.texi
+@include part2_creating_forms.texi
+@include part2_saving_loading.texi
+@include part2_language_filters.texi
+@include part2_generating_hardcopies.texi
+
+@include part3.texi
+@include part3_introduction.texi
+@include part3_static_objects.texi
+@include part3_buttons.texi
+@include part3_valuator_objects.texi
+@include part3_input_objects.texi
+@include part3_choice_objects.texi
+@include part3_container_objects.texi
+@include part3_other_objects.texi
+@include part3_popups.texi
+@include part3_deprecated_objects.texi
+
+@include part4.texi
+@include part4_introduction.texi
+@include part4_global_structure.texi
+@include part4_events.texi
+@include part4_fl_object.texi
+@include part4_drawing_objects.texi
+@include part4_an_example.texi
+@include part4_new_buttons.texi
+@include part4_preemptive_handler.texi
+
+@include part5.texi
+@include part5_overview.texi
+@include part5_useful_functions.texi
+@include part5_resources.texi
+@include part5_dirty_tricks.texi
+@include part5_trouble_shooting.texi
+
+@include part6.texi
+@include part6_images.texi
+
+
+@c For non-HTML output create an index for functions, global variables
+@c and constants, for HTML output combine them into one
+
+@ifnothtml
+
+@node Index of Functions
+@unnumbered Index of Functions
+
+@printindex fn
+
+@node Index of Global Variables
+@unnumbered Index of Global Variables
+
+@printindex vr
+
+@node Index of Constants
+@unnumbered Index of Constants
+
+@printindex tp
+
+@end ifnothtml
+
+@ifhtml
+
+@syncodeindex vr fn
+@syncodeindex tp fn
+
+@node Index
+@unnumbered Index
+
+@printindex fn
+
+@end ifhtml
+
+@bye

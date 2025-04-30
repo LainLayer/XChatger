@@ -1,0 +1,75 @@
+@node Part I Introduction
+@chapter Introduction
+
+The Forms Library is a library of C-routines that allows you to build up
+interaction forms with buttons, sliders, input fields, dials, etc. in a
+very simple way. Following the X tradition, Forms Library does not
+enforce the look and feel of objects although in its default state, it
+does provide a consistent look and feel for all objects.
+
+The Forms Library only uses the services provided by Xlib and should be
+compilable on all machines that have X installed and have an ANSI
+compatible compiler. Being based on Xlib,Forms Library is small and
+efficient. It can be used in both C and C++ programs and soon it will be
+available for other languages@footnote{As of this writing, perl,
+Ada95, scheme, pascal, Fortran and python bindings are in beta
+testing.}.
+
+The basic procedure of using the Forms Library is as follows. First
+one or more forms are defined, by indicating what objects should be
+placed on them and where. Types of objects that can be placed on the
+forms include: boxes, texts, sliders, buttons, dials, input fields and
+many more. Even a clock can be placed on a form with one command.
+After the form has been defined it is displayed on the screen and
+control is given to a library call @code{@ref{fl_do_forms()}}. This
+routine takes care of the interaction between the user and the form
+and returns as soon as some change occurs in the status of the form
+due to some user action. In this case control is returned to the
+program (indicating that the object changed) and the program can take
+action accordingly, after which control is returned again to the
+@code{@ref{fl_do_forms()}} routine. Multiple forms can be handled
+simultaneously by the library and can be combined with windows of the
+application program. More advanced event handling via object callbacks
+is also supported.
+
+The Forms Library is simple to use. Defining a form takes a few lines
+of code and interaction is fully handled by the library routines. A
+number of demo programs are provided to show how to piece together
+various parts of the library and demonstrate how easy forms are built
+and used. They can be found in the directory @code{demos}. Studying
+these demos is a good way of learning the system.
+
+If you only have very simple applications for the Forms Library, e.g.,
+to ask the user for a file name, or ask him a question or give him a
+short message, @ref{Part I Goodies, , Goodies} contains some even more
+simple routines for this. So, e.g., a form with the question "Do you
+want to quit?" can be made with one line of code.
+
+To make designing forms even easier a Form Designer is provided. As
+its name implies, this is a program that lets you interactively design
+forms and generate the corresponding C-code. @xref{Part II
+Introduction, , Introduction}, and the following chapters for its use.
+
+The current version of the software is already quite extended but we are
+working on further improvements. In particular, we plan on designing new
+classes of objects that can be placed on the forms. Adding classes to
+the system is not very complicated. Part IV of this document describes
+in detail how to do this yourself.
+
+The following chapters will describe the basic application
+programmer's interface to the Forms Library and lead you through the
+different aspects of designing and using forms. In @ref{Part I Getting
+Started} we give some small and easy examples of the design and use of
+forms. In @ref{Part I Defining Forms, , Defining Forms} we describe
+how to define forms. This chapter just contains the basic classes of
+objects that can be placed on forms. Also, for some classes only the
+basic types are described and not all. For an overview of all classes
+and types of objects see Part III of this document. @ref{Part I Doing
+Interaction, , Doing Interaction} describes how to set up interaction
+with forms. A very specific class of objects are free objects and
+canvases. The application program has full control over their
+appearance and interaction. They can be used to place anything on
+forms that is not supported by the standard objects. @ref{Part I Free
+Objects, , Free Objects} describes their use. Finally, @ref{Part I
+Goodies, , Goodies} describes some built-in routines for simple
+interaction like asking questions and prompting for choices etc.

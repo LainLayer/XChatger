@@ -1,0 +1,124 @@
+.\"
+.\" Man page for XFORMS.
+.\" Use the following command to generate viewable man page
+.\"
+.\"   tbl xforms.5 | {nt}roff -man
+.\"
+.\"   ul | more -fsk to view
+.\"
+.\"
+.TH XFORMS 5 "November 2013" "Version 1.2.0" "Forms Library"
+.SH NAME
+xforms \-   A GUI Toolkit for X Window Systems
+.\"
+.\" setup
+.de Cr
+.ie n (c)
+.el \(co
+..
+.SH SYNOPSIS
+.B Forms Library for X
+(xforms) is a GUI toolkit and builder for the X Window Systems and
+runs on all major UNIX platforms as well as OpenVMS and OS2.
+.B Forms Library
+is too complex to be described in the "man" page format.
+Ask your system administrator for the location of the HTML, PDF or
+PostScript document or follow the links on the
+.BR "Forms Library" 's
+home page for an online version of the documentation.
+.SH DESCRIPTION
+.B Forms Library
+is a graphical user interface toolkit based on Xlib for X Window
+Systems. It comes with a rich set of objects such as buttons, browsers,
+sliders and menus integrated into an elegant event/object callback
+execution model that allows fast and easy construction of X
+applications. In addition, the library has support for image read and
+write, format conversion and simple image processing. The library
+consists of a flexible set of C-routines that can be used in C and C++
+programs (As of this writing, perl, ada95, pascal, scheme and Fortran
+bindings to the
+.B Forms Library
+are in beta.)
+
+The library is efficient and portable and runs on all major
+Unix platforms, including Sun, SGI, HP, DEC Alpha/OSF, IBM RS6000,
+Convex, Cray, Linux, FreeBSD, NetBSD, SCO, Unixware, OpenBSD , BSDi,
+DecSystem(mips)/Ultrix and others.
+Non-unix platforms include OpenVMS, OS/2, and Window/NT.
+
+Bundled with the library is also a Form designer,
+.I fdesign,
+which can be used to build interaction forms in a WYSIWYG
+(what you see is what you get) way and to generate the corresponding
+C (or any of the binding languages) code for you.
+50+ demos in source code are distributed with the library.
+.SH OPTIONS
+All programs written using the
+.B Forms Library
+recognize the following command line options
+.TP 6
+.BI \-display " host:dpy"
+specifies the server to connect to.
+.TP
+.BI \-bw " borderwidth"
+specifies the border width to use for built-in objects.
+.TP
+.B \-flversion
+prints the xforms version information.
+.TP
+.BI \-visual " visualName"
+requests a visual by name such as TrueColor etc. By default the
+.B Forms Library
+always selects the visual that has the most depth.
+.TP
+.BI \-depth " depth"
+requests a specific depth.
+.TP
+.BI \-fldebug " level"
+generates some info about the state of the
+.B XForms.
+where
+.I level
+is an integer between 1-5 and controls the amount of
+information to output. Depending on the options used
+when the
+.B Forms Library
+was built, a level more than 3 might not be available.
+.TP
+.B \-sync
+runs the application in synchronous mode with debug level set to 4.
+.TP
+.B \-private
+requests a private colormap for the application.
+.TP
+.B \-shared
+requests a shared colormap even if the application needs more
+colors than available. For those colors that can't be allocated
+in the shared colormap, substitutions are made so the closest
+matching color is used.
+.TP
+.B \-stdcmap
+requests a standard colormap.
+.TP
+.B \-name " newname"
+specifies the application name under which resources are to be
+obtained, rather than the default executable file name.
+.B
+.SH SEE ALSO
+fdesign(1L), fd2ps(1L)
+
+.SH AUTHOR
+Copyright
+.Cr
+1996-2002
+T.C. Zhao, Mark Overmars and Steve Lamont
+.br
+Since 2002: GNU Lesser General Public License
+.br
+Maintainers: Jean-Marc Lasgouttes, Angus Leeming, Jens Thoms Toerring
+<jt@toerring.de>
+
+.SH HOME PAGE
+http://xforms-toolkit.org
+.br
+http://savannah.nongnu.org/projects/xforms/

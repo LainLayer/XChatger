@@ -1,0 +1,41 @@
+@node Part II Introduction
+@chapter Introduction
+
+This part of the documentation describes the Form Designer, a GUI
+builder meant to help you interactively design dialogue forms for use
+with the Forms Library. This part assumes the reader is familiar with
+the Forms Library and has read Part I of this document. Even though
+designing forms is quite easy and requires only a relatively small
+number of lines of C-code, it can be time consuming to figure out all
+required positions and sizes of the objects. The Form Designer was
+written to facilitate the construction of forms. With Form Designer,
+there is no longer any need to calculate or guess where the objects
+should be. The highly interactive and WYSIWYG (What You See Is What
+You Get) nature of the Form Designer relieves the application
+programmer from the time consuming process of user interface
+construction so that he/she can concentrate more on what the
+application program intends to accomplish. Form Designer provides the
+abilities to interactively place, move and scale objects on a form,
+also the abilities to set all attributes of an object. Once
+satisfactory forms are constructed, the Form Designer generates a
+piece of C-code that can then be included in the application program.
+This piece of code will contain one procedure create_form_xxx() for
+each form, where xxx indicates the form name. The application only
+needs to call it to generate the form designed. The code produced is
+easily readable. The Form Designer also lets the user identify each
+object with C variables for later reference in the application program
+and allows advanced object callback bindings all within the Form
+Designer. All actions are performed with the mouse or the function
+keys. It uses a large number of forms itself to let the user make
+choices, set attributes, etc. Most of these forms were designed using
+the Form Designer itself. It is important to note that the Form
+Designer only helps you in designing the layout of your forms. It does
+not allow you to specify the actions that have to be taken when, e.g.,
+a button is pushed. You can indicate the callback routine to call but
+the application program has to supply this callback routine. Also, the
+current version is mostly a layout tool and not a programming
+environment, not yet anyway. This means that the Form Designer does
+not allow you to initialize all your objects. You can, however,
+initialize some objects, e.g., you can set the bounds of a slider
+inside the Form Designer. Eventually full support of object
+initialization will be implemented.

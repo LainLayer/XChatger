@@ -1,0 +1,44 @@
+/* XPM */
+static char *fd_logo_pixels[] = {
+/* fd logo
+ * width height ncolors chars_per_pixel */
+  "64 32 4 1 ",
+  "b c None       m None",
+  "` c #ff6144    m White",
+  "a c #cecece    m None",
+  "c c #282828    m None",
+/* pixels */
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbaaaaaaaabbaaaaabbaaaaaaabbaaaabbbaaaabbbbbbbbbbbbbbb",
+"bbbbbbbbbbbba```````caa````cba``````cba```cbaa```cbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbc``cc``ca``cc``cbc``cc``cbc```ca```ccbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbba``cac`c``ccbc``ca``ca``cba```ca```cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbba``c`ccc``cbba``ca``ca``cba```c`c``cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbba````cba``cbba``ca`````ccba`c```c``cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbba``c`cba``cbba``ca``c``cbba`c```c``cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbba``cccba``cbaa``ca``cc``cba`cc`cc``cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbaa``cbbbbc``ca``cca``cac``ca`ca`ca``cbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbba````cbbbbc````cca````c```````ccc````cbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbcccccbbbbbcccccbbcccccccccccccbbcccccbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"aaaaaabbaaaaaaaabaaaaaaaaaaabbaaaaaabaaaabaaaaaaaaaaaaaaaaaaabbb",
+"``````cba```````ca`````c````caa```c`ca```ca```c```````c``````cbb",
+"c``cc``cbc``cc``c``cc``cc``cca``cc``cbc```cc`ccc``cc``cc``cc``cb",
+"a``cbc``ca``cac`c``cbc`ca``ca``ccbc`cba```ca`cba``cac`ca``ca``cb",
+"a``cba``ca``c`ccc```cacca``ca``cbbbccba`c``c`cba``c`ccca``ca``cb",
+"a``cba``ca````cbbc````cba``ca``caaaaaba`c``c`cba````cbba`````ccb",
+"a``cba``ca``c`caaacc```ca``ca``ca````ca`cc```cba``c`caba``c``cbb",
+"a``caa``ca``ccc`c`cbc``ca``ca``cbc``cca`ca```cba``ccc`ca``cc``cb",
+"a``ca``cca``ca``c``ca``ca``cbc``ca``caa`cbc``caa``ca``ca``cac``c",
+"``````cca```````c`````cc````cbc````cca```cbc`ca```````c````c````",
+"cccccccbbccccccccccccccbcccccbbcccccbbccccbbccbccccccccccccccccc",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+};
+

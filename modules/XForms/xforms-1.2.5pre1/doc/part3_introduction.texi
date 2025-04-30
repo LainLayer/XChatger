@@ -1,0 +1,125 @@
+@node Part III Introduction
+@chapter Introduction
+
+This part describes all different object classes that are available in
+the Forms Library. All available object classes are summarized in a
+table below. For each class there is a section in this document that
+describes it. The section starts with a short description of the
+object, followed by the routine(s) to add it to a form. For (almost)
+all classes this routine has the same form
+@example
+FL_OBJECT *fl_add_CLASS(int type, FL_Coord x, FL_Coord y,
+                        FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+Here @code{type} is the type of the object in its class. Most classes
+have many different types. They are described in the section.
+@code{x}, @code{y}, @code{w} and @code{h} give the left upper corner
+and the width and height of the bounding box of the object.
+@code{label} is the label that is placed inside or next to the object.
+For each object class the default placement of the label is described.
+When the label starts with the character @code{@@} the label is not
+printed but replaced by a symbol instead.
+
+For each object class there is also a routine
+@example
+FL_OBJECT *fl_create_CLASS(int type, FL_Coord x, FL_Coord y,
+                           FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+that only creates the object but does not put it in the form. This
+routine is useful for building hierarchical object classes. The
+routine is not described in the following sections.
+
+An important aspect of objects is how interaction is performed with
+them. First, there is the way in which the user interacts with the
+object, and second there's the question under which circumstances an
+object changes its state and how this is returned to the application
+program. All this is described in detail in the following sections.
+
+Object attributes can be divided into generic and object specific
+ones. For generic attributes (e.g., the object label size), the
+routines that change them always start with @code{fl_set_object_xxx()}
+where @code{xxx} is the name of the attribute. When a specific object
+is created and added to a form, it inherits many aspects of the
+generic object or initializes the object attributes to its needed
+defaults.
+
+Object classes can be roughly divided into static object classes (Box,
+Frame, LabelFrame, Text, Bitmap, Pixmap, Clock and Chart), Buttons,
+valuator objects classes (Slider, Scrollbar, Dial, Positioner, Counter,
+Thumbwheel), Inputs, choice object classes (Menu, Choice, Browser),
+container object classes (Tabbed Folder, Form Browser, Menu bar) and,
+finally, other object classes (Timer, XYPlot, Canvas, Popup).
+
+@table @asis
+@item Box
+Rectangular areas to visually group objects.
+@item Frame
+A box with an empty inside region.
+@item LabelFrame
+A frame with label on the frame.
+@item Text
+Simple one line labels.
+@item Bitmap
+Displays an X11 bitmap.
+@item Pixmap
+Displays a pixmap using the XPM library.
+@item Clock
+A clock.
+@item Chart
+Bar-charts, pie-charts, strip-charts, etc.
+@item Button
+Many different kinds and types of buttons that the user can push.
+@item Slider
+@itemx ValSlider
+Both vertical and horizontal sliders to let the user indicate some
+float value, possibly with a field showing the currently set value.
+@item Scrollbar
+Sliders plus two directional buttons.
+@item Dial
+A dial to let the user indicate a float value.
+@item Positioner
+Lets the user indicate an (x, y) position with the mouse.
+@item Counter
+A different way to let a user step through values.
+@item Thumbwheel
+Rolling a wheel to indicate float values.
+@item Input
+Lets the user type in an input string.
+@item Menu
+Both pop-up and drop-down menus can be created.
+@item Choice
+Can be used to let the user make a choice from a set of items.
+@item Browser
+A text browser with a slider. Can be used for making selections from
+sets of choices.
+@item Folder
+A (tabbed) folder is a compound object capable of holding multiple
+groups of objects.
+@item FormBrowser
+A browser you can drop forms into.
+@item Timer
+A timer that runs from a set time towards 0. Can e.g., be used to do
+default actions after some time has elapsed.
+@item XYPlot
+Shows simple 2D xy-plot from a tabulated function or a datafile. Data
+points can be interactively manipulated and retrieved.
+@item Canvas
+Canvases are managed plain X windows. It differs from a raw
+application window only in the way its geometry is managed, not in the
+way various interaction is set up.
+@item Popups
+Popup are mostly used by menus and choices, but they can also be used
+stand-alone to isplay context menus etc.
+@end table
+
+Thus, in the following sections, only the object specific routines are
+documented. Routines that set generic object attributes are documented
+in Part V.
+
+When appropriate, the effect of certain (generic) attributes of the
+objects on the specific object is discussed. In particular, it is
+described what effect the routine @code{@ref{fl_set_object_color()}}
+has on the appearance of the object. Also some remarks on possible
+boxtypes are made.

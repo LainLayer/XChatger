@@ -1,0 +1,1038 @@
+@node Part III Static Objects
+@chapter Static Objects
+
+@ifnottex
+
+@menu
+* Box Object:          Box Object
+* Frame Object:        Frame Object
+* LabelFrame Object:   LabelFrame Object
+* Text Object:         Text Object
+* Bitmap Object:       Bitmap Object
+* Pixmap Object:       Pixmap Object
+* Clock Object:        Clock Object
+* Chart Object:        Chart Object
+@end menu
+
+
+@end ifnottex
+
+
+@node Box Object
+@section Box Object
+
+Boxes are simply used to give the dialogue forms a nicer appearance.
+They can be used to visually group other objects together. The bottom
+of each form is a box.
+
+@ifnottex
+
+@menu
+* Adding Box Objects:  Adding Box Objects
+* Box Types:           Box Types
+* Box Attributes:      Box Attributes
+* Remarks:             Box Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Box Objects
+@subsection Adding Box Objects
+
+To add a box to a form you use the routine
+@findex fl_add_box()
+@anchor{fl_add_box()}
+@example
+FL_OBJECT *fl_add_box(int type, FL_Coord x, FL_Coord y,
+                      FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+The meaning of the parameters is as usual. The label is per default
+placed in the center of the box.
+
+
+@node Box Types
+@subsection Box Types
+
+The following types are available:
+@table @code
+@tindex FL_UP_BOX
+@anchor{FL_UP_BOX}
+@item FL_UP_BOX
+A box that comes out of the screen.
+
+@tindex FL_DOWN_BOX
+@anchor{FL_DOWN_BOX}
+@item @code{FL_DOWN_BOX}
+A box that goes down into the screen.
+
+@tindex FL_FLAT_BOX
+@anchor{FL_FLAT_BOX}
+@item FL_FLAT_BOX
+A flat box without a border.
+
+@tindex FL_BORDER_BOX
+@anchor{FL_BORDER_BOX}
+@item FL_BORDER_BOX
+A flat box with just a border.
+
+@tindex FL_FRAME_BOX
+@anchor{FL_FRAME_BOX}
+@item FL_FRAME_BOX
+A flat box with an engraved frame.
+
+@tindex FL_SHADOW_BOX
+@anchor{FL_SHADOW_BOX}
+@item FL_SHADOW_BOX
+A flat box with a shadow.
+
+@tindex FL_ROUNDED_BOX
+@anchor{FL_ROUNDED_BOX}
+@item FL_ROUNDED_BOX
+A rounded box.
+
+@tindex FL_RFLAT_BOX
+@anchor{FL_RFLAT_BOX}
+@item FL_RFLAT_BOX
+A rounded box without a border.
+
+@tindex FL_RSHADOW_BOX
+@anchor{FL_RSHADOW_BOX}
+@item FL_RSHADOW_BOX
+A rounded box with a shadow.
+
+@tindex FL_OVAL_BOX
+@anchor{FL_OVAL_BOX}
+@item FL_OVAL_BOX
+An elliptic box.
+
+@tindex FL_NO_BOX
+@anchor{FL_NO_BOX}
+@item FL_NO_BOX
+No box at all, only a centered label.
+@end table
+
+
+@node Box Attributes
+@subsection Box Attributes
+
+The first color argument (@code{col1}) to
+@code{@ref{fl_set_object_color()}} controls the color of the box, the
+second (@code{col2}) is not used.
+
+
+@node Box Remarks
+@subsection Remarks
+
+No interaction takes place with boxes.
+
+Do not use @code{FL_NO_BOX} type if the label is to change during the
+execution of the program.
+
+
+@node Frame Object
+@section Frame Object
+
+Frames are simply used to give the dialogue forms a nicer appearance.
+They can be used to visually group other objects together. Frames are
+almost the same as a box, except that the interior of the bounding box
+is not filled. Use of frames can speed up drawing in certain
+situations. For example, to place a group of radio buttons within an
+@code{FL_ENGRAVED_FRAME}. If we were to use an @code{FL_FRAME_BOX} to
+group the buttons, visually they would look the same. However, the
+latter is faster as we don't have to fill the interior of the bounding
+box and can also reduce flicker. Frames are useful in decorating free
+objects and canvases.
+
+
+@ifnottex
+
+@menu
+* Adding Frame Objects:   Adding Frame Objects
+* Frame Types:            Frame Types
+* Frame Attributes:       Frame Attributes
+* Remarks:                Frame Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Frame Objects
+@subsection Adding Frame Objects
+
+To add a frame to a form you use the routine
+@findex fl_add_frame()
+@anchor{fl_add_frame()}
+@example
+FL_OBJECT *fl_add_frame(int type, FL_Coord x, FL_Coord y,
+                        FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+The meaning of the parameters is as usual except that the frame is
+drawn outside of the bounding box (so a flat box of the same size just
+fills the inside of the frame without any gaps). The label is by
+default placed centered inside the frame.
+
+
+@node Frame Types
+@subsection Frame Types
+
+The following types are available:
+@table @code
+@tindex FL_NO_FRAME
+@item FL_NO_FRAME
+Nothing is drawn.
+@tindex FL_UP_FRAME
+@item FL_UP_FRAME
+A frame appears coming out of the screen.
+@tindex FL_DOWN_FRAME
+@item FL_DOWN_FRAME
+A frame that goes down into the screen.
+@tindex FL_BORDER_FRAME
+@item FL_BORDER_FRAME
+A frame with a simple outline.
+@tindex FL_ENGRAVED_FRAME
+@item FL_ENGRAVED_FRAME
+A frame appears to be engraved.
+@tindex FL_EMBOSSED_FRAME
+@item FL_EMBOSSED_FRAME
+A frame appears embossed.
+@tindex FL_ROUNDED_FRAME
+@item FL_ROUNDED_FRAME
+A rounded frame.
+@tindex FL_OVAL_FRAME
+@item FL_OVAL_FRAME
+An elliptic box.
+@end table
+
+
+@node Frame Attributes
+@subsection Frame Attributes
+
+The first color argument (@code{col1}) of
+@code{@ref{fl_set_object_color()}} controls the color of the frame if
+applicable, the second (@code{col2}) is not used. The boxtype
+attribute does not apply to the frame class.
+
+
+@node Frame Remarks
+@subsection Remarks
+
+No interaction takes place with frames.
+
+It may be faster to use frames instead of boxes for text that is truly
+static. See @file{freedraw.c} for an example use of frame objects.
+
+
+@node LabelFrame Object
+@section LabelFrame Object
+
+A label frame is almost the same as a frame except that the label is
+placed on the frame (See Fig. 15.1) instead of inside or outside of
+the bounding box as in a regular frame.
+
+@ifnottex
+
+@menu
+* Adding LabelFrame Objects:  Adding LabelFrame Objects
+* LabelFrame Types:           LabelFrame Types
+* LabelFrame Attributes:      LabelFrame Attributes
+* Remarks:                    LabelFrames Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding LabelFrame Objects
+@subsection Adding LabelFrame Objects
+
+To add a labelframe to a form you use the routine
+@findex fl_add_labelframe()
+@anchor{fl_add_labelframe()}
+@example
+FL_OBJECT *fl_add_labelframe(int type, FL_Coord x, FL_Coord y,
+                             FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+The meaning of the parameters is as usual except that the frame is
+drawn outside of the bounding box (so a flat box of the same size just
+fills the inside of the frame without any gaps). The label is by
+default placed on the upper left hand part of the frame. Its position
+can changed (within limits) via calls of
+@code{@ref{fl_set_object_lalign()}}.
+
+@ifhtml
+@center @image{xforms_images/labelframe}
+@end ifhtml
+@ifnothtml
+@center @image{xforms_images/labelframe,7cm}
+@end ifnothtml
+
+
+@node LabelFrame Types
+@subsection LabelFrame Types
+
+The following types are available:
+@table @code
+@tindex FL_NO_FRAME
+@item FL_NO_FRAME
+Nothing is drawn.
+@tindex FL_UP_FRAME
+@item FL_UP_FRAME
+A frame appears coming out of the screen.
+@tindex FL_DOWN_FRAME
+@item FL_DOWN_FRAME
+A frame that goes down into the screen.
+@tindex FL_BORDER_FRAME
+@item FL_BORDER_FRAME
+A frame with a simple outline.
+@tindex FL_ENGRAVED_FRAME
+@item FL_ENGRAVED_FRAME
+A frame appears to be engraved.
+@tindex FL_EMBOSSED_FRAME
+@item FL_EMBOSSED_FRAME
+A frame appears embossed.
+@tindex FL_ROUNDED_FRAME
+@item FL_ROUNDED_FRAME
+A rounded frame.
+@tindex FL_OVAL_FRAME
+@item FL_OVAL_FRAME
+An elliptic box.
+@end table
+
+
+@node LabelFrame Attributes
+@subsection Attributes
+
+The first color in the call of @code{@ref{fl_set_object_color()}}
+controls the color of the frame if applicable. The second color
+controls the background color of the label. Boxtype attribute does not
+apply to the labelframe class
+
+
+@node LabelFrames Remarks
+@subsection Remarks
+
+No interaction takes place with labelframes.
+
+You can not draw a label inside or outside of the frame box. If you
+try, say, by requesting @code{FL_ALIGN_CENTER}, the label is drawn
+using @code{FL_ALIGN_TOP_LEFT}.
+
+
+@node Text Object
+@section Text Object
+
+Text objects simply consist of a label possibly placed in a box.
+
+@ifnottex
+
+@menu
+* Adding Text Objects:   Adding Text Objects
+* Text Types:            Text Types
+* Text Attributes:       Text Attributes
+* Remarks:               Text Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Text Objects
+@subsection Adding Text Objects
+
+
+To add a text to a form you use the routine
+@findex fl_add_text()
+@anchor{fl_add_text()}
+@example
+FL_OBJECT *fl_add_text(int type, FL_Coord x, FL_Coord y,
+                       FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+The meaning of the parameters is as usual. The label is by default
+placed flushed left in the bounding box.
+
+
+@node Text Types
+@subsection Text Types
+
+@tindex FL_NORMAL_TEXT
+Only one type of text exists: @code{FL_NORMAL_TEXT}.
+
+
+@node Text Attributes
+@subsection Text Attributes
+
+To set or change the text shown, use
+@code{@ref{fl_set_object_label()}} or
+@code{@ref{fl_set_object_label_f()}}.
+
+Any boxtype can be used for text.
+
+The first color argument (@code{col1}) of
+@code{@ref{fl_set_object_color()}} controls the color of the box the
+text is placed into, the second (@code{col2}) is not used. The color of
+the text itself is controlled by calls of
+@code{@ref{fl_set_object_lcolor()}} as usual.
+
+If the text is to change dynamically, boxtype @code{NO_BOX} should
+not be used for the object.
+
+
+@node Text Remarks
+@subsection Remarks
+
+No interaction takes place with text objects.
+
+Don't use boxtype @code{FL_NO_BOX} if the text is to change
+dynamically. Note that there is almost no difference between a box
+with a label and a text. The only difference lies in the position
+where the text is placed and the fact that text is clipped to the
+bounding box. Text is normally placed inside the box at the left side.
+This helps you putting different lines of text below each other.
+Labels inside boxes are default centered in the box. You can change
+the position of the text inside the box using the routine
+@code{@ref{fl_set_object_lalign()}}. In contrast to boxes different
+alignments for text always place the text inside the box rather than
+outside the box.
+
+
+@node Bitmap Object
+@section Bitmap Object
+
+A bitmap is a simple bitmap shown on a form.
+
+@ifnottex
+
+@menu
+* Adding Bitmap Objects:   Adding Bitmap Objects
+* Bitmap Types:            Bitmap Types
+* Bitmap Interaction:      Bitmap Interaction
+* Other Bitmap Routines:   Other Bitmap Routines
+* Bitmap Attributes:       Bitmap Attributes
+* Remarks:                 Bitmap Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Bitmap Objects
+@subsection Adding Bitmap Objects
+
+To add a bitmap to a form you use the routine
+@findex fl_add_bitmap()
+@anchor{fl_add_bitmap()}
+@example
+FL_OBJECT *fl_add_bitmap(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label);
+@end example
+The meaning of the parameters is as usual. The label is by default
+placed below the bitmap. The bitmap is empty on creation.
+
+
+@node Bitmap Types
+@subsection Bitmap Types
+
+@tindex FL_NORMAL_BITMAP
+Only the type @code{FL_NORMAL_BITMAP} is available.
+
+
+@node Bitmap Interaction
+@subsection Bitmap Interaction
+
+No interaction takes place with a bitmap. For bitmaps that interact
+see @ref{Adding Button Objects}, on how to create a button with a
+bitmap on top of it. (You can also place a hidden button over it if
+you want something to happen when pressing the mouse on a static
+bitmap.)
+
+
+@node Other Bitmap Routines
+@subsection Other Bitmap Routines
+
+To set the actual bitmap being displayed use
+@findex fl_set_bitmap_data()
+@anchor{fl_set_bitmap_data()}
+@findex fl_set_bitmap_file()
+@anchor{fl_set_bitmap_file()}
+@example
+void fl_set_bitmap_data(FL_OBJECT *obj, int w, int h,
+                         unsigned char *bits);
+void fl_set_bitmap_file(FL_OBJECT *obj, const char *file);
+@end example
+@noindent
+@code{bits} contains the bitmap data as a character string.
+@code{file} is the name of the file that contains the bitmap data. A
+number of bitmaps can be found in @file{/usr/include/X11/bitmaps} or
+similar places. The X program @code{bitmap} can be used to create
+bitmaps.
+
+Two additional routines are provided to make a Bitmap from a bitmap
+file or data
+@findex fl_read_bitmapfile()
+@anchor{fl_read_bitmapfile()}
+@findex fl_create_from_bitmapdata()
+@anchor{fl_create_from_bitmapdata()}
+@example
+Pixmap fl_read_bitmapfile(Window win, const char *filename,
+                          unsigned *width, unsigned *height,
+                          int *hotx, int *hoty)
+Pixmap fl_create_from_bitmapdata(Window win, const char *data,
+                                 int width, int height);
+@end example
+@noindent
+where @code{win} is any window ID in your application and the other
+parameters have the obvious meanings. If there is no window created
+yet, the return value of @code{@ref{fl_default_window()}} may be used.
+
+Note: bitmaps created by the above routines have a depth of 1 and
+should be displayed using @code{XCopyPlane()}.
+
+
+@node Bitmap Attributes
+@subsection Bitmap Attributes
+
+The label color as set by @code{@ref{fl_set_object_lcolor()}} controls
+both the foreground color of the bitmap and the color of the label
+(i.e., they are always identical).
+
+The first color argument (@code{col1}) to
+@code{@ref{fl_set_object_color()}} sets the background color of the
+bitmap (and the color of the box), the second (@code{col2}) is not
+used.
+
+@node Bitmap Remarks
+@subsection Remarks
+
+See @file{demo33.c} for a demo of a bitmap.
+
+
+@node Pixmap Object
+@section Pixmap Object
+
+A pixmap is a simple pixmap (color icon) shown on a form.
+
+@ifnottex
+
+@menu
+* Adding Pixmap Objects:   Adding Pixmap Objects
+* Pixmap Types:            Pixmap Types
+* Pixmap Interaction:      Pixmap Interaction
+* Other Pixmap Routines:   Other Pixmap Routines
+* Pixmap Attributes:       Pixmap Attributes
+* Remarks:                 Pixmap Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Pixmap Objects
+@subsection Adding Pixmap Objects
+
+To add a pixmap to a form use the routine
+@findex fl_add_pixmap()
+@anchor{fl_add_pixmap()}
+@example
+FL_OBJECT *fl_add_pixmap(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label)
+@end example
+@noindent
+The meaning of the parameters is as usual. The label is by default
+placed below the pixmap. The pixmap is empty on creation.
+
+
+@node Pixmap Types
+@subsection Pixmap Types
+
+@tindex FL_NORMAL_PIXMAP
+Only the type @code{FL_NORMAL_PIXMAP} is available.
+
+
+@node Pixmap Interaction
+@subsection Pixmap Interaction
+
+No interaction takes place with a pixmap. For pixmap that interacts
+see @ref{Adding Button Objects}, on how to create a button with a pixmap
+on top of it. (You can also place a hidden button over it if you want
+something to happen when pressing the mouse on a static pixmap.)
+
+
+@node Other Pixmap Routines
+@subsection Other Pixmap Routines
+
+
+A pixmap file (usually with extension @code{.xpm}) is an ASCII file
+that contains the definition of the pixmap as a @code{char} pointer
+array that can be included directly into a C (or C++) source file.
+
+To set the actual pixmap being displayed, use one of the following
+routines:
+@findex fl_set_pixmap_file()
+@anchor{fl_set_pixmap_file()}
+@findex fl_set_pixmap_data()
+@anchor{fl_set_pixmap_data()}
+@example
+void fl_set_pixmap_file(FL_OBJECT *obj, const char *file);
+void fl_set_pixmap_data(FL_OBJECT *obj, char **data);
+@end example
+@noindent
+In the first routine, you specify the pixmap by the filename
+@code{file} that contains it. In the second routine, you
+@code{#include} the pixmap at compile time and use the pixmap data (an
+array of @code{char} pointers) directly. Note that both of these
+functions do not free the old pixmaps associated with the object. If
+you're writing a pixmap browser type applications, be sure to free the
+old pixmaps by calling
+@findex fl_free_pixmap_pixmap()
+@anchor{fl_free_pixmap_pixmap()}
+@example
+void fl_free_pixmap_pixmap(FL_OBJECT *obj);
+@end example
+@noindent
+on the pixmap object prior to calling these two routines. This
+function, in addition to freeing the pixmap and the mask, also frees
+the colors the pixmap allocated.
+
+To obtain the pixmap ID currently being displayed, the following
+routine can be used
+@findex fl_get_pixmap_pixmap()
+@anchor{fl_get_pixmap_pixmap()}
+@example
+Pixmap fl_get_pixmap_pixmap(FL_OBJECT *obj, Pixmap *id,
+                            Pixmap *mask);
+@end example
+
+In some situations, you might already have a pixmap resource ID,
+e.g., from @code{@ref{fl_read_pixmapfile()}} (see below in the
+"Remarks" subsection). Then you can use the following routine to
+change the the pixmap
+@findex fl_set_pixmap_pixmap()
+@anchor{fl_set_pixmap_pixmap()}
+@example
+void fl_set_pixmap_pixmap(FL_OBJECT *obj, Pixmap id,
+                          Pixmap mask);
+@end example
+@noindent
+where @code{mask} is used for transparency (see
+@code{@ref{fl_read_pixmapfile()}}). Use 0 for mask if no special
+clipping attributes are desired.
+
+This routine does not free the pixmap ID nor the mask already
+associated with the object. Thus if you no longer need the old
+pixmaps, they should be freed prior to changing the pixmaps using
+the function @code{@ref{fl_free_pixmap_pixmap()}}.
+
+Pixmaps are by default displayed centered inside the bounding box.
+However, this can be changed using the following routine
+@findex fl_set_pixmap_align()
+@anchor{fl_set_pixmap_align()}
+@example
+void fl_set_pixmap_align(FL_OBJECT *obj, int align,
+                         int dx, int dy);
+@end example
+@noindent
+where @code{align} is the same as that used for labels, @pxref{Label
+Attributes and Fonts} for a list. @code{dx} and @code{dy} are extra
+margins to leave in addition to the object border width. By default,
+@code{dx} and @code{dy} are set to 3. Note that although you can place
+a pixmap outside of the bounding box, it probably is not a good idea.
+
+
+@node Pixmap Attributes
+@subsection Pixmap Attributes
+
+By default if a pixmap has more colors than that available in the
+colormap, the library will use substitute colors that are judged
+"close enough". This closeness is defined as the difference between
+the requested color and the color found being smaller than some
+pre-set threshold values between 0 and 65535 (0 means exact match).
+The default thresholds are 40000 for red, 30000 for green and 50000
+for blue. To change these defaults, use the following routine
+@findex fl_set_pixmap_colorcloseness()
+@anchor{fl_set_pixmap_colorcloseness()}
+@example
+void fl_set_pixmap_colorcloseness(int red, int green, int blue);
+@end example 
+
+
+@node Pixmap Remarks
+@subsection Remarks
+
+The following routines may be handy for reading a pixmap file into a
+pixmap
+@findex fl_read_pixmapfile()
+@anchor{fl_read_pixmapfile()}
+@example
+Pixmap fl_read_pixmapfile(Window win, const char *filename,
+                          unsigned *width, unsigned *height,
+                          Pixmap *shape_mask, int *hotx, int *hoty,
+                          FL_COLOR tran);
+@end example
+@noindent
+where @code{win} is the window in which the pixmap is to be displayed.
+If the window is yet to be created, you can use the default window,
+returned by a call of @code{@ref{fl_default_window()}}. Parameter
+@code{shape_mask} is a pointer to an already existing @code{Pixmap},
+which, if not @code{NULL}, is used as a clipping mask to achieve
+transparency. @code{hotx} and @code{hoty} are the center of the pixmap
+(useful if the pixmap is to be used as a cursor). Parameter
+@code{tran} is currently not used.
+
+If you already have the pixmap data in memory, the following routine
+can be used
+@findex fl_create_from_pixmapdata()
+@anchor{fl_create_from_pixmapdata()}
+@example
+Pixmap fl_create_from_pixmapdata(Window win, char **data,
+                                 unsigned *width, unsigned *height,
+                                 Pixmap *shape_mask, int *hotx,
+                                 int *hoty, FL_COLOR tran);
+@end example
+@noindent
+All parameters have the same meaning as for @code{fl_read_pixmapfile}.
+
+Note that the Forms Library handles transparency, if specified in the
+pixmap file or data, for pixmap and pixmapbutton objects. However,
+when using @code{@ref{fl_read_pixmapfile()}} or
+@code{@ref{fl_create_from_pixmapdata()}}, the application programmer
+is responsible to set the clip mask in an appropriate GC.
+
+Finally there is a routine that can be used to free a Pixmap
+@findex fl_free_pixmap()
+@anchor{fl_free_pixmap()}
+@example
+void fl_free_pixmap(Pixmap id);
+@end example
+
+You will need the XPM library (version 3.4c or later)m developed by
+Arnaud Le Hors and Groupe Bull, to use pixmaps. The XPM library is
+avalialble as a package for most distributions, but can also be
+obtained from many X mirror sites, e.g., via anonymous FTP from
+(@uref{ftp://ftp.x.org/contrib/libraries/}. Its home page is
+@uref{http://old.koalateam.com/lehors/xpm.html}.
+
+
+@node Clock Object
+@section Clock Object
+
+A clock object simply displays a clock on the form
+
+@ifnottex
+
+@menu
+* Adding Clock Objects:   Adding Clock Objects
+* Clock Types:            Clock Types
+* Clock Interaction:      Clock Interaction
+* Other Clock Routines:   Other Clock Routines
+* Clock Attributes:       Clock Attributes
+* Remarks:                Clock Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Clock Objects
+@subsection Adding Clock Objects
+
+To add a clock to a form you use the routine
+@findex fl_add_clock()
+@anchor{fl_add_clock()}
+@example
+FL_OBJECT *fl_add_clock(int type, FL_Coord x, FL_Coord y,
+                        FL_Coord w, FL_Coord h, char label[])
+@end example
+@noindent
+The meaning of the parameters is as usual. The label is placed below
+the clock by default.
+
+
+@node Clock Types
+@subsection Clock Types
+
+The following types are available:
+@table @code
+@tindex FL_ANALOG_CLOCK
+@item FL_ANALOG_CLOCK
+An analog clock complete with the second hand.
+@tindex FL_DIGITAL_CLOCK
+@item FL_DIGITAL_CLOCK
+A digital clock.
+@end table
+
+@node Clock Interaction
+@subsection Clock Interaction
+
+No interaction takes place with clocks.
+
+
+@node Other Clock Routines
+@subsection Other Clock Routines
+
+To get the displayed time (local time as modified by the adjustment
+described below) use the following routine
+@findex fl_get_clock()
+@anchor{fl_get_clock()}
+@example
+void fl_get_clock(FL_OBJECT *obj, int *h, int *m, int *s);
+@end example
+@noindent
+Upon function return the parameters are set as follows: @code{h} is
+between 0-23, indicating the hour, @code{m} is between 0-59, indicating
+the minutes, and @code{s} is between 0-59, indicating the seconds.
+
+To display a time other than the local time, use the following routine
+@findex fl_set_clock_adjustment()
+@anchor{fl_set_clock_adjustment()}
+@example
+long fl_set_clock_adjustment(FL_OBJECT *obj, long adj);
+@end example
+@noindent
+where @code{adj} is in seconds. For example, to display a time that is
+one hour behind the local time, an adjustment of @code{3600} can be
+used. The function returns the old adjustment value.
+
+By default, the digital clock uses 24hr system. You can switch the
+display to 12hr system (am-pm) by using the following routine
+@findex fl_set_clock_ampm()
+@anchor{fl_set_clock_ampm()}
+@example
+void fl_set_clock_ampm(FL_OBJECT *obj, int yes_no)
+@end example
+
+
+@node Clock Attributes
+@subsection Clock Attributes
+
+Never use @code{FL_NO_BOX} as the boxtype for a digital clock.
+
+The first color argument (@code{col1}) of
+@code{@ref{fl_set_object_color()}} controls the color of the
+background, the second (@code{col2}) is the color of the hands.
+
+@node Clock Remarks
+@subsection Remarks
+
+See @file{flclock.c} for an example of the use of clocks. @xref{Misc.
+Functions}, for other time related routines.
+
+
+@node Chart Object
+@section Chart Object
+
+The chart object gives you an easy way to display a number of
+different types of charts like bar-charts, pie-charts, line-charts
+etc. They can either be used to display some fixed chart or a changing
+chart (e.g., a strip-chart). Values in the chart can be changed and new
+values can be added which makes the chart move to the left, i.e., new
+entries appear at the right and old entries disappear at the left.
+This can be used to e.g., monitor processes.
+
+@ifnottex
+
+@menu
+* Adding Chart Objects:    Adding Chart Objects
+* Chart Types:             Chart Types
+* Chart Interaction:       Chart Interaction
+* Other Chart Routines:    Other Chart Routines
+* Chart Attributes:        Chart Attributes
+* Remarks:                 Chart Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Chart Objects
+@subsection Adding Chart Objects
+
+To add a chart object to a form use the routine
+@findex fl_add_chart()
+@anchor{fl_add_chart()}
+@example
+FL_OBJECT *fl_add_chart(int type, FL_Coord x, FL_Coord y,
+                        FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+It shows an empty box on the screen with the label below it.
+
+
+@node Chart Types
+@subsection Chart Types
+
+The following types are available:
+@table @code
+@tindex FL_BAR_CHART
+@item FL_BAR_CHART
+A bar-chart
+@tindex FL_HORBAR_CHART
+@item FL_HORBAR_CHART
+A horizontal bar-chart
+@tindex FL_LINE_CHART
+@item FL_LINE_CHART
+A line-chart
+@tindex FL_FILLED_CHART
+@item FL_FILLED_CHART
+A line-chart but the area below curve is filled
+@tindex FL_SPIKE_CHART
+@item FL_SPIKE_CHART
+A chart with a vertical spike for each value
+@tindex FL_PIE_CHART
+@item FL_PIE_CHART
+A pie-chart
+@tindex FL_SPECIALPIE_CHART
+@item FL_SPECIALPIE_CHART
+A pie-chart with displaced first item
+@end table
+
+All charts except pie-charts can display positive and negative data.
+Pie-charts will ignore values that are less then or equal to 0. The
+maximum number of values displayed in the chart can be set using the
+routine @code{@ref{fl_set_chart_maxnumb()}}. The argument must be not
+larger than @code{FL_CHART_MAX} which currently is 512. Switching
+between different types can be done without any complications.
+
+
+@node Chart Interaction
+@subsection Chart Interaction
+
+No interaction takes place with charts.
+
+
+@node Other Chart Routines
+@subsection Other Chart Routines
+
+There are a number of routines to change the values in the chart and
+to change its behavior. To clear a chart use the routine
+@findex fl_clear_chart()
+@anchor{fl_clear_chart()}
+@example
+void fl_clear_chart(FL_OBJECT *obj);
+@end example
+
+To add an item to a chart use
+@findex fl_add_chart_value()
+@anchor{fl_add_chart_value()}
+@example
+void fl_add_chart_value(FL_OBJECT *obj, double val,
+                        const char *text, FL_COLOR col);
+@end example
+@noindent
+Here @code{val} is the value of the item, @code{text} is the label to
+be associated with the item (can be empty) and @code{col} is an index
+into the colormap (@code{FL_RED} etc.) that is the color of this item.
+The chart will be redrawn each time you add an item. This might not be
+appropriate if you are filling a chart with values. In this case put
+the calls between calls of @code{@ref{fl_freeze_form()}} and
+@code{@ref{fl_unfreeze_form()}}.
+
+By default, the label is drawn in a tiny font in black. You can change
+the font style, size or color using the following routine
+@findex fl_set_chart_lstyle()
+@anchor{fl_set_chart_lstyle()}
+@findex fl_set_chart_lsize()
+@anchor{fl_set_chart_lsize()}
+@findex fl_set_chart_lcolor()
+@anchor{fl_set_chart_lcolor()}
+@example
+void fl_set_chart_lstyle(FL_OBJECT *obj, int fontstyle);
+void fl_set_chart_lsize(FL_OBJECT *obj, int fontsize);
+void fl_set_chart_lcolor(FL_OBJECT *obj, FL_COLOR color);
+@end example
+@noindent
+Note that @code{@ref{fl_set_chart_lcolor()}} only affects the label
+color of subsequent items, not the items already created.
+
+You can also insert a new value at a particular place using
+@findex fl_insert_chart_value()
+@anchor{fl_insert_chart_value()}
+@example
+void fl_insert_chart_value(FL_OBJECT *obj, int index,
+                           double val, const char *text,
+                           FL_COLOR col);
+@end example
+@noindent
+@code{index} is the index before which the new item should be
+inserted. The first item is number 1. So, for example, to make a
+strip-chart where the new value appears at the left, each time insert
+the new value before index 1.
+
+To replace the value of a particular item use the routine
+@findex fl_replace_chart_value()
+@anchor{fl_replace_chart_value()}
+@example
+void fl_replace_chart_value(FL_OBJECT *obj, int index,
+                            double val, const char *text,
+                            FL_COLOR col);
+@end example
+@noindent
+Here @code{index} is the index of the value to be replaced. The first
+value has an index of 1, etc.
+
+Normally, bar-charts and line-charts are automatically scaled in the
+vertical direction such that all values can be displayed. This is
+often not wanted when new values are added from time to time. To set
+the minimal and maximal value displayed use the routine
+@findex fl_set_chart_bounds()
+@anchor{fl_set_chart_bounds()}
+@example
+void fl_set_chart_bounds(FL_OBJECT *obj, double min, double max)'
+@end example
+@noindent
+To return to automatic scaling call it with both @code{min} and
+@code{max} being set to @code{0.0}. To obtain the current bounds, use
+the following routine
+@findex fl_get_chart_bounds()
+@anchor{fl_get_chart_bounds()}
+@example
+void fl_get_chart_bounds(FL_OBJECT *obj, double *min, double *max)'
+@end example
+
+Also the width of the bars and distance between the points in a
+line-chart are normally scaled. To change this use
+@findex fl_set_chart_autosize()
+@anchor{fl_set_chart_autosize()}
+@example
+void fl_set_chart_autosize(FL_OBJECT *obj, int autosize);
+@end example
+@noindent
+with @code{autosize} being set to false (0). In this case the width of
+the bars will be such that the maximum number of items fits in the
+box. This maximal number (defaults to
+@tindex FL_CHART_MAX
+@code{FL_CHART_MAX}) can be changed
+using
+@findex fl_set_chart_maxnumb()
+@anchor{fl_set_chart_maxnumb()}
+@example
+void fl_set_chart_maxnumb(FL_OBJECT *obj, int maxnumb);
+@end example
+@noindent
+where @code{maxnumb} is the maximal number of items to be displayed,
+which may not be larger than @code{FL_CHART_MAX}.
+
+
+@node Chart Attributes
+@subsection Chart Attributes
+
+Don't use boxtype @code{FL_NO_BOX} for a chart object if it changes
+value.
+
+
+Normally, for bar and line chart a baseline is drawn at 0. This
+can be switched on and off by the function
+@findex fl_set_chart_baseline()
+@anchor{fl_set_chart_baseline()}
+@example
+void fl_set_chart_baseline(FL_OBJECT *ob, int yes_no);
+@end example
+
+The first color argument (@code{col1}) to
+@code{@ref{fl_set_object_color()}} controls the (background) color of
+the box, the second (@code{col2}) the color of the baseline.
+
+
+@node Chart Remarks
+@subsection Remarks
+
+See @file{chartall.c} and @file{chartstrip.c} for examples of the use
+of chart objects.

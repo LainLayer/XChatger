@@ -1,0 +1,174 @@
+@node Part V Dirty Tricks
+@chapter Dirty Tricks
+
+This chapter describes some of the routines that may be used in
+special situations where more power or flexibility from Forms Library
+is needed. These routines are classified as "dirty tricks" either
+because they can easily mess up the normal operation of Forms Library
+or they depend on internal information that might change in the
+future, or they rely too much on the underlying window systems. Thus
+whenever possible, try not to use these routines.
+
+@ifnottex
+
+@menu
+* Interaction::
+* Other::
+@end menu
+
+@end ifnottex
+
+@node Interaction
+@section Interaction
+
+@ifnottex
+
+@menu
+* Form Events::
+* Object Events::
+@end menu
+
+@end ifnottex
+
+
+@node Form Events
+@subsection Form Events
+
+It is possible to by-pass the form event processing entirely by
+setting a "raw callback" that sits between the event reading and
+dispatching stage, thus a sneak preview can be implemented and
+optionally the event can even be consumed before the libraries
+internal form processing machinery gets to it.
+
+Use the following routines to register such a preemptive processing
+routine
+@tindex FL_RAW_CALLBACK
+@findex fl_register_raw_callback()
+@anchor{fl_register_raw_callback()}
+@example
+typedef int (*FL_RAW_CALLBACK)(FL_FORM *, void *xevent);
+FL_RAW_CALL_BACK fl_register_raw_callback(FL_FORM *form,
+                                          unsigned long mask,
+                                          FL_RAW_CALLBACK callback);
+@end example
+@noindent
+where @code{mask} is the event mask you are interested in (same as
+the XEvent mask). The function returns the old handler for the event.
+
+Currently only handlers for the following events are supported
+@itemize @bullet
+@item
+@code{KeyPressMask} and @code{KeyReleaseMask}
+@item
+@code{ButtonPressMask} and @code{ButtonReleaseMask}
+@item
+@code{EnterWindowMask} and @code{LeaveWindowMask}
+@item
+@code{ButtonMotionMask} and @code{PointerMotionMask}
+@item
+@code{FL ALL EVENT} (see below)
+@end itemize
+
+Further, there is only one handler for each event pair, (e.g.,
+@code{ButtonPress} and @code{ButtonRelease}), thus you can't have two
+separate handlers for each pair although it is possible to register a
+handler only for one of them (but almost always a mistake) if you know
+what you're doing. If you register a single handler for more than one
+pair of events, e.g., setting mask to
+@code{KeyPressMask|ButtonPressMask}, the returned old handler is
+random.
+
+A special constant, @code{FL_ALL_EVENT}, is defined so that the
+handler registered will received all events that are selected. To
+select events, use @code{@ref{fl_addto_selected_xevent()}}.
+
+Once an event handler is registered and the event is detected, then
+instead of doing the default processing by the dispatcher, the
+registered handler function is invoked. The handler function must
+return either
+@tindex FL_PREEMPT
+@code{FL_PREEMPT} if the event is consumed) and @code{0} otherwise so
+that the internal processing of the event can continue. See the demo
+program @file{minput2.c} for an example.
+
+Since these kind of handlers work on a rather low level there's a
+chance that they interfere with some mechanisms of the library.
+Consider the case of setting a raw callback handler for mouse press
+and release events, in which the handler returns @code{0} for mouse
+press events but @code{FL_PREEMPT} on relese events. In that case the
+mouse press event results in the normal processing and e.g., a button
+below the mouse will receive it (and be drawn correspondingly). To be
+drawn again in its normal way it also needs to receive the release
+event (even if the mouse isn't on top of it anymore when the mouse
+button is released). But when the handler function doesn't also let
+the release event propagate to the normal handling of events then the
+button will never receive the expected release event and will stay
+drawn in the way as if the release event never happened. Thus one
+should avoid having different return values from the handler for pairs
+of related events.
+
+
+@node Object Events
+@subsection Object Events
+
+Just as you can by-pass the internal event processing for a particular
+form, you can also do so for an object. Unlike in raw callbacks, you
+can not select individual events.
+
+The mechanism provided is via the registration of a pre-handler for an
+object. The pre-handler will be called before the built-in object
+handler. By electing to handle some of the events, a pre-handler can,
+in effect, replace part of the built-in handler.
+
+In @ref{Part IV Using a Pre-emptive Handler, , the chapter about
+pre-emptive handlers} the API was already discussed in detail, so here
+we just repeat the discussion for completeness as any use of
+pre-emptive handler is considered "dirty tricks".
+
+To register a pre-handler, use the following routine
+@tindex FL_HANDLEPTR
+@findex fl_set_object_prehandler()
+@example
+typedef int (*FL_HANDLEPTR)(FL_OBJECT *obj, int event,
+                            FL_Coord mx, FL_Coord my,
+                            int key, void *raw_event);
+
+void fl_set_object_prehandler(FL_OBJECT *, FL_HANDLEPTR prehandler);
+@end example
+@noindent
+where @code{event} is the generic event in the Forms Library, that is,
+@code{FL DRAW}, @code{FL ENTER} etc. The arguments @code{mx} and
+@code{my} are the mouse position and @code{key} is the key pressed.
+The last parameter, @code{raw_event} is a pointer to the XEvent that
+caused the invocation of the pre-handler. cast to a void pointer.
+
+Notice that the pre-handler has the same function prototype as the
+built-in handler. Actually they are called with the exact same
+parameters by the event dispatcher. The prehandler should return
+@code{0} if the processing by the built-in handler should continue. A
+return value of @code{FL PREEMPT} will prevent the dispatcher from
+calling the built-in handler.
+
+See demo program @file{preemptive.c} for an example.
+
+A similar mechanism exists for registering a post-handler, i.e., a
+handler invoked after the built-in handler is finished, by using
+@findex fl_set_object_posthandler()
+@example
+void fl_set_object_posthandler(FL_OBJECT *, FL_HANDLEPTR prehandler);
+@end example
+@noindent
+Whenever possible a post-handler should be used instead of a pre-handler.
+
+
+@node Other
+@section Other
+
+As stated earlier, @code{@ref{fl_set_defaults()}} can be used to
+modify the Forms Library's defaults prior to calling
+@code{@ref{fl_initialize()}}. Actually, this routine can also be used
+after @code{@ref{fl_initialize()}} to override the values set on the
+command line or in the application databases. However, overriding
+users' preferences should be done with discretion. Further, setting
+@code{privateColormap} after @code{@ref{fl_initialize()}} has no
+effect.

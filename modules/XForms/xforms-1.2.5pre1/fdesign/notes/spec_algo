@@ -1,0 +1,38 @@
+
+Here is how object specific info is initialized:
+----------------------------------------------
+
+As soon as an object is created, the object specific
+info is converted into a "superSpec", and this superspec
+thing is "hang" on the obj->u_vdata field.
+
+In editing mode:
+  In object specifc editing, upon entry, we copy the superSpec
+  into obj->spec, essentially wiping out all the testing residue
+  and stuff put there for testing only.
+
+  All the changes that occur while in the editing only apply
+  to obj->spec, we never touch the superspec. Only when
+  editing is done and accepted, we copy the spec into superSpec
+  again. In case of cancel or restore, we copy superspec
+  into obj->spec, which in effect undoes all the changes made.
+
+In testing mode:
+   Object testing etc. only changes obj->spec, it never touches the
+   superspec.
+
+In saving the spec info:
+   We always save the spec info using superSPEC.
+
+In Loading the spec info:
+   spec info is first loaded into a superspec, which
+   is then transfered into obj->spec.
+
+For object like buttons where some of the information is not
+on the SPEC structure, we'll have to create the members
+on SuperSPEC as well as a seperate structure that
+"hangs off" of SuperSPEC. When modifying attributes,
+we modify this seperate structure as if it is part of the button.
+We copy this info SuperSPEC only if AcceptSpec.
+
+When save/emit, always do it from SuperSPEC

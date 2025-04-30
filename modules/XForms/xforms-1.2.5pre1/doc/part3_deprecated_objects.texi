@@ -1,0 +1,1540 @@
+@node Part III Deprecated Objects
+@chapter Deprecated Objects
+
+In this chapter describes object types that have been replaced by
+newer ones. But they will remain part of XForms and also can be used
+in new programs. But there probably will be not more support for these
+objects than bug fixes etc.
+
+
+@ifnottex
+@menu
+* Choice Object:  Choice Object
+* Menu Object:    Menu Object
+* XPopup:         XPopup
+@end menu
+
+@end ifnottex
+
+
+@node Choice Object
+@section Choice Object
+
+A choice object is an object that allows the user the choose among a
+number of choices. The current choice is shown in the box of the
+choice object. The user can either cycle through the list of choices
+using the middle or right mouse button or get the list as a menu using
+the left mouse button.
+
+@ifnottex
+
+@menu
+* Adding Choice Objects:   Adding Choice Objects
+* Choice Types:            Choice Types
+* Choice Interaction:      Choice Interaction
+* Other Choice Routines:   Other Choice Routines
+* Choice Attributes:       Choice Attributes
+* Remarks:                 Choice Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Choice Objects
+@subsection Adding Choice Objects
+
+To add a choice object to a form use the routine
+@findex fl_add_choice()
+@anchor{fl_add_choice()}
+@example
+FL_OBJECT *fl_add_choice(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+It shows a box on the screen with the label to the left of it and the
+current choice (empty in the beginning), centered in the box.
+
+@node Choice Types
+@subsection Choice Types
+
+The following types are available:
+@table @code
+@tindex FL_NORMAL_CHOICE
+@anchor{FL_NORMAL_CHOICE}
+@item FL_NORMAL_CHOICE
+Middle/right mouse button shortcut.
+
+@tindex FL_NORMAL_CHOICE2
+@anchor{FL_NORMAL_CHOICE2}
+@item FL_NORMAL_CHOICE2
+Same as @code{FL_NORMAL_CHOICE} except drawn differently.
+
+@tindex FL_DROPLIST_CHOICE
+@anchor{FL_DROPLIST_CHOICE}
+@item FL_DROPLIST_CHOICE
+Menu is activated only by pressing and releasing the mouse on the arrow.
+@end table
+
+@node Choice Interaction
+@subsection Choice Interaction
+
+Beside simply opening up the popup behind the choice object and
+selecting an entry with the left mouse button you can also use
+the middle and right mouse buttons and the scroll wheel: a short
+click with the middle mouse button selects the entry before the
+currently selected one, a click with the right mouse button the
+next. Keeping the middle or right mouse button pressed down slowly
+cycles trough the entries, backward or forward. The same can be
+down with the sroll wheel.
+
+In both cases, whenever a choice entry is selected (even when it
+is the original one) the object is returned to the application program.
+But you can control the condition under which the choice object gets
+returned to the application by using the function
+@example
+int fl_set_object_return(FL_OBJECT *obj, unsigned int when)
+@end example
+where @code{when} can have the following values
+@table @code
+@item @ref{FL_RETURN_NONE}
+Never return or invoke callback.
+
+@item @ref{FL_RETURN_END_CHANGED}
+Return or invoke callback if end of interaction and selection of an
+item coincide.
+
+@item @ref{FL_RETURN_CHANGED}
+Return or invoke callback whenever an item is selected (this is the
+default).
+
+@item @ref{FL_RETURN_END}
+Return or invoke callback on end of an interaction.
+
+@item @ref{FL_RETURN_ALWAYS}
+Return (or invoke callback) whenever the interaction ends and/or
+an item is selected.
+@end table
+
+
+@node Other Choice Routines
+@subsection Other Choice Routines
+
+There are a number of routines to change the list of possible choices.
+To add a line to a choice object use
+@findex fl_addto_choice()
+@anchor{fl_addto_choice()}
+@findex fl_addto_choice_f()
+@anchor{fl_addto_choice_f()}
+@example
+int fl_addto_choice(FL_OBJECT *obj, const char *text);
+int fl_addto_choice_f(FL_OBJECT *obj, const char *fmt, ...);
+@end example
+@noindent
+The function returns the number of the new item. The items in the list
+are numbered in the order in which they were inserted. The first item
+has number 1, etc. The two functions differ in that the first one
+accepts just a simple string while for the second the text is
+assembled from a format string as used by @code{printf()} etc. and
+the following arguments.
+
+Note that, because a choice object uses a popup, the string passed
+with @code{@ref{fl_addto_choice()}} cann also contain some additional
+information not directly shown in the entries text. E.g., you can
+create several entries as once if the string you pass to
+@code{@ref{fl_addto_choice()}} contains @code{'|'} characters - these
+aren't shown but instead are treated as separators between the strings
+for the entries. Some extra control sequences, starting with the
+character @code{'%'} can also be embedded (@pxref{Creating XPopups}),
+thus a literal @code{'%'} in a string must be escaped by doubling
+it.
+
+To delete a line use:
+@findex fl_delete_choice()
+@anchor{fl_delete_choice()}
+@example
+void fl_delete_choice(FL_OBJECT *obj, int line);
+@end example
+
+Whenever the application program wants to clear the complete list of
+choices it should use the routine
+@findex fl_clear_choice()
+@anchor{fl_clear_choice()}
+@example
+void fl_clear_choice(FL_OBJECT *obj) 
+@end example
+
+One can also replace a line using
+@findex fl_replace_choice()
+@anchor{fl_replace_choice()}
+@findex fl_replace_choice_f()
+@anchor{fl_replace_choice_f()}
+@example
+void fl_replace_choice(FL_OBJECT *obj, int line, const char *text);
+void fl_replace_choice(FL_OBJECT *obj, int line, const char *fmt, ...);
+@end example
+@noindent
+(The second function assembles the new text from a format string as
+used for @code{printf()} etc. and the following arguments.)
+
+To obtain the currently selected item in the choice object use the call
+@findex fl_get_choice()
+@anchor{fl_get_choice()}
+@example
+int fl_get_choice(FL_OBJECT *obj);
+@end example
+@noindent
+The function returns the number of the current choice (0 if there is
+no choice).
+
+You can also obtain the text of the currently selected choice item
+using the call
+@findex fl_get_choice_text()
+@anchor{fl_get_choice_text()}
+@example
+const char *fl_get_choice_text(FL_OBJECT *obj);
+@end example
+@noindent
+@code{NULL} is returned when there is no current choice.
+
+To obtain the text of an arbitrary choice item, use the following routine
+@findex fl_get_choice_item_text()
+@anchor{fl_get_choice_item_text()}
+@example
+const char *fl_get_choice_item_text(FL_OBJECT *obj, int n);
+@end example
+
+To obtain the total number of choice items, use the following function
+@findex fl_get_choice_maxitems()
+@anchor{fl_get_choice_maxitems()}
+@example
+int fl_get_choice_maxitems(FL_OBJECT *obj);
+@end example
+
+One can set various attributes of an item using the following routine
+@findex fl_set_choice_item_mode()
+@anchor{fl_set_choice_item_mode()}
+@example
+void fl_set_choice_item_mode(FL_OBJECT *obj, int numb, int mode);
+@end example
+@noindent
+Here @code{mode} is the same as that used for menu objects (see
+above). See also @ref{XPopup}, for details.
+
+To find about those settings use
+@findex fl_get_choice_item_mode()
+@anchor{fl_get_choice_item_mode()}
+@example
+int fl_get_choice_item_mode(FL_OBJECT *obj, int numb);
+@end example
+
+You can use the follow routine to populate a choice object at once,
+including mode and shortcut, by using
+@findex fl_set_choice_entries()
+@anchor{fl_set_choice_entries()}
+@example
+int fl_set_choice_entries(FL_OBJECT *obj, FL_PUP_ENTRY *entries);
+@end example
+@noindent
+where @code{entries} is a pointer to a @code{FL_PUP_ENTRY} structure
+(terminated by a @code{NULL} text field) as already described above
+for the function @code{@ref{fl_set_menu_entries()}}. Also see
+@ref{XPopup}, for more details. Please note that for choice objects no
+nested entries are permitted and the item callback functions are
+ignored. The function returns the number of items added to the choice
+object.
+
+Finally, the application program can set the currently selected entry
+of the choice using a call of
+@findex fl_set_choice()
+@anchor{fl_set_choice()}
+@findex fl_set_choice_text()
+@anchor{fl_set_choice_text()}
+@findex fl_set_choice_text_f()
+@anchor{fl_set_choice_text_f()}
+@example
+void fl_set_choice(FL_OBJECT *obj, int line);
+void fl_set_choice_text(FL_OBJECT *obj, const char *txt)
+void fl_set_choice_text_f(FL_OBJECT *obj, const char *fmt, ...)
+@end example
+@noindent
+where @code{txt} (for @code{fl_set_choice_text()} or the text
+resulting from the expansion of the @code{printf()}-compatible format
+string and the following arguments for @code{fl_set_choice_text_f()}
+must must be the text of exactly one of the choice items. For example,
+after the following choice is created
+@example
+fl_addto_choice(obj,"item1|item2|item3");
+@end example
+@noindent
+You can select the second item by using any of the following lines
+@example
+fl_set_choice(obj, 2);
+fl_set_choice_text(obj, "item2");
+fl_set_choice_text_f(obj, "item%d", 2 );
+@end example
+
+
+@node Choice Attributes
+@subsection Choice Attributes
+
+Don't use @code{FL_NO_BOX} as the boxtype for a choice object.
+
+The first color argument (@code{col1} to
+@code{@ref{fl_set_object_color()}} controls the color of the box and
+the second (@code{col2}) the color of the text in the box.
+
+The current choice by default is shown centered in the box. To change
+the alignment of the choice text in the box, use the following routine
+@findex fl_set_choice_align()
+@anchor{fl_set_choice_align()}
+@example
+void fl_set_choice_align(FL_OBJECT *obj, int align);
+@end example
+
+To set the font size used inside the choice object use
+@findex fl_set_choice_fontsize()
+@anchor{fl_set_choice_fontsize()}
+@example
+void fl_set_choice_fontsize(FL_OBJECT *obj, int size);
+@end example
+
+To set the font style used inside the choice object use
+@findex fl_set_choice_fontstyle()
+@anchor{fl_set_choice_fontstyle()}
+@example
+void fl_set_choice_fontstyle(FL_OBJECT *obj, int style);
+@end example
+
+Note that the above functions only change the font inside the choice
+object, not the font used in the popup. To change the font used in the
+popup, use the XPopup functions
+@code{@ref{fl_setpup_default_fontsize()}} and
+@code{@ref{fl_setpup_default_fontstyle()}}. Note that these functions
+influence the font settings of all popups! @xref{Label Attributes and
+Fonts}, for details on font sizes and styles.
+
+Normally the pop-up shown for the choice objects will be displayed at
+the current mouse position or, for those of type
+@code{@code{FL_DROPLIST_CHOICE}}, directly below the choice object.
+This can be modified by a call of the function
+@findex fl_set_choice_align_bottom()
+@anchor{fl_set_choice_align_bottom()}
+@example
+int fl_set_choice_align_bottom(GL_OBJECT *obj, int flag);
+@end example
+@noindent
+If @code{flag} is @code{0} the normal behaviour is used, but when
+@code{flag} is @code{1} the popup will be displayed with its
+lower right hand corner at the current mouse position or, for
+objects of type @code{@code{FL_DROPLIST_CHOICE}} above the
+choise object. The function returns the previously set value
+for @code{flag}.
+
+
+@node Choice Remarks
+@subsection Remarks
+
+See @file{choice.c} for an example of the use of choice objects.
+
+
+@node Menu Object
+@section Menu Object
+
+Also menus can be added to forms. These menus can be used to let the
+user choose from many different possibilities. Each menu object has a
+box with a label in it in the form. Whenever the user presses the
+mouse inside the box (or moves the mouse on top of the box) a pop-up
+menu appears. The user can then make a selection from the menu.
+
+@ifnottex
+
+@menu
+* Adding Menu Objects:   Adding Menu Objects
+* Menu Types:            Menu Types
+* Menu Interaction:      Menu Interaction
+* Other Menu Routines:   Other Menu Routines
+* Menu Attributes:       Menu Attributes
+* Remarks:               Menu Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Adding Menu Objects
+@subsection Adding Menu Objects
+
+To add a menu to a form use the routine
+@findex fl_add_menu()
+@anchor{fl_add_menu()}
+@example
+FL_OBJECT *fl_add_menu(int type, FL_Coord x, FL_Coord y,
+                       FL_Coord w, FL_Coord h, const char *label);
+@end example
+@noindent
+It shows a box on the screen with the label centered in it.
+
+
+@node Menu Types
+@subsection Menu Types
+
+The following types are available:
+@table @code
+@tindex FL_PUSH_MENU
+@anchor{FL_PUSH_MENU}
+@item FL_PUSH_MENU
+The menu appears when the user presses a mouse button on it.
+
+@tindex FL_PULLDOWN_MENU
+@anchor{FL_PULLDOWN_MENU}
+@item FL_PULLDOWN_MENU
+The menu appears when the user presses a mouse button on it.
+
+@tindex FL_TOUCH_MENU
+@anchor{FL_TOUCH_MENU}
+@item FL_TOUCH_MENU
+The menu appears when the user move the mouse inside it.
+@end table
+
+@code{FL_PUSH_MENU} and @code{FL_PULLDOWN_MENU} behave rather similar.
+When you click on a @code{FL_PUSH_MENU} per default a pop-up window
+gets opened on top of the @code{FL_PUSH_MENU} menu's box that has a
+label at the top, indicating the currently selected menu item. The
+pop-up window stays open until you either select an item or press a
+mouse button somewhere outside the pop-up window.
+
+When you click on @code{FL_PULLDOWN_MENU} also a pop-up window is
+shown, but directly below the menu's box. This pop-up window has
+no label and it only stays open until you release the mouse button.
+
+@code{FL_PUSH_MENU} and @code{FL_PULLDOWN_MENU} can be made even more
+similar by using the @code{@ref{fl_set_menu_notitle()}} function (see
+below). This changes it's properties so that the pop-up window also
+appears below the menu's box and that no label is shown in the pop-up
+window. The only remaining difference then is that a
+@code{FL_PUSH_MENU} only gets closed when a menu item is selected or
+the user presses the mouse outside of the pop-up window while a
+@code{FL_PULLDOWN_MENU} also gets closed when the mouse button is
+released.
+
+
+@node Menu Interaction
+@subsection Menu Interaction
+
+When the menu appears the user can make a selection using the left
+mouse button or make no selection by clicking outside the menu (or by
+simply releasing the mouse button in case of a @code{FL_PULLDOWN_MENU}
+type menu. Normally when he makes a selection the menu object is
+returned by the interaction routines.
+
+You can control the condition under which the menu object gets
+returned to the application by using the function
+@example
+int fl_set_object_return(FL_OBJECT *obj, unsigned int when)
+@end example
+where @code{when} can have the following values
+@table @code
+@item @ref{FL_RETURN_NONE}
+Never return the object or invoke its callback.
+
+@item @ref{FL_RETURN_END_CHANGED}
+Return or invoke callback if end of interaction and selection of an
+item coincide (this is the default for all menu objects except those
+of type @code{FL_TOUCH_MENU}).
+
+@item @ref{FL_RETURN_CHANGED}
+Return or invoke callback whenever an item is selected (this is the
+default for all menu objects of type @code{FL_TOUCH_MENU}).
+
+@item @ref{FL_RETURN_END}
+Return or invoke callback on end of an interaction.
+
+@item @ref{FL_RETURN_ALWAYS}
+Return (or invoke callback) whenever the interaction ends and/or
+an item is selected.
+@end table
+
+
+@node Other Menu Routines
+@subsection Other Menu Routines
+
+There are two ways to populate a menu, i.e., add items. The first one
+is a bit more complex but allows for more flexibility, e.g., later
+adding and removing items, associating callbacks with individual items
+etc. For the more simple (and in many cases sufficient) method see the
+function @code{@ref{fl_set_menu_entries()}}.
+
+To set the actual menu for a menu object, use the routine
+@findex fl_set_menu()
+@anchor{fl_set_menu()}
+@example
+void fl_set_menu(FL_OBJECT *obj, const char *menustr, ...);
+@end example
+@noindent
+@code{menustr} describes the menu in the form used by XPopups
+(@pxref{XPopup}). In the simplest case it just contains the texts for
+the menu items, separated by a bar (@code{'|'}), e.g.,
+@code{"First|Second|Third"}. But it's also possible to employ special
+tags (@pxref{Creating XPopups}) that can be used to indicate special
+attributes (radio, toggle and greyed-out, for example). For this usage
+the unspecified arguments (the @code{...} in the function call) can be
+used t add neceassary information. Whenever the user selects a menu
+item, a pointer to the menu object it belongs to is returned to the
+application program.
+
+Please note that if you call @code{@ref{fl_set_menu()}} on a menu that
+already contains items the existing items are replaced by the new
+ones - the function calls @code{@ref{fl_clear_menu()}} internally 
+before the new items are added.
+
+If you explicitely assign a menu item ID to a menu, using the special
+tag @code{%x}, it is your responsibility to make sure that this ID
+isn't already used by a different menu item in the same menu. Failure
+to do so may make it impossible to use the menu properly. All
+functions working on items expect the menu item ID as one of their
+arguments. Also note that only values that fit into a @code{char} can
+be used, so the range is restricted to the interval @w{@code{[-128,
+127]}} on most machines with a signed @code{char} type and to
+@w{@code{[0, 255]}} on those with an unsigned @code{char} type. For
+portability reasons it's thus to be recommended to restrict the range
+to @w{@code{[0, 127]}}.
+
+In case you don't set menu item IDs they are assigned automatically
+with the first item obtaining the menu item ID 1, the next 2 etc.,
+i.e., it directly reflects the position of the item in the menu.
+
+It is also possible to add menu items to an existing menu using a call
+of
+@findex fl_addto_menu()
+@anchor{fl_addto_menu()}
+@example
+int fl_addto_menu(FL_OBJECT *obj, const char *menustr, ...);
+@end example
+@noindent
+where @code{menustr} is a string of the same form as used in
+@code{@ref{fl_set_menu()}} (you can add one or more new menu items
+this way).
+
+Also routines exist to delete a particular menu item or change it:
+@findex fl_delete_menu_item()
+@anchor{fl_delete_menu_item()}
+@findex fl_replace_menu_item()
+@anchor{fl_replace_menu_item()}
+@example
+void fl_delete_menu_item(FL_OBJECT *obj, int miid);
+void fl_replace_menu_item(FL_OBJECT *obj, int miid,
+                           const char *menustr, ...);
+@end example
+@code{miid} is the menu item ID. @code{menustr} must be a string as
+used in @code{@ref{fl_set_menu()}} with the only difference that only
+a single menu item can be specified.
+
+Please note: when deleting a menu item all other items keep their
+menu item IDs. The menu item ID of the deleted menu item isn't
+re-used when new items are added later. Instead for each menu an
+internal counter exists that gets incremented for each menu item
+added and which value is used for the menu item ID unless one is
+explicitely assigned to the menu item. The counter oly gets reset to 1
+when the menu is cleared used @code{@ref{fl_clear_menu()}}.
+
+The menu item ID of a menu item changed by using
+@code{@ref{fl_replace_menu_item()}} does not change unless the library
+is explicitely asked to via @code{%x} in @code{menustr}.
+
+For most applications, the following routine may be easier to use at
+the expense of somewhat restrictive value a menu item can have as
+well as a loss of the ability to delete menu items or associate
+callbacks with menu items. 
+@findex fl_set_menu_entries()
+@anchor{fl_set_menu_entries()}
+@example
+int fl_set_menu_entries(FL_OBJECT *obj, FL_PUP_ENTRY *ent);
+@end example
+@noindent
+where @code{ent} is a pointer to an array of structure of the
+following type, terminated by an element, where at least the
+@code{text} member is a @code{NULL} pointer:
+@tindex FL_PUP_ENTRY
+@example
+typedef struct @{
+    const char *text;
+    FL_PUP_CB callback;
+    const char *shortcut;
+    int mode;
+@} FL_PUP_ENTRY;
+@end example
+The meaning of each member is explained in Section 21.3. For menus,
+item callback function can be @code{NULL} if the menu callback handles
+the interaction results. See demo program @file{popup.c} for an
+example use of @code{@ref{fl_set_menu_entries()}}.
+
+The function @code{@ref{fl_set_menu_entries()}} works by creating and
+associating a popup menu with the menu object. The popup ID is
+returned by the function. Whenever the function is called, the old
+popup associated with the object (if one exists) is freed and a new
+one is created. Although you can manipulate the menu either through
+the menu API (but adding and removing menu items is not supported for
+menus created this way ) or popup API, the application should not free
+the popup directly and use @code{@ref{fl_clear_menu()}} instead.
+
+To clear the whole menu use
+@findex fl_clear_menu()
+@anchor{fl_clear_menu()}
+@example
+void fl_clear_menu(FL_OBJECT *obj);
+@end example
+
+To find the menu item selected by the user use
+@findex fl_get_menu()
+@anchor{fl_get_menu()}
+@example
+int fl_get_menu(FL_OBJECT *obj);
+@end example
+@noindent
+The the function returns the menu item ID. In the simplest possible
+case this is just the position of the menu item (starting at 1). This
+stops to be true when either IDs have been explicitely assigned to
+items or items have been deleted. In that case the following rules
+apply:
+@enumerate
+@item
+A menu item ID may have been assigned to a menu item using @code{%xn}
+in the string for the text of the menu item.
+@item
+Menu items can get associated with a callback function that is
+executed when the menu item is selected. The callback function is of
+type @code{@ref{FL_PUP_CB}} and receives the menu item ID of the
+selected menu. If such a callback is set for a menu item the return
+value of @code{@ref{fl_get_menu()}} is the return value of this
+function instead of the menu item ID that would have been returned
+otherwise.
+@end enumerate
+
+To obtain the text of any item, use the following routine
+@findex fl_get_menu_item_text()
+@anchor{fl_get_menu_item_text()}
+@example
+const char *fl_get_menu_item_text(FL_OBJECT *obj, int miid);
+@end example
+@noindent
+where @code{miid} is the menu item ID. If @code{n} isn't a valid menu
+iem ID item @code{NULL} is returned.
+
+To obtain the text of the selected enu item use
+@findex fl_get_menu_text()
+@anchor{fl_get_menu_text()}
+@example
+const char *fl_get_menu_text(FL_OBJECT *obj);
+@end example
+
+To obtain the total number of menu items, use the function
+@findex fl_get_menu_maxitems()
+@anchor{fl_get_menu_maxitems()}
+@example
+int fl_get_menu_maxitems(FL_OBJECT *obj);
+@end example
+
+One can change the appearance of different menu items. In particular,
+it is sometimes desirable to make grey-out menu items and make them
+unselectable or to put boxes with and without checkmarks in front of
+them. This can be done using the routine:
+@findex fl_set_menu_item_mode()
+@anchor{fl_set_menu_item_mode()}
+@example
+void fl_set_menu_item_mode(FL_OBJECT *obj, int miid, unsigned mode);
+@end example
+@noindent
+@code{miid} is the menu index ID of the memu item you want to change.
+@code{mode} represents the special properties you want to apply to the
+chosen item. You can specify more than one at a time by adding or
+bitwise OR-ing these values together. For this parameter, the
+following symbolic constants exist:
+@table @code
+@tindex FL_PUP_NONE
+@anchor{FL_PUP_NONE}
+@item FL_PUP_NONE
+No special display characteristic, the default.
+
+@tindex FL_PUP_BOX
+@anchor{FL_PUP_BOX}
+@item FL_PUP_BOX
+"Binary" entry, i.e., an entry that stands for a choice that can
+be switched on and off. Displayed with an unchecked box to the
+left.
+
+@tindex FL_PUP_RADIO
+@anchor{FL_PUP_RADIO}
+@item FL_PUP_RADIO
+"Radio" item belonging to a group, so that gets automatically
+switched off when another item of the group is selected. Displayed
+with a diamoned-shaped box at the left.
+
+@tindex FL_PUP_GREY
+@anchor{FL_PUP_GREY}
+@item FL_PUP_GREY
+To be OR-ed with one of the above to make that item appear
+greyed-out and disable it (i.e., not selectable anymore).
+
+@tindex FL_PUP_CHECK
+@anchor{FL_PUP_CHECK}
+@item FL_PUP_CHECK
+To be OR-ed with one of @code{FL_PUP_BOX} and @code{FL_PUP_RADIO}
+to make the box to the left appear checked or pushed.
+@end table
+
+There is also a routine that can be used to obtain the current mode of
+an item after interaction, mostly useful for toggle or radio items:
+@findex fl_get_menu_item_mode()
+@anchor{fl_get_menu_item_mode()}
+@example
+unsigned int fl_get_menu_item_mode(FL_OBJECT *obj, int miid);
+@end example
+
+While a callback associated with a menu entry can be set when it is
+created it can also set later on or be changed. For this use the
+function
+@findex fl_set_menu_item_callback()
+@anchor{fl_set_menu_item_callback()}
+@example
+FL_PUP_CB fl_set_menu_item_callback(FL_OBJECT *ob,
+                                    int numb, FL_PUP_CB cb);
+@end example
+@noindent
+where @code{numb} is the menu entries ID and @code{cb} is the
+callback function of type @code{@ref{FL_PUP_CB}} (or @code{NULL}
+to disable a callback). The return value is a pointer to the
+previously used callback function (or @code{NULL}).
+
+It is often useful to define keyboard shortcuts for particular menu
+items. For example, it would be nice to have @code{<Alt>s} behave like
+selecting "Save" from a menu. This can be done using the following
+routine:
+@findex fl_set_menu_item_shortcut()
+@anchor{fl_set_menu_item_shortcut()}
+@example
+void fl_set_menu_item_shortcut(FL_OBJECT *obj, int miid,
+                               const char *str);
+@end example
+@noindent
+@code{miid} is the menu item ID of the menu item under consideration.
+@code{str} contains the shortcut for the item. (Actually, it can
+contain more shortcuts for the same item.) @xref{Shortcuts}, for more
+information about shortcuts.
+
+Finally there is the routine:
+@findex fl_show_menu_symbol()
+@anchor{fl_show_menu_symbol()}
+@example
+void fl_show_menu_symbol(FL_OBJECT *obj, int yes_no);
+@end example
+@noindent
+With this routine you can indicate whether to show a menu symbol at
+the right of the menu label. By default no symbol is shown.
+
+
+@node Menu Attributes
+@subsection Menu Attributes
+Any boxtype can be used for a menu except for those of type
+@code{FL_PULLDOWN_MENU}, for which @code{FL_NO_BOX} should not be
+used.
+
+Using the functiond
+
+The first color argument (@code{col1}) to
+@code{@ref{fl_set_object_color()}} controls the color of the menu's
+box when not open and the second (@code{col2}) is the color when the
+menu is shown.
+
+To change the font style and size used in the popup menus (not the menu
+label), use the following routines
+@findex fl_setpup_default_fontstyle()
+@findex fl_setpup_default_fontsize()
+@example
+void fl_setpup_default_fontstyle(int style);
+void fl_setpup_default_fontsize(int size);
+@end example
+@noindent
+These settings apply to all menus at once.
+
+If desired, you can attach an external popup to a menu object via the
+following routine
+@findex fl_set_menu_popup()
+@anchor{fl_set_menu_popup()}
+@example
+void fl_set_menu_popup(FL_OBJECT *obj, int pupID);
+@end example
+@noindent
+where @code{pupID} is the ID returned by @code{@ref{fl_newpup()}} or
+@code{@ref{fl_defpup()}}. @xref{XPopup}, for more details on popup
+creation.
+
+For a menu created this way only @code{@ref{fl_get_menu()}} and
+@code{@ref{fl_get_menu_text()}} work as expected. Other services such as
+mode setting and query etc. should be done via the popup routines.
+
+To obtain the popup ID associated with a menu, use the following routine
+@findex fl_get_menu_popup()
+@anchor{fl_get_menu_popup()}
+@example
+int fl_get_menu_popup(FL_OBJECT *obj);
+@end example
+@noindent
+The function returns the popup ID if the menu was created using
+@code{@ref{fl_set_menu_popup()}} or
+@code{@ref{fl_set_menu_entries()}}, otherwise it returns -1.
+
+The callback associated with a menu 
+
+Normally in the popup opened for a menu a title is shown. This can be
+switched off (and back on again by using the function
+@findex fl_set_menu_notitle()
+@anchor{fl_set_menu_notitle()}
+@example
+fl_set_menu_notitle(FL_OBJECT *obj, int off);
+@end example
+
+@node Menu Remarks
+@subsection Remarks
+
+See @file{menu.c} for an example of the use of menus. You can also use
+@code{FL_MENU_BUTTON} to initiate a callback and use an XPopup
+directly within the callback. See @file{pup.c} for an example of this
+approach.
+
+
+@node XPopup
+@section XPopup
+
+XPopup is not really an object class, but because it is used by menu
+and choice objects and can function stand-alone, it is documented
+here.
+
+XPopups are simple transient windows that show a number of choices the
+user can click on to select the desired option.
+
+@ifnottex
+
+@menu
+* Creating XPopups:        Creating XPopups
+* XPopup Interaction:      XPopup Interaction
+* Other XPopup Routines:   Other XPopup Routines
+* XPopup Attributes:       XPopup Attributes
+* Remarks:                 XPopup Remarks
+@end menu
+
+@end ifnottex
+
+
+@node Creating XPopups
+@subsection Creating XPopups
+
+To define a new popup, use the following routines
+@findex fl_newpup()
+@anchor{fl_newpup()}
+@findex fl_defpup()
+@anchor{fl_defpup()}
+@example
+int fl_newpup(Window parent);
+int fl_defpup(Window parent, const char *str, ...);
+@end example
+@noindent
+Both functions allocate and initialize a new popup menu and return the
+XPopup identifier (or -1 on failure). @code{@ref{fl_defpup()}} in
+addition accepts a pointer @code{str} to the texts for menu items
+(optionally also some more arguments, see below). More than one item
+can be specified by using a vertical bar (@code{|}) between the items,
+e.g., @code{"foo|bar"} adds two menu items. The @code{parent}
+parameter specifies the window to which the XPopup belongs. In a
+situation where the XPopup is used inside an object callback
+@code{FL_ObjWin(obj)} will do. If @code{parent} is @code{None} the
+root window will be used.
+
+Calling @code{@ref{fl_defpup()}} with the @code{str} argument set to
+@code{NULL} is equivalent to calling @code{@ref{fl_newpup()}}.
+
+It is possible to specify XPopup and item properties, such as
+shortcuts, callbacks etc., together with the items texts using a
+format string system similar as used for e.g., @code{oprint(3)}. If
+XPopup or item properties require arguments, they must be passed to
+@code{@ref{fl_defpup()}} following the @code{str} argument.
+
+The following item properties are supported:
+@table @code
+@item %t
+Marks the item text as the XPopup title string.
+
+@item %F
+Binds a callback function to the XPopup as a whole that is called for
+every selection made from this XPopup. You must specify the function
+to be invoked in the parameters following @code{str}. The value of the
+selected item is passed as the only argument to the invoked callback
+function. The callback function must return a non-negative integer. If
+such a callback function has been registered for a XPopup and you
+select its third item, in the simplest case 3 will be passed as a
+parameter to the callback function (more complicated situations would
+involve that the item had been assigned a different value. e.g., using
+@code{%x}, see below, or that there's also a callback bound to the
+item itself, in which case the global XPopup callback would receive
+the return value of the items callback function).
+
+@item %f
+Binds a callback to this particular item which is invoked if the item
+is selected. The routine must be supplied in the parameters following
+@code{str}. It has to return a non-negative integer. The value of the
+selected item is passed as a parameter to this function. If you have
+also bound the entire XPopup to a callback function via @code{%F},
+then the function specified via @code{%f} is called first with the
+items value and its return value (if larger then @code{0} is then
+passed as the parameter to to the function bound to the whole XPopup
+(as set via @code{%F}).
+
+@item %i
+Disables and greys-out the item. @code{%d} can be used instead of @code{%i}.
+
+@item %l
+Adds a line under the current entry. This is useful in providing
+visual clues to groups of entries
+
+@item %m
+Whenever this item is selected another (already defined) XPopup is
+bound to the item so that the sub-XPopup is opened when the user moves
+the mouse onto the item, This can be used to create cascading menus.
+The identifier of the sub-XPopup to be shown must be provided in the
+arguments following @code{str}. It is the programmers responsibility
+to make sure that the item values of the sub-XPopup don't clash with
+those of the higher-level XPopup or it may be impossible to determine
+which item was selected.
+
+@item %h
+Specify a "hotkeys" that can be used to select this item. Hotkeys must
+be given in the arguments following @code{str} as a pointer to a
+string. Use @code{#} to specify that a key must be pressed together
+with the @code{<Alt>} key, @code{^} for simultaneous pressing of
+@code{<Ctrl>} and @code{&n} for the function key @code{Fn}.
+
+@code{%s} can be used instead of @code{%h}.
+
+@item %xn
+Assigns a numerical value to this item. This value must be positive.
+This new value overrides the default position-based value assigned to
+this item. Different from most other flags, the value @code{n} must be
+entered as part of the text string (i.e., do not try to use the
+arguments following @code{str} to specify this value!) and must be
+number larger than 0. It is the programmers responsibility to make
+sure that the items value does not clash with those of other items of
+the XPopup or determining which item was selected may be impossible.
+
+@item %b
+Indicates this item is "binary item" (toggle), currently in off state.
+When displayed, binary items will be drawn with a small box to the
+left. See also @code{FL_PUP_BOX}.
+
+@item %B
+Same as @code{%b} except that it also signifies that this item is in
+on or "true" state and consequently is drawn with a checked box on the
+left. See also @code{FL_PUP_BOX | FL_PUP_CHECK}.
+
+@item %rg
+Specifies this menu item is a "radio item" belonging to group with
+number @code{g}, currently not being selected. The group number
+@code{g}, that must be part of the string directly following @code{%r}
+(and not specified via the arguments following the string), must be a
+non-zero, positive number. Radio items are drawn with a small diamond
+box to the left (empty while not active). See also
+@code{FL_PUP_RADIO}.
+
+@item %Rg
+Same as @code{%rg} except that it also sets the state of the radio
+item as selected or "pushed", the item is drawn with a filled diamond
+box to the left. See also @code{@ref{fl_setpup_selection()}}. See also
+@code{FL_PUP_RADIO | FL_PUP_CHECK}.
+
+@item %%
+Use this if you need a @code{%} character in the string.
+@item <Ctrl>H (@code{\010})
+Same as @code{%l} except that the character must precede the item
+label, i.e., use @code{"\010Abc"} and not @code{"Abc\010"}.
+@end table
+
+Due to the use of variable arguments error checking can only be
+minimal. Also note that if @code{%x} is used to specify a value that
+happens to be identical to a position-based value, the result is
+unpredictable when subsequent references to these items are made.
+There is currently a limit of
+@tindex FL_MAXPUPI
+@code{FL_MAXPUPI} (64) items per popup.
+
+Tabs characters (@code{'\t'}) can be embedded in the item string to
+align different fields.
+
+You can add more items to an existing XPopup using the following
+routine
+@findex fl_addtopup()
+@anchor{fl_addtopup()}
+@example
+int fl_addtopup(int popup_id, const char *str, ...);
+@end example
+@noindent
+where @code{popup_id} is the value returned by
+@code{@ref{fl_newpup()}} or @code{@ref{fl_defpup()}} for the XPopup.
+Again, @code{str} can contain information for one or more new items,
+including the special sequences described earlier. The function
+returns -1 if invalid arguments are detected (as far as possible for a
+function with a variable number of arguments).
+
+To display a popup, use
+@findex fl_dopup()
+@anchor{fl_dopup()}
+@example
+int fl_dopup(int popup_id);
+@end example
+@noindent
+This function displays the specified XPopup until the user makes a
+selection or clicks somewhere outside of the XPopups box. The value
+returned is the value of the item selected or -1 if no item (or a
+disabled one) was selected. However, if there is a function bound to
+the XPopup as a whole or to the selected item itself, this function is
+invoked with the item value as the argument and the value returned by
+@code{@ref{fl_dopup()}} is then the return value of this function. If
+a callback function for both the selected item and the XPopup as a
+whole exists, the callback function for the item is called first with
+the item value as the argument and then the return value of this item
+specific callback function is passed to the XPopups callback function.
+@code{@ref{fl_dopup()}} then finally returns the return value of this
+second function call.
+
+Normally a XPopup get opened when the left mouse button has been
+pressed down and get closed again when the left mouse button is
+released. But there are a number of ways to achieve a "hanging"
+XPopup, i.e., that the XPopup that says open, even though the left
+mouse button isn't pressed down anymore. This happens e.g., when the
+user releases the mouse button in the title area of the XPopup or when
+the XPopup was opened via a keyboard shortcut. In that case it's also
+possible to navigate through the items and select via the keyboard.
+
+A typical procedure may look as follows:
+@example
+int item3_cb(int n) @{
+     return n + 7;
+@}
+
+/* define the menu */
+int menu = fl_newpup(parent);
+fl_addtopup(menu, "Title %t|Item1%rg1|Item2%Rg1|Item3%x10%f|Item4",
+            item3_cb);
+
+switch (fl_dopup(menu)) @{
+    case 1:   /* item1 is selected */
+        /* handle it */
+        break;
+
+    case 2:
+        /* handle it */
+        break;
+
+    case 4:
+        /* handle it */
+
+    case 17:
+        /* item 3 call back has been executed */
+@}
+@end example
+@noindent
+Here callback function @code{item3_cb()} is bound to the third item
+and this item has been assigned the number 10. Thus, when it is
+selected @code{@ref{fl_dopup()}} does not return 3 or 10. Instead the
+callback function @code{item3_cb()} is invoked with 10 as its
+argument. And this function in turn returns @code{10 + 7}, which is
+the value @code{@ref{fl_dopup()}} finally returns.
+
+Note also that items 1 and 2 both are radio items, belonging to the
+same group (numbered 1). Item 2 is currently the active item of this
+group.
+
+Sometimes it might be necessary to obtain the popup ID inside an item
+callback function. To this end, the following function available:
+@findex fl_current_pup()
+@anchor{fl_current_pup()}
+@example
+int fl_current_pup(void);
+@end example
+@noindent
+If no popup is active, the function returns -1. Until all callback
+functions have been run the function returns the ID of the XPopup the
+items belong to.
+
+To destroy a popup menu and release all memory used, use the following
+routine
+@findex fl_freepup()
+@anchor{fl_freepup()}
+@example
+void fl_freepup(int popup_id);
+@end example
+
+For most applications, the following simplified API may be easier to
+use
+@findex fl_setpup_entries()
+@anchor{fl_setpup_entries()}
+@example
+void fl_setpup_entries(int popup_id, FL_PUP_ENTRIES *entries);
+@end example
+where @code{popup_id} is the popup ID returned by
+@code{@ref{fl_newpup()}} or @code{@ref{fl_defpup()}} and
+@code{entries} is an array of the following structures
+@tindex FL_PUP_ENTRY
+@example
+typedef struct @{
+    const char * item_text; /* item text label */
+    FL_PUP_CB    callback;  /* item callback routine */
+    const char * shortcut;  /* shortcut for this item */
+    unsigned int mode;      /* item mode */
+@} FL_PUP_ENTRY;
+@end example
+@noindent
+The meaning of each member of the structure is as follows:
+@table @code
+@item text
+This is the text of a XPopup item. If text is @code{NULL}, it
+signifies the end of this popup menu. The first letter of the text
+string may have a special meaning if it is one of the following:
+@table @code
+
+@item '/'
+This indicates the beginning of a sub-popup, starting with the next
+item and ending with the next item with @code{text} being @code{NULL}.
+@item '_'
+Indicates that a line should be drawn below this item (typically as a
+visual reminder of logical groupings of items).
+@end table
+
+@item callback
+This is the callback function that will be called when this particular
+item is selected by the user. @code{@ref{fl_dopup()}} returns the
+value returned by this callback. If the callback is @code{NULL}, the
+item number will be returned directly by @code{@ref{fl_dopup()}}.
+
+@item shortcut
+Specifies the keyboard shortcut.
+
+@item mode
+Specifies special attributes of this item. This can be one or a
+combination by bitwise OR of one of the following:
+@table @code
+@tindex FL PUP NONE
+@item FL PUP NONE
+No special characteristics, the default.
+@tindex FL_PUP_GREY
+@item FL_PUP_GREY
+Item is greyed-out an can't be selected. Trying to select it results
+in @code{@ref{fl_dopup()}} returning -1.
+@tindex FL_PUP_BOX
+@item FL_PUP_BOX
+"Binary item", drawn with a little box to its left.
+@tindex FL_PUP_RADIO
+@item FL_PUP_RADIO
+"Radio item", drawn with a little diamond-shaped box to its left. All
+radio items of the XPopup belong to the same group.
+@tindex FL_PUP_CHECK
+@item FL_PUP_CHECK
+OR this value with @code{FL_PUP_BOX} or @code{FL_PUP_RADIO} to have
+the box to the left drawn as checked or pushed.
+@end table
+@end table
+
+With this simplified API, popup item values start from 1 and are the
+index in the entries array for the item plus 1. For example, the third
+element (with index 2) of the array of structure has an item value of
+3. Please note that also elements of the array that end a submenu and
+thus don't appear as visible items in the XPopup get counted. This
+way, the application can relate the value returned by fl_dopup() to
+the array easily. See demo program @file{popup.c} for an example use
+of the API.
+
+To illustrate the usage of @code{@ref{fl_setpup_entries()}}, Fig 21.2
+shows the popup created with the array of structures defined in the
+following code example:
+@example
+FL_PUP_ENTRY entries[ ] = @{
+   @{"Top item1",  callback@},      /* item number 1 */
+   @{"Top item2",  callback@},
+   @{"Top item3",  callback@},
+   @{"/Top item4", callback@},
+     @{"Sub1 item1",  callback@},   /* item number 5 */
+     @{"Sub1 item2",  callback@},
+     @{"Sub1 item3",  callback@},
+     @{"Sub1 item4",  callback@},
+     @{"/Sub1 item5", callback@},
+       @{"Sub2 item1",  callback@}, /* item number 10 */
+       @{"Sub2 item2",  callback@},
+       @{"Sub2 item3",  callback@},
+       @{NULL,         NULL     @}, /* end of level2, item number 13 */
+     @{NULL,           NULL   @},   /* end of sublevel1, item nuber 14 */
+   @{"Top item5",  callback@},      /* item number 15 */
+   @{NULL,         NULL    @}       /* end of popup */
+@};
+@end example
+
+
+@node XPopup Interaction
+@subsection XPopup Interaction
+
+To select an item, move the mouse to the item to be selected while
+keeping the mouse button pressed down and then release the mouse
+button on top of the item to be selected. If you don't want to make a
+selection release the mouse button somewhere outside the area of the
+XPopup.
+
+If you have a "hanging" XPopup, i.e., a XPopup that's open even
+though the mouse button isn't pressed anymore you can select by
+clicking on an item or use the cursor @code{Up} and @code{Down} keys
+to navigate through the items and select by pressing the
+@code{<Return>} key. The @code{<Home>} and @code{<End>} keys allow you
+to jump to the first or last selectable item, respectively. Use
+@code{<Esc>} to close the popup without selecting an item.
+
+It is also possible to use convenience functions to bind keyboard keys
+to items (the "hotkeys") instead of using @code{%s} with
+@code{@ref{fl_defpup()}}:
+@findex fl_setpup_shortcut()
+@anchor{fl_setpup_shortcut()}
+@example
+void fl_setpup_shortcut(int popup_id, int item_val,
+                        const char *hotkeys);
+@end example
+@noindent
+where @code{item_val} is the value associated with the item (either
+due to its position or set with @code{%x}) and hotkeys is a string
+specifying all the hotkey combinations. @xref{Shortcuts}, for details.
+Briefly, within that string @code{#} and @code{^} denote the
+@code{<Alt>} and @code{<Ctrl>} keys, respectively. @code{&n} with
+@code{n = 1, 2} etc.@: can be used to denote the function key numbered
+@code{n}. Thus if hotkeys is set to @code{"#a^A}, both @code{<Ctrl>A}
+and @code{<Alt>A} are bound to the item. One additional property of
+the hotkey is the underlining of corresponding letters in the item
+string. Again, only the first key in the hotkey string is used.
+Therefore, the hotkey strings @code{"Cc"}, @code{"#C"} and @code{"^C"}
+will result in the character @code{C} in the item string @code{"A
+Choice"} being underlined, while the the hotkey strings @code{"cC"}
+and @code{"#c"} will not since there's no @code{c} in the item string.
+There is a limit of maximum 8 shortcut keys.
+
+Two convenience functions are available to set the callback functions
+for items of a XPopup and the XPopup as a whole (called whenever a
+selection is made):
+@tindex FL_PUP_CB
+@anchor{FL_PUP_CB}
+@findex fl_setpup_itemcb()
+@anchor{fl_setpup_itemcb()}
+@findex fl_setpup_menucb()
+@anchor{fl_setpup_menucb()}
+@example
+typedef int (*FL_PUP_CB)(int);
+FL_PUP_CB fl_setpup_itemcb(int popup_id, int item_val, FL_PUP_CB cb);
+FL_PUP_CB fl_setpup_menucb(int popup_id, FL_PUP_CB cb);
+@end example
+These functions thus allow to change the popup and item callback
+functions set at creation of the popup with @code{%F} and @code{%f}.
+As usual, @code{popup_id} is the ID of the XPopup, @code{item_val} the
+value associated with the item (position or value set via @code{%x}),
+and @code{cb} is the address of the callback function.
+
+Please note that Xpopup objects are a bit special in XForms. Normal
+objects get returned by e.g., @code{@ref{fl_do_forms()}} (or an
+associated callback gets invoked). But since Xpopup objects are meant
+to be sub-objects of other objects (like @code{FL_CHOICE} and
+@code{L_MENU} objects) and don't get invoked directly by a call of
+e.g., @code{@ref{fl_do_forms()}} but instead by a call of
+@code{@ref{fl_dopup()}} they can't get returned to the application.
+Instead the caller of @code{@ref{fl_dopup()}} (normally some internal
+function of a @code{FL_CHOICE} or @code{FL_MENU} object) has to deal
+with the return value.
+
+Furthermore, also callback functions can be set that get invoked
+whenever an item in the XPopup is entered or left, even without a
+selection being made. The following functions can be used to register
+these item enter/leave callbacks:
+@tindex FL_PUP_ENTERCB
+@tindex FL_PUP_LEAVECB
+@findex fl_setpup_entercb()
+@anchor{fl_setpup_entercb()}
+@findex fl_setpup_leavecb()
+@anchor{fl_setpup_leavecb()}
+@example
+typedef void (*FL_PUP_ENTERCB)(int item_val, void *data);
+typedef void (*FL_PUP_LEAVECB)(int item_val, void *data);
+
+FL_PUP_ENTERCB fl_setpup_entercb(int popup_id,
+                                 FL_PUP_ENTERCB cb, void *data);
+FL_PUP_LEAVECB fl_setpup_leavecb(int popup_id,
+                                 FL_PUP_LEAVECB cb, void *data);
+@end example
+@noindent
+The function @code{cb} will be called when the mouse enters or leaves
+an (non-disabled) item of the XPopup @code{popup_id}. Two parameters
+are passed to the callback function. The first parameter is the item
+number enter/leave applies to and the second parameter is a data
+pointer. To remove an enter/leave callback, call the functions with
+the callback function argument @code{cb} set to @code{NULL}.
+
+There is also a function to associate a XPopup item with a sub-XPopup
+@findex fl_setpup_submenu()
+@anchor{fl_setpup_submenu()}
+@example
+void fl_setpup_submenu(int popup_id, int item_val, int subpopup_id);
+@end example
+@noindent
+If a sub-XPopup is associated with item @code{item_val} that item
+can't be selected anymore (releasing the mouse button on this item
+makes @code{@ref{fl_dopup()}} return -1 but instead a new XPopup is
+opened beside the item and you can now make selections within this
+sub-XPopup. It is the programmers responsibility to make sure that the
+item values of the sub-XPopup don't clash with those of the
+higher-level XPopup or it may be impossible to determine which item
+was selected.
+
+
+@node Other XPopup Routines
+@subsection Other XPopup Routines
+
+Note that most of the setpup/getpup routines are recursive in nature
+and the function will search the menu and all its submenus for the
+item.
+
+It is possible to modify the display characteristics of a given XPopup
+item after its creation using the following routine
+@findex fl_setpup_mode()
+@anchor{fl_setpup_mode()}
+@example
+void fl_setpup_mode(int popup_id, int item_val, unsigned mode);
+@end example
+@noindent
+As usual @code{popup_id} is the XPopup ID as returned by
+@code{@ref{fl_newpup()}} or @code{@ref{fl_defpup()}} and
+@code{item_val} the value of the item. @code{mode} is one of @code{FL
+PUP NONE}, @code{FL PUP GREY}, @code{FL PUP BOX} or @code{FL PUP
+RADIO} (one of the later two can be bitwise ORed with
+@code{FL_PUP_CHECK}, as already discussed above.
+
+To obtain the mode of a particular menu item, use the following
+routine
+@findex fl_getpup_mode()
+@anchor{fl_getpup_mode()}
+@example
+unsigned int fl_getpup_mode(int popup_id, int item_val)
+@end example
+@noindent
+This comes in handy to check if a binary or radio item is set
+@example
+if (fl_getpup_mode(popupd, item_val) & FL_PUP_CHECK)
+    /* item is set */
+@end example
+
+There exists also a routine that can be used to obtain an items text
+@findex fl_getpup_text()
+@anchor{fl_getpup_text()}
+@example
+const char *fl_getpup_text(int popup_id, int item_val);
+@end example
+
+In some situations, especially when the popup is activated by
+non-pointer events (e.g., as a result of a keyboard shortcut), the
+default placement of popups based on mouse location might not be
+adequate or appropriate, thus XPopup provides the following routine to
+override the default placement
+@findex fl_setpup_position()
+@anchor{fl_setpup_position()}
+@example
+void fl_setpup_position(int x, int y);
+@end example
+@noindent
+where @code{x} and @code{y} specify the location where the top-left
+corner of the popup should be. @code{x} and @code{y} must be given in
+screen coordinates (i.e., relative to the root window) with the
+origin at the top-left corner of the screen. This routine should be
+used immediately before invoking @code{@ref{fl_dopup()}}, the position
+is not remembered afterwards.
+
+If @code{x} or @code{y} is negative, the absolute value is taken to
+mean the desired location relative to the right or bottom corner of
+the popup (not the screen!).
+
+Another function exists for controlling the positon of the popup.
+When the fuunction
+@findex  fl_setpup_align_bottom()
+@anchor{fl_setpup_align_bottom()}
+@example
+void fl_setpup_align_bottom(void);
+@end example
+@noindent
+then the pop-up will appear with its lower right hand corner aligned
+aligned with the mouse position or, if also
+@code{@ref{fl_setpup_position()}} is active, the postion set this way
+will be interpreted to mean the lower right hand position of the
+popu-up.
+
+A radio item in a group can be initialized to be in "pushed" state by
+using @code{%R}. But you can also switch a such a radio item to
+"pushed state also programmatically using
+@findex fl_setpup_selection()
+@anchor{fl_setpup_selection()}
+@example
+void fl_setpup_selection(int popup_id, int item_val);
+@end example
+@noindent
+Of course, other radio items of the XPopup belonging to the same group
+are reset to "unpushed" state.
+
+To obtain the number of items in a popup, use the following routine
+@findex fl_getpup_items()
+@anchor{fl_getpup_items()}
+@example
+int fl_getpup_items(int popup_id)
+@end example
+
+
+@node XPopup Attributes
+@subsection XPopup Attributes
+
+The title of a XPopup can be set using the functions
+@findex fl_setpup_title()
+@anchor{fl_setpup_title()}
+@findex fl_setpup_title_f()
+@anchor{fl_setpup_title_f()}
+@example
+void fl_setpup_title(int popup_id, const char *title);
+void fl_setpup_title_f(int popup_id, const char *fmt, ...);
+@end example
+@noindent
+They only differ in the way the new title is passed to the function,
+the first one accepts a simple string while the second expects a
+format string as used for @code{printf()} etc., followed by the
+appropriate number of (unspecified) arguments.
+
+Use the following routines to modify the default popup font style,
+font size and border width:
+@findex fl_setpup_default_fontsize()
+@anchor{fl_setpup_default_fontsize()}
+@findex fl_setpup_default_fontstyle()
+@anchor{fl_setpup_default_fontstyle()}
+@findex fl_setpup_default_bw();
+@anchor{fl_setpup_default_bw()}
+@example
+int fl_setpup_default_fontsize(int size);
+int fl_setpup_default_fontstyle(int style);
+int fl_setpup_default_bw(int bw);
+@end example
+@noindent
+The functions return the old size, style or border width value,
+respectively.
+
+All XPopups by default use a right arrow cursor. To change the default
+cursor, use
+@findex fl_setpup_default_cursor()
+@anchor{fl_setpup_default_cursor()}
+@example
+Cursor fl_setpup_default_cursor(int cursor);
+@end example
+@noindent
+where you can use for @code{cursor} any of the standard cursors
+defined in @code{<X11/cursorfont.h>} like @code{XC_watch} etc.
+The function returns the previously cursor.
+
+To change the cursor of a particular XPopup only , use the following
+routine
+@findex fl_setpup_cursor()
+@anchor{fl_setpup_cursor()}
+@example
+Cursor fl_setpup_cursor(int popup_id, int cursor);
+@end example
+@noindent
+For example, after the following sequence,
+@example
+id = fl_defpup(win, "item1|item2");
+fl_setpup_cursor(id, XC_hand2);
+@end example
+@noindent
+the popup with ID @code{id} will use a "hand" instead of the default
+arrow cursor.
+
+In versions before 1.0.91 XPopups were drawn with a heavy shadow
+around the box. Drawing of this shadow could be controlled via
+@findex fl_setpup_shadow()
+@anchor{fl_setpup_shadow()}
+@example
+void fl_setpup_shadow(int popup_id, int yes_no);
+@end example
+@noindent
+Nowadays this function still exists for backward-compatibility but
+does nothing.
+
+The appearance of XPopups (and their associated sub-popups) can be
+change by the following routines:
+@findex fl_setpup_bw()
+@anchor{fl_setpup_bw()}
+@findex fl_setpup_softedge()
+@anchor{fl_setpup_softedge()}
+@example
+void fl_setpup_bw(int popup_id, int bw);
+void fl_setpup_softedge(int pupup_id, int yes_no);
+@end example
+@noindent
+The first sets the border width for a XPopup. Calling
+@code{@ref{fl_setpup_softedge()}} with a true argument for
+@code{yes_no} has the same effect as using a negative border width
+while using a false (0) argument is equivalent to using a positive one
+(so this function isn't very useful).
+
+
+The background color and text color of a popup can be changed using
+@findex fl_setpup_default_color()
+@anchor{fl_setpup_default_color()}
+@example
+void fl_setpup_default_color(FL_COLOR bgcolor, FL_COLOR tcolor);
+@end example
+@noindent
+By default, the background color @code{bgcolor} is @code{FL_COL1} and
+the text color @code{tcolor} is @code{FL_BLACK}.
+
+For "binary" or radio items, that have check box associated with them,
+the "checked" or "pushed" color (default is @code{FL_BLUE}) can be
+changed with the following routine
+@findex fl_setpup_default_checkcolor()
+@anchor{fl_setpup_default_checkcolor()}
+@example
+void fl_setpup_default_checkcolor(FL_COLOR checkcolor);
+@end example
+
+There is by default a limit of 32 XPopups per process. To enlarge the
+number of XPopups allowed, use the following routine
+@findex fl_setpup_maxpups()
+@anchor{fl_setpup_maxpups()}
+@example
+int fl_setpup_maxpups(int new_max);
+@end example
+@noindent
+The function returns the previous limit.
+
+It is possible to use XPopups as a message facility using the
+following routines
+@findex fl_showpup()
+@anchor{fl_showpup()}
+@findex fl_hidepup()
+@anchor{fl_hidepup()}
+@example
+void fl_showpup(int popup_id);
+void fl_hidepup(int popup_id);
+@end example
+@noindent
+No interaction takes place with a XPopup shown by
+@code{@ref{fl_showpup()}} and it can only be removed from the screen
+programmatically via @code{@ref{fl_hidepup()}}.
+
+
+@node XPopup Remarks
+@subsection Remarks
+
+Take care to make sure all items, including the items on submenus,
+of a XPopup have unique values and are positive.
+
+XPopups are used indirectly in the demo programs @file{menu.c},
+@file{boxtype.c}, @file{choice.c} and others. For a direct pop-up demo
+see @file{popup.c}.

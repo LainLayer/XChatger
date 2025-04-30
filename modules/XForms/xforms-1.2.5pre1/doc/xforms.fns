@@ -1,0 +1,987 @@
+\entry {\code {fl_activate_all_forms()}}{49, 300}
+\entry {\code {fl_activate_event_callbacks()}}{54, 302}
+\entry {\code {fl_activate_form()}}{49, 300}
+\entry {\code {fl_activate_glcanvas()}}{204}
+\entry {\code {fl_activate_object()}}{24, 301}
+\entry {\code {fl_add_bitmap()}}{115}
+\entry {\code {fl_add_bitmapbutton()}}{122}
+\entry {\code {fl_add_box()}}{16, 111}
+\entry {\code {fl_add_browser()}}{172}
+\entry {\code {fl_add_browser_line()}}{174}
+\entry {\code {fl_add_browser_line_f()}}{174}
+\entry {\code {fl_add_button()}}{19, 122}
+\entry {\code {fl_add_button_class()}}{273}
+\entry {\code {fl_add_canvas()}}{200}
+\entry {\code {fl_add_canvas_handler()}}{201}
+\entry {\code {fl_add_chart()}}{119}
+\entry {\code {fl_add_chart_value()}}{120}
+\entry {\code {fl_add_checkbutton()}}{122}
+\entry {\code {fl_add_child()}}{256}
+\entry {\code {fl_add_choice()}}{222}
+\entry {\code {fl_add_clock()}}{118}
+\entry {\code {fl_add_counter()}}{142}
+\entry {\code {fl_add_dial()}}{136}
+\entry {\code {fl_add_event_callback()}}{53, 301}
+\entry {\code {fl_add_formbrowser()}}{185}
+\entry {\code {fl_add_frame()}}{112}
+\entry {\code {fl_add_free()}}{57}
+\entry {\code {fl_add_fselector_appbutton()}}{79}
+\entry {\code {fl_add_glcanvas()}}{203}
+\entry {\code {fl_add_input()}}{21, 150}
+\entry {\code {fl_add_io_callback()}}{55}
+\entry {\code {fl_add_labelbutton()}}{122}
+\entry {\code {fl_add_labelframe()}}{113}
+\entry {\code {fl_add_lightbutton()}}{122}
+\entry {\code {fl_add_menu()}}{225}
+\entry {\code {fl_add_nmenu()}}{166}
+\entry {\code {fl_add_nmenu_items()}}{167}
+\entry {\code {fl_add_nmenu_items2()}}{170}
+\entry {\code {fl_add_object()}}{36, 290}
+\entry {\code {fl_add_pixmap()}}{116}
+\entry {\code {fl_add_pixmapbutton()}}{122}
+\entry {\code {fl_add_positioner()}}{138}
+\entry {\code {fl_add_round3dbutton()}}{122}
+\entry {\code {fl_add_roundbutton()}}{122}
+\entry {\code {fl_add_scrollbar()}}{133}
+\entry {\code {fl_add_scrollbutton()}}{122}
+\entry {\code {fl_add_select()}}{160}
+\entry {\code {fl_add_select_items()}}{160}
+\entry {\code {fl_add_signal_callback()}}{302}
+\entry {\code {fl_add_slider()}}{20, 129}
+\entry {\code {fl_add_spinner()}}{145}
+\entry {\code {fl_add_symbol()}}{35}
+\entry {\code {fl_add_tabfolder()}}{181}
+\entry {\code {fl_add_text()}}{18, 114}
+\entry {\code {fl_add_thumbwheel()}}{147}
+\entry {\code {fl_add_timeout()}}{47, 304}
+\entry {\code {fl_add_timer()}}{189}
+\entry {\code {fl_add_valslider()}}{21, 129}
+\entry {\code {fl_add_xyplot()}}{191}
+\entry {\code {fl_add_xyplot_overlay()}}{196}
+\entry {\code {fl_add_xyplot_overlay_file()}}{196}
+\entry {\code {fl_add_xyplot_text()}}{197}
+\entry {\code {fl_addto_browser()}}{174}
+\entry {\code {fl_addto_browser_chars()}}{174}
+\entry {\code {fl_addto_browser_chars_f()}}{174}
+\entry {\code {fl_addto_browser_f()}}{174}
+\entry {\code {fl_addto_choice()}}{223}
+\entry {\code {fl_addto_choice_f()}}{223}
+\entry {\code {fl_addto_command_log()}}{75}
+\entry {\code {fl_addto_command_log_f()}}{75}
+\entry {\code {fl_addto_form()}}{36, 290}
+\entry {\code {fl_addto_formbrowser()}}{186}
+\entry {\code {fl_addto_group()}}{23, 290}
+\entry {\code {fl_addto_menu()}}{227}
+\entry {\code {fl_addto_selected_xevent()}}{54}
+\entry {\code {fl_addto_tabfolder()}}{182}
+\entry {\code {fl_addtopup()}}{232}
+\entry {\code {fl_adjust_form_size()}}{288}
+\entry {\code {fl_app_signal_direct()}}{303}
+\entry {\code {fl_arc()}}{263}
+\entry {\code {fl_arcf()}}{263}
+\entry {\code {fl_bgn_form()}}{16, 289}
+\entry {\code {fl_bgn_group()}}{22, 289}
+\entry {\code {fl_bk_color()}}{258}
+\entry {\code {fl_call_object_callback()}}{52, 294}
+\entry {\code {fl_calloc()}}{244}
+\entry {\code {fl_canvas_yield_to_shortcut()}}{203}
+\entry {\code {fl_check_command()}}{74}
+\entry {\code {fl_check_forms()}}{48, 300}
+\entry {\code {fl_check_only_forms()}}{300}
+\entry {\code {fl_circ()}}{263}
+\entry {\code {fl_circbound()}}{263}
+\entry {\code {fl_circf()}}{263}
+\entry {\code {fl_clear_browser()}}{174}
+\entry {\code {fl_clear_canvas()}}{203}
+\entry {\code {fl_clear_chart()}}{120}
+\entry {\code {fl_clear_choice()}}{223}
+\entry {\code {fl_clear_command_log()}}{75}
+\entry {\code {fl_clear_menu()}}{228}
+\entry {\code {fl_clear_nmenu()}}{171}
+\entry {\code {fl_clear_select()}}{165}
+\entry {\code {fl_clear_xyplot()}}{198}
+\entry {\code {fl_color()}}{258}
+\entry {\code {fl_create_animated_cursor()}}{311}
+\entry {\code {fl_create_bitmap_cursor()}}{311}
+\entry {\code {fl_create_colormap()}}{203}
+\entry {\code {fl_create_from_bitmapdata()}}{115}
+\entry {\code {fl_create_from_pixmapdata()}}{118}
+\entry {\code {fl_create_generic_button()}}{272}
+\entry {\code {fl_current_event()}}{294}
+\entry {\code {fl_current_pup()}}{234}
+\entry {\code {fl_dashedlinestyle()}}{265}
+\entry {\code {fl_deactivate_all_forms()}}{49, 300}
+\entry {\code {fl_deactivate_form()}}{49, 300}
+\entry {\code {fl_deactivate_object()}}{23, 301}
+\entry {\code {fl_default_window()}}{257}
+\entry {\code {fl_defpup()}}{230}
+\entry {\code {fl_delete_browser_line()}}{175}
+\entry {\code {fl_delete_choice()}}{223}
+\entry {\code {fl_delete_folder()}}{183}
+\entry {\code {fl_delete_folder_byname()}}{183}
+\entry {\code {fl_delete_folder_byname_f()}}{183}
+\entry {\code {fl_delete_folder_bynumber()}}{183}
+\entry {\code {fl_delete_formbrowser()}}{186}
+\entry {\code {fl_delete_formbrowser_bynumber()}}{186}
+\entry {\code {fl_delete_menu_item()}}{227}
+\entry {\code {fl_delete_nmenu_item()}}{170}
+\entry {\code {fl_delete_object()}}{36, 290}
+\entry {\code {fl_delete_select_item()}}{164}
+\entry {\code {fl_delete_symbol()}}{36}
+\entry {\code {fl_delete_xyplot_overlay()}}{197}
+\entry {\code {fl_delete_xyplot_text()}}{197}
+\entry {\code {fl_deselect_browser()}}{175}
+\entry {\code {fl_deselect_browser_line()}}{175}
+\entry {\code {fl_diagline()}}{264}
+\entry {\code {fl_disable_fselector_cache()}}{78}
+\entry {\code {fl_do_forms()}}{44, 300}
+\entry {\code {fl_do_only_forms()}}{300}
+\entry {\code {fl_dopup()}}{233}
+\entry {\code {fl_draw_box()}}{266}
+\entry {\code {fl_draw_frame()}}{266}
+\entry {\code {fl_draw_object_label()}}{267}
+\entry {\code {fl_draw_object_label_outside()}}{267}
+\entry {\code {fl_draw_symbol()}}{35}
+\entry {\code {fl_draw_text()}}{266}
+\entry {\code {fl_draw_text_beside()}}{266}
+\entry {\code {fl_draw_text_cursor()}}{267}
+\entry {\code {fl_drawmode()}}{265}
+\entry {\code {fl_end_all_command()}}{74}
+\entry {\code {fl_end_command()}}{74}
+\entry {\code {fl_end_form()}}{16}
+\entry {\code {fl_end_form();}}{289}
+\entry {\code {fl_end_group()}}{22, 289}
+\entry {\code {fl_enumerate_fonts()}}{31}
+\entry {\code {fl_exe_command()}}{74}
+\entry {\code {fl_find_formbrowser_form_number()}}{187}
+\entry {\code {fl_finish()}}{289}
+\entry {\code {fl_fit_object_label()}}{288}
+\entry {\code {fl_flip_yorigin()}}{286}
+\entry {\code {fl_for_all_objects()}}{42}
+\entry {\code {fl_form_is_activated()}}{300}
+\entry {\code {fl_form_is_iconified()}}{299}
+\entry {\code {fl_form_is_visible()}}{43, 300}
+\entry {\code {FL_FormDisplay()}}{258}
+\entry {\code {fl_free()}}{244}
+\entry {\code {fl_free_colors()}}{27, 259}
+\entry {\code {fl_free_dirlist()}}{81}
+\entry {\code {fl_free_form()}}{37, 290}
+\entry {\code {fl_free_matrix()}}{353}
+\entry {\code {fl_free_object()}}{37, 290}
+\entry {\code {fl_free_pixels()}}{259}
+\entry {\code {fl_free_pixmap()}}{118}
+\entry {\code {fl_free_pixmap_focus_pixmap()}}{128}
+\entry {\code {fl_free_pixmap_pixmap()}}{117}
+\entry {\code {fl_free_pixmapbutton_pixmap()}}{127}
+\entry {\code {fl_freepup()}}{234}
+\entry {\code {fl_freeze_all_forms()}}{293}
+\entry {\code {fl_freeze_form()}}{33, 293}
+\entry {\code {fl_get_active_folder()}}{182}
+\entry {\code {fl_get_active_folder_name()}}{182}
+\entry {\code {fl_get_active_folder_number()}}{182}
+\entry {\code {fl_get_align_xy()}}{267}
+\entry {\code {fl_get_app_mainform()}}{298}
+\entry {\code {fl_get_app_resources()}}{314}
+\entry {\code {fl_get_border_width()}}{285}
+\entry {\code {fl_get_browser()}}{176}
+\entry {\code {fl_get_browser_dimension()}}{180}
+\entry {\code {fl_get_browser_line()}}{175}
+\entry {\code {fl_get_browser_line_yoffset()}}{177}
+\entry {\code {fl_get_browser_maxline()}}{176}
+\entry {\code {fl_get_browser_rel_xoffset()}}{177}
+\entry {\code {fl_get_browser_rel_yoffset()}}{177}
+\entry {\code {fl_get_browser_screenlines()}}{176}
+\entry {\code {fl_get_browser_scrollbar_repeat()}}{180}
+\entry {\code {fl_get_browser_topline()}}{176}
+\entry {\code {fl_get_browser_xoffset()}}{177}
+\entry {\code {fl_get_browser_yoffset()}}{177}
+\entry {\code {fl_get_button()}}{20, 126}
+\entry {\code {fl_get_button_mouse_buttons()}}{126}
+\entry {\code {fl_get_button_numb()}}{126}
+\entry {\code {fl_get_canvas_colormap()}}{202}
+\entry {\code {fl_get_canvas_depth()}}{202}
+\entry {\code {fl_get_canvas_id()}}{202}
+\entry {\code {fl_get_char_height()}}{261}
+\entry {\code {fl_get_char_width()}}{261}
+\entry {\code {fl_get_chart_bounds()}}{121}
+\entry {\code {fl_get_choice()}}{223}
+\entry {\code {fl_get_choice_item_mode()}}{224}
+\entry {\code {fl_get_choice_item_text()}}{223}
+\entry {\code {fl_get_choice_maxitems()}}{224}
+\entry {\code {fl_get_choice_text()}}{223}
+\entry {\code {fl_get_clipping()}}{260}
+\entry {\code {fl_get_clock()}}{119}
+\entry {\code {fl_get_cmdline_args()}}{283}
+\entry {\code {fl_get_colormap()}}{306}
+\entry {\code {fl_get_command_log_fdstruct()}}{75}
+\entry {\code {fl_get_coordunit()}}{284}
+\entry {\code {fl_get_counter_bounds()}}{143}
+\entry {\code {fl_get_counter_min_repeat()}}{144}
+\entry {\code {fl_get_counter_precision()}}{143}
+\entry {\code {fl_get_counter_repeat()}}{144}
+\entry {\code {fl_get_counter_speedjump()}}{144}
+\entry {\code {fl_get_counter_step()}}{143}
+\entry {\code {fl_get_counter_value()}}{143}
+\entry {\code {fl_get_decoration_sizes()}}{299}
+\entry {\code {fl_get_dial_angles()}}{137}
+\entry {\code {fl_get_dial_bounds()}}{137}
+\entry {\code {fl_get_dial_direction()}}{138}
+\entry {\code {fl_get_dial_step()}}{138}
+\entry {\code {fl_get_dial_value()}}{137}
+\entry {\code {fl_get_directory()}}{79}
+\entry {\code {fl_get_dirlist()}}{80}
+\entry {\code {fl_get_display()}}{258}
+\entry {\code {fl_get_dpi()}}{305}
+\entry {\code {fl_get_drawmode(()}}{266}
+\entry {\code {fl_get_filename()}}{79}
+\entry {\code {fl_get_focus_object()}}{22, 294}
+\entry {\code {fl_get_folder()}}{182}
+\entry {\code {fl_get_folder_area()}}{184}
+\entry {\code {fl_get_folder_name()}}{182}
+\entry {\code {fl_get_folder_number()}}{182}
+\entry {\code {fl_get_font_name()}}{30}
+\entry {\code {fl_get_fontstruct()}}{262}
+\entry {\code {fl_get_form_background_color()}}{289}
+\entry {\code {fl_get_form_mouse()}}{259}
+\entry {\code {fl_get_form_vclass()}}{257}
+\entry {\code {fl_get_formbrowser_area()}}{188}
+\entry {\code {fl_get_formbrowser_form()}}{187}
+\entry {\code {fl_get_formbrowser_numforms()}}{186}
+\entry {\code {fl_get_formbrowser_topform()}}{187}
+\entry {\code {fl_get_formbrowser_xoffset()}}{188}
+\entry {\code {fl_get_formbrowser_yoffset()}}{188}
+\entry {\code {fl_get_fselector_fdstruct()}}{79}
+\entry {\code {fl_get_fselector_form()}}{79}
+\entry {\code {fl_get_glcanvas_attributes()}}{204}
+\entry {\code {fl_get_glcanvas_context()}}{204}
+\entry {\code {fl_get_glcanvas_defaults()}}{204}
+\entry {\code {fl_get_glcanvas_xvisualinfo()}}{204}
+\entry {\code {fl_get_global_clipping()}}{260}
+\entry {\code {fl_get_icm_color()}}{26, 288}
+\entry {\code {fl_get_input()}}{22, 155}
+\entry {\code {fl_get_input_color()}}{157}
+\entry {\code {fl_get_input_cursorpos()}}{156}
+\entry {\code {fl_get_input_editkeymap()}}{159}
+\entry {\code {fl_get_input_format()}}{154}
+\entry {\code {fl_get_input_numberoflines()}}{157}
+\entry {\code {fl_get_input_screenlines()}}{157}
+\entry {\code {fl_get_input_scrollbarsize()}}{157}
+\entry {\code {fl_get_input_selected_range()}}{155}
+\entry {\code {fl_get_input_topline()}}{157}
+\entry {\code {fl_get_input_xoffset()}}{157}
+\entry {\code {fl_get_label_char_at_mouse()}}{295}
+\entry {\code {fl_get_linestyle(()}}{266}
+\entry {\code {fl_get_linewidth()}}{266}
+\entry {\code {fl_get_matrix()}}{332}
+\entry {\code {fl_get_menu()}}{228}
+\entry {\code {fl_get_menu_item_mode()}}{229}
+\entry {\code {fl_get_menu_item_text()}}{228}
+\entry {\code {fl_get_menu_maxitems()}}{228}
+\entry {\code {fl_get_menu_popup()}}{230}
+\entry {\code {fl_get_menu_text()}}{228}
+\entry {\code {fl_get_mouse()}}{51, 259}
+\entry {\code {fl_get_nmenu_item()}}{169}
+\entry {\code {fl_get_nmenu_item_by_label()}}{170}
+\entry {\code {fl_get_nmenu_item_by_text()}}{170}
+\entry {\code {fl_get_nmenu_item_by_value()}}{170}
+\entry {\code {fl_get_nmenu_popup()}}{171}
+\entry {\code {fl_get_object_bbox()}}{261, 291}
+\entry {\code {fl_get_object_boxtype()}}{291}
+\entry {\code {fl_get_object_bw()}}{27, 291}
+\entry {\code {fl_get_object_color()}}{24, 291}
+\entry {\code {fl_get_object_component()}}{292}
+\entry {\code {fl_get_object_dblclick()}}{293}
+\entry {\code {fl_get_object_geometry()}}{291}
+\entry {\code {fl_get_object_gravity()}}{42, 293}
+\entry {\code {fl_get_object_label()}}{32, 292}
+\entry {\code {fl_get_object_lalign()}}{292}
+\entry {\code {fl_get_object_lcolor()}}{292}
+\entry {\code {fl_get_object_lsize()}}{292}
+\entry {\code {fl_get_object_lstyle()}}{292}
+\entry {\code {fl_get_object_objclass()}}{290}
+\entry {\code {fl_get_object_position()}}{291}
+\entry {\code {fl_get_object_resize()}}{42, 293}
+\entry {\code {fl_get_object_return()}}{45}
+\entry {\code {fl_get_object_return_state()}}{46, 179}
+\entry {\code {fl_get_object_size()}}{291}
+\entry {\code {fl_get_object_type()}}{290}
+\entry {\code {fl_get_pattern()}}{79}
+\entry {\code {fl_get_pixel()}}{258}
+\entry {\code {fl_get_pixmap_pixmap()}}{117}
+\entry {\code {fl_get_pixmapbutton_pixmap()}}{127}
+\entry {\code {fl_get_positioner_mouse_buttons()}}{139}
+\entry {\code {fl_get_positioner_numb()}}{140}
+\entry {\code {fl_get_positioner_xbounds()}}{141}
+\entry {\code {fl_get_positioner_xstep()}}{141}
+\entry {\code {fl_get_positioner_xvalue()}}{141}
+\entry {\code {fl_get_positioner_ybounds()}}{141}
+\entry {\code {fl_get_positioner_ystep()}}{141}
+\entry {\code {fl_get_positioner_yvalue()}}{141}
+\entry {\code {fl_get_real_object_window()}}{245}
+\entry {\code {fl_get_resource()}}{317}
+\entry {\code {fl_get_scrollbar_bounds()}}{135}
+\entry {\code {fl_get_scrollbar_increment()}}{135}
+\entry {\code {fl_get_scrollbar_repeat()}}{135}
+\entry {\code {fl_get_scrollbar_size()}}{136}
+\entry {\code {fl_get_scrollbar_value()}}{135}
+\entry {\code {fl_get_select_item()}}{163}
+\entry {\code {fl_get_select_item_by_label()}}{163}
+\entry {\code {fl_get_select_item_by_label_f()}}{163}
+\entry {\code {fl_get_select_item_by_text()}}{163}
+\entry {\code {fl_get_select_item_by_text_f()}}{163}
+\entry {\code {fl_get_select_item_by_value()}}{163}
+\entry {\code {fl_get_select_popup()}}{165}
+\entry {\code {fl_get_select_text_align()}}{165}
+\entry {\code {fl_get_select_text_color()}}{165}
+\entry {\code {fl_get_select_text_font()}}{165}
+\entry {\code {fl_get_slider_bounds()}}{131}
+\entry {\code {fl_get_slider_mouse_buttons()}}{131}
+\entry {\code {fl_get_slider_size()}}{132}
+\entry {\code {fl_get_slider_value()}}{21, 131}
+\entry {\code {fl_get_spinner_bounds()}}{146}
+\entry {\code {fl_get_spinner_down_button()}}{147}
+\entry {\code {fl_get_spinner_input()}}{147}
+\entry {\code {fl_get_spinner_precision()}}{146}
+\entry {\code {fl_get_spinner_step()}}{146}
+\entry {\code {fl_get_spinner_up_button()}}{147}
+\entry {\code {fl_get_spinner_value()}}{146}
+\entry {\code {fl_get_string_dimension()}}{262}
+\entry {\code {fl_get_string_height()}}{261}
+\entry {\code {fl_get_string_width()}}{261}
+\entry {\code {fl_get_tabfolder_folder_byname()}}{183}
+\entry {\code {fl_get_tabfolder_folder_byname_f()}}{183}
+\entry {\code {fl_get_tabfolder_folder_bynumber()}}{183}
+\entry {\code {fl_get_tabfolder_numfolders()}}{183}
+\entry {\code {fl_get_tabfolder_offset()}}{183}
+\entry {\code {fl_get_text_clipping(}}{260}
+\entry {\code {fl_get_thumbwheel_bounds()}}{149}
+\entry {\code {fl_get_thumbwheel_step()}}{149}
+\entry {\code {fl_get_thumbwheel_value()}}{149}
+\entry {\code {fl_get_timer()}}{190}
+\entry {\code {fl_get_vclass()}}{257}
+\entry {\code {fl_get_visual()}}{306}
+\entry {\code {fl_get_visual_depth}}{307}
+\entry {\code {fl_get_win_mouse()}}{51, 259}
+\entry {\code {fl_get_wingeometry()}}{51, 310}
+\entry {\code {fl_get_winorigin()}}{51, 310}
+\entry {\code {fl_get_winsize()}}{51, 310}
+\entry {\code {fl_get_xyplot()}}{192}
+\entry {\code {fl_get_xyplot_data()}}{193}
+\entry {\code {fl_get_xyplot_data_pointer()}}{197}
+\entry {\code {fl_get_xyplot_data_size()}}{193}
+\entry {\code {fl_get_xyplot_mouse_buttons()}}{199}
+\entry {\code {fl_get_xyplot_numdata()}}{197}
+\entry {\code {fl_get_xyplot_overlay_data()}}{196}
+\entry {\code {fl_get_xyplot_screen_area()}}{199}
+\entry {\code {fl_get_xyplot_world_area()}}{199}
+\entry {\code {fl_get_xyplot_xbounds()}}{196}
+\entry {\code {fl_get_xyplot_xmapping()}}{198}
+\entry {\code {fl_get_xyplot_ybounds()}}{196}
+\entry {\code {fl_get_xyplot_ymapping()}}{198}
+\entry {\code {fl_getmcolor()}}{26, 259}
+\entry {\code {fl_getpup_items()}}{238}
+\entry {\code {fl_getpup_mode()}}{237}
+\entry {\code {fl_getpup_text()}}{237}
+\entry {\code {fl_gettime()}}{307}
+\entry {\code {fl_hide_alert()}}{70}
+\entry {\code {fl_hide_choice()}}{72}
+\entry {\code {fl_hide_command_log()}}{75}
+\entry {\code {fl_hide_form()}}{43, 300}
+\entry {\code {fl_hide_fselector()}}{77}
+\entry {\code {fl_hide_input()}}{72}
+\entry {\code {fl_hide_message()}}{70}
+\entry {\code {fl_hide_object()}}{23, 294}
+\entry {\code {fl_hide_oneliner()}}{70}
+\entry {\code {fl_hide_question()}}{71}
+\entry {\code {fl_hidepup()}}{239}
+\entry {\code {fl_iconify()}}{310}
+\entry {\code {fl_initial_wingeometry()}}{309}
+\entry {\code {fl_initial_winsize()}}{308}
+\entry {\code {fl_initial_winstate()}}{308}
+\entry {\code {fl_initialize()}}{281}
+\entry {\code {fl_input_end_return_handling()}}{153}
+\entry {\code {fl_insert_browser_line()}}{174}
+\entry {\code {fl_insert_browser_line_f()}}{174}
+\entry {\code {fl_insert_chart_value()}}{120}
+\entry {\code {fl_insert_formbrowser()}}{187}
+\entry {\code {fl_insert_nmenu_items()}}{170}
+\entry {\code {fl_insert_nmenu_items2()}}{170}
+\entry {\code {fl_insert_select_items()}}{164}
+\entry {\code {fl_insert_xyplot_data()}}{197}
+\entry {\code {fl_interpolate()}}{200}
+\entry {\code {fl_invalidate_fselector_cache()}}{78}
+\entry {\code {fl_is_center_lalign()}}{31}
+\entry {\code {fl_is_clipped()}}{260}
+\entry {\code {fl_is_global_clipped()}}{260}
+\entry {\code {fl_is_inside_lalign()}}{31}
+\entry {\code {fl_is_outside_lalign()}}{31}
+\entry {\code {fl_is_text_clipped(}}{260}
+\entry {\code {fl_isselected_browser_line()}}{176}
+\entry {\code {fl_last_event()}}{51, 294}
+\entry {\code {fl_library_version()}}{281}
+\entry {\code {fl_line()}}{264}
+\entry {\code {fl_lines()}}{264}
+\entry {\code {fl_linestyle()}}{264}
+\entry {\code {fl_linewidth()}}{264}
+\entry {\code {fl_load_browser()}}{175}
+\entry {\code {fl_lower_form()}}{299}
+\entry {\code {fl_make_matrix()}}{352}
+\entry {\code {fl_make_object()}}{255}
+\entry {\code {fl_malloc()}}{244}
+\entry {\code {fl_mapcolor()}}{26, 259}
+\entry {\code {fl_mapcolorname()}}{26, 259}
+\entry {\code {fl_mode_capable()}}{307}
+\entry {\code {fl_mouse_button()}}{51}
+\entry {\code {fl_move_object()}}{291}
+\entry {\code {fl_msleep()}}{307}
+\entry {\code {fl_newpup()}}{230}
+\entry {\code {fl_noborder()}}{309}
+\entry {\code {fl_now()}}{307}
+\entry {\code {fl_object_is_active()}}{24, 301}
+\entry {\code {fl_object_is_automatic()}}{293}
+\entry {\code {fl_object_is_visible()}}{23, 294}
+\entry {\code {fl_object_ps_dump()}}{295}
+\entry {\code {FL_ObjWin()}}{202}
+\entry {\code {fl_oval()}}{263}
+\entry {\code {fl_ovalarc(}}{264}
+\entry {\code {fl_ovalbound()}}{263}
+\entry {\code {fl_ovalf()}}{263}
+\entry {\code {fl_ovall()}}{263}
+\entry {\code {fl_pclose()}}{74}
+\entry {\code {fl_pieslice()}}{264}
+\entry {\code {fl_point()}}{264}
+\entry {\code {fl_points()}}{264}
+\entry {\code {fl_polybound()}}{263}
+\entry {\code {fl_polyf()}}{263}
+\entry {\code {fl_polyl()}}{263}
+\entry {\code {fl_popen()}}{74}
+\entry {\code {fl_popup_add()}}{205}
+\entry {\code {fl_popup_add_entries()}}{205}
+\entry {\code {fl_popup_add_items()}}{214}
+\entry {\code {fl_popup_create()}}{212}
+\entry {\code {fl_popup_entry_clear_state()}}{217}
+\entry {\code {fl_popup_entry_delete()}}{211}
+\entry {\code {fl_popup_entry_get_by_label()}}{218}
+\entry {\code {fl_popup_entry_get_by_label_f()}}{218}
+\entry {\code {fl_popup_entry_get_by_position()}}{218}
+\entry {\code {fl_popup_entry_get_by_text()}}{217}
+\entry {\code {fl_popup_entry_get_by_text_f()}}{217}
+\entry {\code {fl_popup_entry_get_by_user_data()}}{218}
+\entry {\code {fl_popup_entry_get_by_value()}}{218}
+\entry {\code {fl_popup_entry_get_group()}}{220}
+\entry {\code {fl_popup_entry_get_state()}}{217}
+\entry {\code {fl_popup_entry_get_subpopup()}}{221}
+\entry {\code {fl_popup_entry_set_callback()}}{216}
+\entry {\code {fl_popup_entry_set_enter_callback()}}{216}
+\entry {\code {fl_popup_entry_set_font()}}{219}
+\entry {\code {fl_popup_entry_set_group()}}{221}
+\entry {\code {fl_popup_entry_set_leave_callback()}}{216}
+\entry {\code {fl_popup_entry_set_shortcut()}}{220}
+\entry {\code {fl_popup_entry_set_state()}}{217}
+\entry {\code {fl_popup_entry_set_subpopup()}}{221}
+\entry {\code {fl_popup_entry_set_text()}}{220}
+\entry {\code {fl_popup_entry_set_user_data()}}{220}
+\entry {\code {fl_popup_entry_set_value()}}{220}
+\entry {\code {fl_popup_get_bw()}}{219}
+\entry {\code {fl_popup_get_color()}}{219}
+\entry {\code {fl_popup_get_min_width()}}{219}
+\entry {\code {fl_popup_get_policy()}}{215}
+\entry {\code {fl_popup_get_size()}}{216}
+\entry {\code {fl_popup_get_title()}}{218}
+\entry {\code {fl_popup_get_title_font()}}{218}
+\entry {\code {fl_popup_insert_items()}}{214}
+\entry {\code {fl_popup_raise_clear_state()}}{217}
+\entry {\code {fl_popup_set_bw()}}{219}
+\entry {\code {fl_popup_set_callback()}}{216}
+\entry {\code {fl_popup_set_color()}}{219}
+\entry {\code {fl_popup_set_cursor()}}{219}
+\entry {\code {fl_popup_set_min_width()}}{219}
+\entry {\code {fl_popup_set_policy()}}{215}
+\entry {\code {fl_popup_set_position()}}{216}
+\entry {\code {fl_popup_set_title()}}{218}
+\entry {\code {fl_popup_set_title_f()}}{218}
+\entry {\code {fl_popup_set_title_font()}}{218}
+\entry {\code {fl_popup_toggle_clear_state()}}{217}
+\entry {\code {fl_prepare_form_window()}}{41, 298}
+\entry {\code {fl_prepare_form_window_f()}}{298}
+\entry {\code {fl_print_xevent_name()}}{52}
+\entry {\code {fl_raise_form()}}{298}
+\entry {\code {fl_read_bitmapfile()}}{115}
+\entry {\code {fl_read_pixmapfile()}}{117}
+\entry {\code {fl_realloc()}}{244}
+\entry {\code {fl_rect()}}{262}
+\entry {\code {fl_rectbound()}}{262}
+\entry {\code {fl_rectf()}}{262}
+\entry {\code {fl_redraw_form()}}{33, 301}
+\entry {\code {fl_redraw_object()}}{33, 301}
+\entry {\code {fl_refresh_fselector()}}{79}
+\entry {\code {fl_register_raw_callback()}}{319}
+\entry {\code {fl_remove_canvas_handler()}}{201}
+\entry {\code {fl_remove_event_callback()}}{54, 301}
+\entry {\code {fl_remove_fselector_appbutton()}}{79}
+\entry {\code {fl_remove_io_callback()}}{56}
+\entry {\code {fl_remove_selected_xevent()}}{54}
+\entry {\code {fl_remove_signal_callback()}}{302}
+\entry {\code {fl_remove_timeout()}}{48, 304}
+\entry {\code {fl_replace_browser_line()}}{175}
+\entry {\code {fl_replace_browser_line_f()}}{175}
+\entry {\code {fl_replace_chart_value()}}{121}
+\entry {\code {fl_replace_choice()}}{223}
+\entry {\code {fl_replace_choice_f()}}{223}
+\entry {\code {fl_replace_formbrowser()}}{187}
+\entry {\code {fl_replace_menu_item()}}{227}
+\entry {\code {fl_replace_nmenu_item()}}{170}
+\entry {\code {fl_replace_nmenu_items2()}}{170}
+\entry {\code {fl_replace_select_item()}}{164}
+\entry {\code {fl_replace_xyplot_point()}}{196}
+\entry {\code {fl_request_clipboard()}}{312}
+\entry {\code {fl_reset_cursor()}}{311}
+\entry {\code {fl_reset_focus_object()}}{294}
+\entry {\code {fl_reset_positioner}}{140}
+\entry {\code {fl_reset_winconstraints()}}{310}
+\entry {\code {fl_resume_timer()}}{190}
+\entry {\code {fl_ringbell()}}{307}
+\entry {\code {fl_roundrect()}}{262}
+\entry {\code {fl_roundrectf()}}{262}
+\entry {\code {fl_scale_form()}}{41, 299}
+\entry {\code {fl_select_browser_line()}}{175}
+\entry {\code {fl_set_app_mainform()}}{40, 298}
+\entry {\code {fl_set_app_nomainform()}}{298}
+\entry {\code {fl_set_atclose()}}{43}
+\entry {\code {fl_set_background()}}{258}
+\entry {\code {fl_set_bitmap_data()}}{115}
+\entry {\code {fl_set_bitmap_file()}}{115}
+\entry {\code {fl_set_bitmapbutton_data()}}{127}
+\entry {\code {fl_set_bitmapbutton_file()}}{127}
+\entry {\code {fl_set_border_width()}}{28, 285}
+\entry {\code {fl_set_browser_bottomline()}}{176}
+\entry {\code {fl_set_browser_dblclick_callback()}}{176}
+\entry {\code {fl_set_browser_fontsize()}}{177}
+\entry {\code {fl_set_browser_fontstyle()}}{177}
+\entry {\code {fl_set_browser_hscroll_callback()}}{179}
+\entry {\code {fl_set_browser_hscrollbar()}}{178}
+\entry {\code {fl_set_browser_rel_xoffset()}}{177}
+\entry {\code {fl_set_browser_rel_yoffset()}}{177}
+\entry {\code {fl_set_browser_scrollbar_repeat()}}{180}
+\entry {\code {fl_set_browser_scrollbarsize()}}{179}
+\entry {\code {fl_set_browser_specialkey()}}{178}
+\entry {\code {fl_set_browser_topline()}}{176}
+\entry {\code {fl_set_browser_vscroll_callback()}}{179}
+\entry {\code {fl_set_browser_vscrollbar()}}{178}
+\entry {\code {fl_set_browser_xoffset()}}{177}
+\entry {\code {fl_set_browser_yoffset()}}{177}
+\entry {\code {fl_set_button()}}{19, 126}
+\entry {\code {fl_set_button_mouse_buttons()}}{126}
+\entry {\code {fl_set_button_shortcut()}}{126}
+\entry {\code {fl_set_canvas_attributes()}}{202}
+\entry {\code {fl_set_canvas_colormap()}}{202}
+\entry {\code {fl_set_canvas_depth()}}{202}
+\entry {\code {fl_set_canvas_visual()}}{202}
+\entry {\code {fl_set_chart_autosize()}}{121}
+\entry {\code {fl_set_chart_baseline()}}{121}
+\entry {\code {fl_set_chart_bounds()}}{121}
+\entry {\code {fl_set_chart_lcolor()}}{120}
+\entry {\code {fl_set_chart_lsize()}}{120}
+\entry {\code {fl_set_chart_lstyle()}}{120}
+\entry {\code {fl_set_chart_maxnumb()}}{121}
+\entry {\code {fl_set_choice()}}{224}
+\entry {\code {fl_set_choice_align()}}{224}
+\entry {\code {fl_set_choice_align_bottom()}}{225}
+\entry {\code {fl_set_choice_entries()}}{224}
+\entry {\code {fl_set_choice_fontsize()}}{224}
+\entry {\code {fl_set_choice_fontstyle()}}{224}
+\entry {\code {fl_set_choice_item_mode()}}{224}
+\entry {\code {fl_set_choice_text()}}{224}
+\entry {\code {fl_set_choice_text_f()}}{224}
+\entry {\code {fl_set_choices_shortcut()}}{72}
+\entry {\code {fl_set_clipping()}}{260}
+\entry {\code {fl_set_clock_adjustment()}}{119}
+\entry {\code {fl_set_clock_ampm()}}{119}
+\entry {\code {fl_set_color_leak()}}{27}
+\entry {\code {fl_set_command_log_position()}}{75}
+\entry {\code {fl_set_coordunit()}}{284}
+\entry {\code {fl_set_counter_bounds()}}{143}
+\entry {\code {fl_set_counter_filter()}}{144}
+\entry {\code {fl_set_counter_min_repeat()}}{144}
+\entry {\code {fl_set_counter_precision()}}{143}
+\entry {\code {fl_set_counter_repeat()}}{144}
+\entry {\code {fl_set_counter_speedjump()}}{144}
+\entry {\code {fl_set_counter_step()}}{143}
+\entry {\code {fl_set_counter_value()}}{143}
+\entry {\code {fl_set_cursor()}}{311}
+\entry {\code {fl_set_cursor_color()}}{311}
+\entry {\code {fl_set_default_tabfolder_corner()}}{184}
+\entry {\code {fl_set_defaults()}}{283}
+\entry {\code {fl_set_dial_angles()}}{137}
+\entry {\code {fl_set_dial_bounds()}}{137}
+\entry {\code {fl_set_dial_crossover()}}{137}
+\entry {\code {fl_set_dial_direction()}}{138}
+\entry {\code {fl_set_dial_step()}}{137}
+\entry {\code {fl_set_dial_value()}}{137}
+\entry {\code {fl_set_directory()}}{79}
+\entry {\code {fl_set_dirlist_filter()}}{81}
+\entry {\code {fl_set_dirlist_filterdir()}}{81}
+\entry {\code {fl_set_dirlist_sort()}}{82}
+\entry {\code {fl_set_error_handler()}}{286}
+\entry {\code {fl_set_error_logfp()}}{287}
+\entry {\code {fl_set_event_callback()}}{53, 301}
+\entry {\code {fl_set_focus_object()}}{22, 294}
+\entry {\code {fl_set_folder()}}{184}
+\entry {\code {fl_set_folder_byname()}}{184}
+\entry {\code {fl_set_folder_byname_f()}}{184}
+\entry {\code {fl_set_folder_bynumber()}}{184}
+\entry {\code {fl_set_font_name()}}{30, 287}
+\entry {\code {fl_set_font_name_f()}}{30, 287}
+\entry {\code {fl_set_foreground()}}{258}
+\entry {\code {fl_set_form_atactivate()}}{49, 300}
+\entry {\code {fl_set_form_atclose()}}{44}
+\entry {\code {fl_set_form_atdeactivate()}}{49, 300}
+\entry {\code {fl_set_form_background_color()}}{289}
+\entry {\code {fl_set_form_callback()}}{53, 294}
+\entry {\code {fl_set_form_dblbuffer()}}{286}
+\entry {\code {fl_set_form_geometry()}}{39, 299}
+\entry {\code {fl_set_form_hotobject()}}{40}
+\entry {\code {fl_set_form_hotspot()}}{40}
+\entry {\code {fl_set_form_icon()}}{43, 299}
+\entry {\code {fl_set_form_maxsize()}}{299}
+\entry {\code {fl_set_form_minsize()}}{299}
+\entry {\code {fl_set_form_position()}}{39, 299}
+\entry {\code {fl_set_form_size()}}{39, 299}
+\entry {\code {fl_set_form_title()}}{43, 299}
+\entry {\code {fl_set_form_title_f()}}{43, 299}
+\entry {\code {fl_set_formbrowser_hscrollbar()}}{187}
+\entry {\code {fl_set_formbrowser_scroll()}}{187}
+\entry {\code {fl_set_formbrowser_topform()}}{188}
+\entry {\code {fl_set_formbrowser_topform_bynumber()}}{188}
+\entry {\code {fl_set_formbrowser_vscrollbar()}}{187}
+\entry {\code {fl_set_formbrowser_xoffset()}}{188}
+\entry {\code {fl_set_formbrowser_yoffset()}}{188}
+\entry {\code {fl_set_fselector_border()}}{78}
+\entry {\code {fl_set_fselector_callback()}}{78}
+\entry {\code {fl_set_fselector_filetype_marker()}}{80}
+\entry {\code {fl_set_fselector_fontsize()}}{77}
+\entry {\code {fl_set_fselector_fontstyle()}}{77}
+\entry {\code {fl_set_fselector_placement()}}{78}
+\entry {\code {fl_set_fselector_title()}}{78}
+\entry {\code {fl_set_gc_clipping()}}{261}
+\entry {\code {fl_set_glcanvas_attributes()}}{204}
+\entry {\code {fl_set_glcanvas_defaults()}}{204}
+\entry {\code {fl_set_glcanvas_direct()}}{204}
+\entry {\code {fl_set_goodies_font()}}{72}
+\entry {\code {fl_set_icm_color()}}{26, 288}
+\entry {\code {fl_set_idle_callback()}}{47, 304}
+\entry {\code {fl_set_idle_delta()}}{304}
+\entry {\code {fl_set_input()}}{22, 155}
+\entry {\code {fl_set_input_color()}}{22, 157}
+\entry {\code {fl_set_input_cursor_visible()}}{157}
+\entry {\code {fl_set_input_cursorpos()}}{156}
+\entry {\code {fl_set_input_editkeymap()}}{158}
+\entry {\code {fl_set_input_f()}}{22, 155}
+\entry {\code {fl_set_input_fieldchar()}}{157}
+\entry {\code {fl_set_input_filter()}}{153}
+\entry {\code {fl_set_input_format()}}{154}
+\entry {\code {fl_set_input_hscrollbar()}}{156}
+\entry {\code {fl_set_input_maxchars()}}{153}
+\entry {\code {fl_set_input_mode()}}{154}
+\entry {\code {fl_set_input_scroll()}}{156}
+\entry {\code {fl_set_input_scrollbarsize()}}{157}
+\entry {\code {fl_set_input_selected()}}{155}
+\entry {\code {fl_set_input_selected_range()}}{155}
+\entry {\code {fl_set_input_topline()}}{156}
+\entry {\code {fl_set_input_vscrollbar()}}{156}
+\entry {\code {fl_set_input_xoffset()}}{157}
+\entry {\code {fl_set_menu()}}{226}
+\entry {\code {fl_set_menu_entries()}}{227}
+\entry {\code {fl_set_menu_item_callback()}}{229}
+\entry {\code {fl_set_menu_item_mode()}}{228}
+\entry {\code {fl_set_menu_item_shortcut()}}{229}
+\entry {\code {fl_set_menu_notitle()}}{230}
+\entry {\code {fl_set_menu_popup()}}{230}
+\entry {\code {fl_set_mouse()}}{260}
+\entry {\code {fl_set_nmenu_hl_text_color()}}{171}
+\entry {\code {fl_set_nmenu_items()}}{167}
+\entry {\code {fl_set_nmenu_policy()}}{169}
+\entry {\code {fl_set_nmenu_popup()}}{168}
+\entry {\code {fl_set_object_automatic()}}{293}
+\entry {\code {fl_set_object_boxtype()}}{27, 291}
+\entry {\code {fl_set_object_bw()}}{27, 291}
+\entry {\code {fl_set_object_callback()}}{52, 294}
+\entry {\code {fl_set_object_color()}}{24, 290}
+\entry {\code {fl_set_object_dblbuffer()}}{286}
+\entry {\code {fl_set_object_dblclick()}}{293}
+\entry {\code {fl_set_object_geometry()}}{291}
+\entry {\code {fl_set_object_gravity()}}{41, 293}
+\entry {\code {fl_set_object_helper()}}{32, 292}
+\entry {\code {fl_set_object_helper_f()}}{32, 292}
+\entry {\code {fl_set_object_label()}}{32, 292}
+\entry {\code {fl_set_object_label_f()}}{32, 292}
+\entry {\code {fl_set_object_lalign()}}{31, 292}
+\entry {\code {fl_set_object_lcolor()}}{28, 292}
+\entry {\code {fl_set_object_lsize()}}{28, 292}
+\entry {\code {fl_set_object_lstyle()}}{29, 292}
+\entry {\code {fl_set_object_position()}}{291}
+\entry {\code {fl_set_object_posthandler()}}{279, 320}
+\entry {\code {fl_set_object_prehandler()}}{279, 320}
+\entry {\code {fl_set_object_resize()}}{41, 293}
+\entry {\code {fl_set_object_return()}}{45}
+\entry {\code {fl_set_object_shortcut()}}{248}
+\entry {\code {fl_set_object_shortcutkey()}}{248}
+\entry {\code {fl_set_object_size()}}{291}
+\entry {\code {fl_set_oneliner_color()}}{70}
+\entry {\code {fl_set_oneliner_font()}}{70}
+\entry {\code {fl_set_pattern()}}{79}
+\entry {\code {fl_set_pixmap_align()}}{117}
+\entry {\code {fl_set_pixmap_colorcloseness()}}{117}
+\entry {\code {fl_set_pixmap_data()}}{116}
+\entry {\code {fl_set_pixmap_file()}}{116}
+\entry {\code {fl_set_pixmap_pixmap()}}{117}
+\entry {\code {fl_set_pixmapbutton_align()}}{127}
+\entry {\code {fl_set_pixmapbutton_data()}}{127}
+\entry {\code {fl_set_pixmapbutton_file()}}{127}
+\entry {\code {fl_set_pixmapbutton_focus_data()}}{128}
+\entry {\code {fl_set_pixmapbutton_focus_file()}}{128}
+\entry {\code {fl_set_pixmapbutton_focus_outline()}}{128}
+\entry {\code {fl_set_pixmapbutton_focus_pixmap()}}{128}
+\entry {\code {fl_set_pixmapbutton_pixmap()}}{127}
+\entry {\code {fl_set_positioner_mouse_buttons()}}{139}
+\entry {\code {fl_set_positioner_validator()}}{140}
+\entry {\code {fl_set_positioner_values()}}{141}
+\entry {\code {fl_set_positioner_xbounds()}}{140}
+\entry {\code {fl_set_positioner_xstep()}}{141}
+\entry {\code {fl_set_positioner_xvalue()}}{141}
+\entry {\code {fl_set_positioner_ybounds()}}{140}
+\entry {\code {fl_set_positioner_ystep()}}{141}
+\entry {\code {fl_set_positioner_yvalue()}}{141}
+\entry {\code {fl_set_resource()}}{73, 317}
+\entry {\code {fl_set_scrollbar_bounds()}}{135}
+\entry {\code {fl_set_scrollbar_increment()}}{135}
+\entry {\code {fl_set_scrollbar_repeat()}}{135}
+\entry {\code {fl_set_scrollbar_size()}}{135}
+\entry {\code {fl_set_scrollbar_type()}}{285}
+\entry {\code {fl_set_scrollbar_value()}}{135}
+\entry {\code {fl_set_select_item()}}{164}
+\entry {\code {fl_set_select_items()}}{161}
+\entry {\code {fl_set_select_policy()}}{163}
+\entry {\code {fl_set_select_popup()}}{162}
+\entry {\code {fl_set_select_text_align()}}{165}
+\entry {\code {fl_set_select_text_color()}}{165}
+\entry {\code {fl_set_select_text_font()}}{165}
+\entry {\code {fl_set_slider_bounds()}}{21, 131}
+\entry {\code {fl_set_slider_filter()}}{132}
+\entry {\code {fl_set_slider_mouse_buttons()}}{131}
+\entry {\code {fl_set_slider_precision()}}{132}
+\entry {\code {fl_set_slider_size()}}{132}
+\entry {\code {fl_set_slider_value()}}{21, 131}
+\entry {\code {fl_set_spinner_bounds()}}{146}
+\entry {\code {fl_set_spinner_precision()}}{146}
+\entry {\code {fl_set_spinner_step()}}{146}
+\entry {\code {fl_set_spinner_value()}}{146}
+\entry {\code {fl_set_tabfolder_autofit()}}{184}
+\entry {\code {fl_set_tabfolder_offset()}}{183}
+\entry {\code {fl_set_tabstop()}}{286}
+\entry {\code {fl_set_text_clipping()}}{260}
+\entry {\code {fl_set_thumbwheel_bounds()}}{149}
+\entry {\code {fl_set_thumbwheel_crossover()}}{149}
+\entry {\code {fl_set_thumbwheel_step()}}{149}
+\entry {\code {fl_set_thumbwheel_value()}}{149}
+\entry {\code {fl_set_timer()}}{190}
+\entry {\code {fl_set_timer_countup()}}{190}
+\entry {\code {fl_set_timer_filter()}}{190}
+\entry {\code {fl_set_tooltip_boxtype()}}{32, 292}
+\entry {\code {fl_set_tooltip_color()}}{32, 292}
+\entry {\code {fl_set_tooltip_font()}}{32, 292}
+\entry {\code {fl_set_tooltip_lalign()}}{32}
+\entry {\code {fl_set_visualID()}}{283}
+\entry {\code {fl_set_xyplot_alphaxtics()}}{194}
+\entry {\code {fl_set_xyplot_alphaytics()}}{194}
+\entry {\code {fl_set_xyplot_data()}}{192}
+\entry {\code {fl_set_xyplot_data_double()}}{192}
+\entry {\code {fl_set_xyplot_file()}}{193}
+\entry {\code {fl_set_xyplot_fixed_xaxis()}}{195}
+\entry {\code {fl_set_xyplot_fixed_yaxis()}}{195}
+\entry {\code {fl_set_xyplot_grid_linestyle()}}{194}
+\entry {\code {fl_set_xyplot_inspect()}}{193}
+\entry {\code {fl_set_xyplot_interpolate()}}{198}
+\entry {\code {fl_set_xyplot_key()}}{197}
+\entry {\code {fl_set_xyplot_key_font()}}{198}
+\entry {\code {fl_set_xyplot_key_position()}}{198}
+\entry {\code {fl_set_xyplot_keys()}}{198}
+\entry {\code {fl_set_xyplot_linewidth()}}{198}
+\entry {\code {fl_set_xyplot_log_minor_xtics()}}{194}
+\entry {\code {fl_set_xyplot_log_minor_ytics()}}{194}
+\entry {\code {fl_set_xyplot_mark_active()}}{192}
+\entry {\code {fl_set_xyplot_maxoverlays()}}{197}
+\entry {\code {fl_set_xyplot_mouse_buttons()}}{199}
+\entry {\code {fl_set_xyplot_overlay_type()}}{196}
+\entry {\code {fl_set_xyplot_symbol()}}{195}
+\entry {\code {fl_set_xyplot_symbolsize()}}{195}
+\entry {\code {fl_set_xyplot_xbounds()}}{196}
+\entry {\code {fl_set_xyplot_xgrid()}}{194}
+\entry {\code {fl_set_xyplot_xscale()}}{198}
+\entry {\code {fl_set_xyplot_xtics()}}{193}
+\entry {\code {fl_set_xyplot_ybounds()}}{196}
+\entry {\code {fl_set_xyplot_ygrid()}}{194}
+\entry {\code {fl_set_xyplot_yscale()}}{198}
+\entry {\code {fl_set_xyplot_ytics()}}{193}
+\entry {\code {fl_setpup_align_bottom()}}{237}
+\entry {\code {fl_setpup_bw()}}{238}
+\entry {\code {fl_setpup_cursor()}}{238}
+\entry {\code {fl_setpup_default_bw();}}{238}
+\entry {\code {fl_setpup_default_checkcolor()}}{239}
+\entry {\code {fl_setpup_default_color()}}{239}
+\entry {\code {fl_setpup_default_cursor()}}{238}
+\entry {\code {fl_setpup_default_fontsize()}}{230, 238}
+\entry {\code {fl_setpup_default_fontstyle()}}{230, 238}
+\entry {\code {fl_setpup_entercb()}}{236}
+\entry {\code {fl_setpup_entries()}}{234}
+\entry {\code {fl_setpup_itemcb()}}{236}
+\entry {\code {fl_setpup_leavecb()}}{236}
+\entry {\code {fl_setpup_maxpups()}}{239}
+\entry {\code {fl_setpup_menucb()}}{236}
+\entry {\code {fl_setpup_mode()}}{237}
+\entry {\code {fl_setpup_position()}}{237}
+\entry {\code {fl_setpup_selection()}}{238}
+\entry {\code {fl_setpup_shadow()}}{238}
+\entry {\code {fl_setpup_shortcut()}}{236}
+\entry {\code {fl_setpup_softedge()}}{238}
+\entry {\code {fl_setpup_submenu()}}{237}
+\entry {\code {fl_setpup_title()}}{238}
+\entry {\code {fl_setpup_title_f()}}{238}
+\entry {\code {fl_share_canvas_colormap()}}{203}
+\entry {\code {fl_show_alert()}}{70}
+\entry {\code {fl_show_alert_f()}}{71}
+\entry {\code {fl_show_browser_line()}}{176}
+\entry {\code {fl_show_choice()}}{72}
+\entry {\code {fl_show_choices()}}{72}
+\entry {\code {fl_show_color_chooser()}}{76}
+\entry {\code {fl_show_colormap()}}{76}
+\entry {\code {fl_show_command_log()}}{75}
+\entry {\code {fl_show_errors()}}{287}
+\entry {\code {fl_show_form()}}{38, 296}
+\entry {\code {fl_show_form_f()}}{296}
+\entry {\code {fl_show_form_window()}}{41, 298}
+\entry {\code {fl_show_fselector()}}{76}
+\entry {\code {fl_show_input()}}{72}
+\entry {\code {fl_show_menu_symbol()}}{229}
+\entry {\code {fl_show_message()}}{70}
+\entry {\code {fl_show_messages()}}{70}
+\entry {\code {fl_show_messages_f()}}{70}
+\entry {\code {fl_show_object()}}{23, 294}
+\entry {\code {fl_show_oneliner()}}{70}
+\entry {\code {fl_show_question()}}{71}
+\entry {\code {fl_show_simple_input()}}{73}
+\entry {\code {fl_showpup()}}{239}
+\entry {\code {fl_signal_caught()}}{303}
+\entry {\code {fl_strdup()}}{244}
+\entry {\code {fl_stuff_clipboard()}}{312}
+\entry {\code {fl_suspend_timer()}}{190}
+\entry {\code {fl_to_inside_lalign()}}{31}
+\entry {\code {fl_to_outside_lalign()}}{31}
+\entry {\code {fl_transient()}}{309}
+\entry {\code {fl_trigger_object()}}{24, 294}
+\entry {\code {fl_unfreeze_all_forms()}}{293}
+\entry {\code {fl_unfreeze_form()}}{33, 293}
+\entry {\code {fl_unset_clipping()}}{260}
+\entry {\code {fl_unset_gc_clipping()}}{261}
+\entry {\code {fl_unset_text_clipping()}}{260}
+\entry {\code {fl_update_display()}}{38}
+\entry {\code {fl_use_fselector()}}{77}
+\entry {\code {fl_validate_input()}}{154}
+\entry {\code {fl_whoami()}}{307}
+\entry {\code {fl_win_to_form()}}{258}
+\entry {\code {fl_winaspect()}}{309}
+\entry {\code {fl_winbackground()}}{309}
+\entry {\code {fl_winclose()}}{310}
+\entry {\code {fl_wincreate()}}{307}
+\entry {\code {fl_winfocus()}}{311}
+\entry {\code {fl_wingeometry()}}{309}
+\entry {\code {fl_winget()}}{262}
+\entry {\code {fl_winhide()}}{310}
+\entry {\code {fl_winicon()}}{309}
+\entry {\code {fl_winicontitle()}}{309}
+\entry {\code {fl_winicontitle_f()}}{309}
+\entry {\code {fl_winisvalid()}}{310}
+\entry {\code {fl_winmaxsize()}}{308}
+\entry {\code {fl_winminsize()}}{308}
+\entry {\code {fl_winmove()}}{310}
+\entry {\code {fl_winopen()}}{308}
+\entry {\code {fl_winposition()}}{309}
+\entry {\code {fl_winreparent()}}{308}
+\entry {\code {fl_winreshape()}}{310}
+\entry {\code {fl_winresize()}}{310}
+\entry {\code {fl_winset()}}{262}
+\entry {\code {fl_winshow()}}{307}
+\entry {\code {fl_winsize()}}{308}
+\entry {\code {fl_winstepsize()}}{310}
+\entry {\code {fl_wintitle()}}{309}
+\entry {\code {fl_wintitle_f()}}{309}
+\entry {\code {fl_XEventsQueued()}}{50}
+\entry {\code {fl_XNextEvent()}}{50}
+\entry {\code {fl_XPeekEvent()}}{50}
+\entry {\code {fl_XPutbackEvent()}}{50}
+\entry {\code {fl_xyplot_s2w()}}{199}
+\entry {\code {fl_xyplot_w2s()}}{199}
+\entry {\code {flimage_add_format()}}{335}
+\entry {\code {flimage_add_marker()}}{350}
+\entry {\code {flimage_add_marker_struct()}}{350}
+\entry {\code {flimage_add_text()}}{349}
+\entry {\code {flimage_add_text_struct()}}{349}
+\entry {\code {flimage_alloc()}}{331}
+\entry {\code {flimage_autocrop()}}{345}
+\entry {\code {flimage_close()}}{343}
+\entry {\code {flimage_convert()}}{331}
+\entry {\code {flimage_convolve()}}{343}
+\entry {\code {flimage_convolvea()}}{344}
+\entry {\code {flimage_crop()}}{345}
+\entry {\code {flimage_define_marker()}}{351}
+\entry {\code {flimage_delete_all_markers()}}{351}
+\entry {\code {flimage_delete_all_text()}}{350}
+\entry {\code {flimage_description_via_filter()}}{338}
+\entry {\code {flimage_display()}}{325}
+\entry {\code {flimage_dump()}}{324}
+\entry {\code {flimage_dup()}}{353}
+\entry {\code {flimage_enable_bmp()}}{334}
+\entry {\code {flimage_enable_fits()}}{334}
+\entry {\code {flimage_enable_genesis()}}{334}
+\entry {\code {flimage_enable_gif()}}{334}
+\entry {\code {flimage_enable_gzip()}}{334}
+\entry {\code {flimage_enable_jpeg()}}{334}
+\entry {\code {flimage_enable_png()}}{334}
+\entry {\code {flimage_enable_pnm()}}{334}
+\entry {\code {flimage_enable_ps()}}{334}
+\entry {\code {flimage_enable_sgi()}}{334}
+\entry {\code {flimage_enable_tiff()}}{334}
+\entry {\code {flimage_enable_xbm()}}{334}
+\entry {\code {flimage_enable_xpm()}}{334}
+\entry {\code {flimage_enable_xwd()}}{334}
+\entry {\code {flimage_error()}}{342}
+\entry {\code {flimage_flip()}}{345}
+\entry {\code {flimage_free()}}{325}
+\entry {\code {flimage_from_pixmap()}}{353}
+\entry {\code {flimage_get_autocrop()}}{346}
+\entry {\code {flimage_get_format_info()}}{340}
+\entry {\code {flimage_get_number_of_formats()}}{340}
+\entry {\code {flimage_getmem()}}{332}
+\entry {\code {flimage_gif_output_options()}}{334}
+\entry {\code {flimage_is_supported()}}{326}
+\entry {\code {flimage_jpeg_output_options()}}{334}
+\entry {\code {flimage_load()}}{324}
+\entry {\code {flimage_open()}}{343}
+\entry {\code {flimage_pnm_output_options()}}{334}
+\entry {\code {flimage_ps_options()}}{334}
+\entry {\code {flimage_read()}}{343}
+\entry {\code {flimage_render_annotation()}}{352}
+\entry {\code {flimage_rotate()}}{344}
+\entry {\code {flimage_scale()}}{346}
+\entry {\code {flimage_sdisplay()}}{325}
+\entry {\code {flimage_select_mediancut_quantizer()}}{354}
+\entry {\code {flimage_select_octree_quantizer()}}{354}
+\entry {\code {flimage_setup()}}{341}
+\entry {\code {flimage_tint()}}{344}
+\entry {\code {flimage_to_pixmap()}}{353}
+\entry {\code {flimage_transform_pixels()}}{348}
+\entry {\code {flimage_type_name()}}{330}
+\entry {\code {flimage_warp()}}{347}
+\entry {\code {flimage_windowlevel()}}{330}
+\entry {\code {flimage_write_via_filter()}}{338}
+\entry {\code {flps_init()}}{295}

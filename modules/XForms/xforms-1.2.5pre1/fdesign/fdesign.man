@@ -1,0 +1,203 @@
+.\"
+.\" Man page for Forms Designer
+.\" Use the following command to generate viewable man page
+.\"   tbl fdesign.1 | {nt}roff -man
+.\"
+.\"   ul | more -fsk to view
+.\"
+.\"
+.TH FDESIGN 1L "November 2013" "Version 1.2.0" "Forms Library"
+.SH NAME
+fdesign \-  Forms Library User Interface Designer
+.\"
+.\" setup
+.de Cr
+.ie n (c)
+.el \(co
+..
+.SH SYNOPSIS
+.if n fdesign
+.if t  \{
+.B fdesign
+\}
+[-xformoptions] [-options] [files]
+.SH DESCRIPTION
+.I fdesign
+is a GUI builder that helps in the construction of graphical user
+interface in a WYSIWYG ("what you see is what you get") way by
+allowing the user to directly manipulate various objects, such as
+buttons, sliders and menus etc.  Once a satisfactory UI is constructed,
+the user can save the composed interface into a set of external files.
+Files with the extension '.fd' contain all information about the objects
+and can be read in again by 
+.IR fdesign .
+The files with C code and header files when compiled and linked
+against the
+.BR "Forms Library" ,
+generate code that at run-time constructs the exact same interface
+as the ones seen within
+.IR fdesign .
+
+A variety of output languages is possible via external
+filters.  As of this writing, C, perl, ada95, Fortran, pascal,
+and PostScript output filters are known to exist.
+
+.SH OPTIONS
+.I fdesign
+accepts all standard
+.B Forms Library
+command line options as well as the following:
+.TP 6
+.B \-help
+Prints a brief summary of all command line options. This option
+does not require a connection to the X server.
+.TP
+.B \-version
+Prints the current version of
+.I fdesign
+and exits.
+.TP
+.BI \-geometry " geom"
+Specifies the prefered size and location of main working area in which
+the UI is to be constructed.
+.TP
+.BI \-convert " fdfile-list"
+This option prevents
+.I fdesign
+from attempting to make a connection to the X server. The file list
+following this flag is converted to C code directly.
+.TP
+.BI \-dir " destdir"
+output any converted files in \fIdestdir\fR.
+.TP
+.BI \-unit " pixel|point|mm|cp|cmm"
+selects the unit of measure for object geometries. For non-pixel unit,
+the interface created is screen resolution independent and may be
+desirable for many applications. Note that for typical screens,
+.I point
+(about 1/72 inch) and
+.I mm
+may be too coarse and subject to round-off errors. Use
+.I cp
+(centi-point, 100th of a point) and
+.I cmm
+(centi-mm) instead.
+.TP
+.B \-altformat
+selects an alternative format for the generated C code where
+global variables are used for the UI components.
+.TP
+.B \-main
+requests the output of main program template.
+.TP
+.B \-callback
+requests the output of callback function template.
+.TP
+.B \-compensate
+requests the emission of font/server resolution variation
+compensation code.
+.TP
+.BI \-I " headerfile"
+uses an alternative header file instead of the default
+forms.h in the output C code.
+.TP
+.B \-lax
+requests relaxed C syntax checking.
+.TP
+.B \-ps
+This option specifies that instead of emitting the c code
+for the user interface, PostScript code should be emitted.
+.TP
+.B \-ada
+This option requests ada95 code output
+.TP
+.B \-perl
+This option requests perl code output.
+.TP
+.B \-fortran
+This option requests Fortran code output.
+.TP
+.B \-pascal
+This option requests pascal code output.
+.TP
+.B \-nocode
+suppresses the output of UI code. Only the .fd file is written.
+.PP
+The most useful
+.B Forms Library
+command line options are
+.TP
+.BI \-display " host:dpy"
+This option specifies the X server to connect.
+.TP
+.BI \-flversion
+This option prints the version string of the
+.BR "Forms Library" ,
+with which fdesign was build.
+.TP
+.BI \-name " appname"
+This option specifies the application name under which resources
+are to be obtained, instead of the executable name.
+.I appname
+should not contain . or *.
+.IR fdesign .
+.SH RESOURCES
+The program understands all of the
+.BR "Forms Library" 's
+resource names and classes as well as the following
+.TP 8
+control.geometry (class Control.Geometry)
+specifies the geometry of the control panel. Currently the size
+is ignored.
+.TP
+unit (Unit)
+specifies the default unit of measure. Default is pixel.
+
+.TP
+attributes.geometry (class Attributes.Geometry)
+specifies the geometry of the object attributes panel.
+Currently the size is ignored.
+.TP
+align.geometry (class Align.Geometry)
+specifies the geometry of the object align panel.
+Currently the size is ignored.
+.TP
+xformsHeader (class XFormsHeader)
+specifies the header filename generated in the output C code.
+Default is forms.h
+.TP
+filter (class Filter)
+specifies post-processing filter (an external executable name).
+.TP
+language (class Language)
+specifies target language name.
+
+.PP
+Among the standard
+.B Forms Library
+resources, the following are most useful
+.TP
+xform.fontsize (class XFORM.FontSize)
+specifies the font size used for most object labels.
+.TP
+xform.pupfontsize (class XFORM.PupFontSize)
+specifies the font size used in pop-up menus.
+.TP
+xform.browserFontSize (class XFORM.BrowserFontSize)
+specifies the font size used for the text inside a browser.
+
+.SH SEE ALSO
+xforms(5), fd2ps(1L)
+.SH AUTHOR
+Copyright
+.Cr
+1996-2002 T.C. Zhao <tc_zhao@yahoo.com> and Mark Overmars <markov@cs.ruu.nl>
+.br
+Since 2002: GNU Lesser General Public License
+.br
+Maintainers: Jean-Marc Lasgouttes, Angus Leeming and Jens Thoms Toerring
+<jt@toerring.de>
+.SH HOME PAGE
+http://xforms-toolkit.org
+.br
+http://savannah.nongnu.org/projects/xforms/

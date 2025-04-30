@@ -1,0 +1,314 @@
+@node Preface
+@unnumbered @emph{Preface}
+
+The Forms Library for the X Window system (or XForms for short) is a
+GUI toolkit with a rather long history. It was developed in the last
+decade of the last millenium by @strong{Dr.@: T.@: C.@: Zhao} (then at
+the Department of Physics, University of Wisconsin-Milwaukee, USA) and
+@strong{Prof.@: Dr.@: Mark Overmars} (Department of Computer Science,
+Utrecht University, Netherlands) at a time when there were hardly any
+alternatives except expensive packages. While at first being closed
+source it became open source software in 2002, distributed according
+to the Lesser GNU Public License (LGPLv2).
+
+While development slowed down a bit while other toolkits became
+available and matured, XForms is still used, and development
+continues. While it may not be as polished as newer toolkits it
+has the advantage of being relatively small and thus easier to get
+started with it.
+
+The XForms home page is at
+@center @url{http://xforms-toolkit.org/}
+The sources and mailing list are hosted on
+@center @url{https://savannah.nongnu.org/projects/xforms/}
+The source package can be downloaded from
+@center @url{http://download.savannah.gnu.org/releases/xforms/}
+while the @code{git} repository can be accessed via
+@center @url{git://git.savannah.nongnu.org/xforms.git}
+@center @url{http://git.savannah.gnu.org/cgit/xforms.git}
+@center @url{ssh://git.sv.gnu.org/srv/git/xforms.git}
+
+There also is a mailing list. You can subscribe to it at
+@center @url{http://lists.nongnu.org/mailman/listinfo/xforms-development}
+The archive of the mailing list can be found at
+@center @url{http://lists.gnu.org/archive/html/xforms-development/}
+The archive of messages from before August 2009 and going back until
+1996 is at
+@center @url{http://xforms-toolkit.org/old-archive}
+Please write to the mailing list if you have questions or find bugs.
+
+This document is based on the documentation for version 0.89 of the
+Forms Library. It has been reconstructed from the PDF version (the
+original sources seem to have been lost) and has been updated to cover
+all changes introduced since version 0.89.
+
+In the following the preface for the last available version of the
+documentation (version 0.89 from June 2000) is reproduced. Please note
+that quite a bit of the information there-in is outdated. Many of the
+URLs mentioned don't exist anymore, email addresses have changed and
+the restrictions on the distribution of the library have been removed
+by the original authors in favor of the LGPL.
+
+@sp 4
+
+@strong{Preface of Version 0.89 (June 2000)}
+
+Window-based user interfaces are becoming a common and required
+feature for most computer systems, and as a result, users have come to
+expect all applications to have polished user-friendly interfaces.
+Unfortunately, constructing user interfaces for programs is in general
+a time consuming process. In the last few years a number of packages
+have appeared that help build up graphical user interfaces (so-called
+GUI's) in a simple way. Most of them, though, are difficult to use
+and/or expensive to buy and/or limited in their capabilities. The
+Forms Library was constructed to remedy this problem. The design goals
+when making the Forms Library were to create a package that is
+intuitive, simple to use, powerful, graphically good looking and
+easily extendible.
+
+The main notion in the Forms Library is that of a form. A form is a
+window on which different objects are placed. Such a form is displayed
+and the user can interact with the different objects on the form to
+indicate his/her wishes. Many different classes of objects exist, like
+buttons (of many different flavors) that the user can push with the
+mouse, sliders with which the user can indicate a particular setting,
+input fields in which the user can provide textual input, menus from
+which the user can make choices, browsers in which the user can scroll
+through large amounts of text (e.g., help files), etc. Whenever the
+user changes the state of a particular object on one of the forms
+displayed the application program is notified and can take action
+accordingly. There are a number of different ways in which the
+application program can interact with the forms, ranging from very
+direct (waiting until something happens) to the use of callback
+routines that are called whenever an object changes state.
+
+The application program has a large amount of control over how objects
+are drawn on the forms. It can set color, shape, text style, text
+size, text color, etc. In this way forms can be fine tuned to one's
+liking.
+
+The Forms Library consists of a large number of C-routines to build up
+interaction forms with buttons, sliders, input fields, dials, etc. in
+a simple way. The routines can be used both in C and in C++ programs.
+The library uses only the services provided by the Xlib and should run
+on all workstations that have X installed on them. The current version
+needs 4bits of color (or grayscale) to look nice, but it will function
+properly on workstations having less depth (e.g., XForms works on B&W
+X-terminals).
+
+The library is easy to use. Defining a form takes a few lines of code
+and interaction is fully handled by the library routines. A number of
+demo programs are provided to show how easy forms are built and used.
+For simple forms and those that may be frequently used in application
+programs, e.g., to ask a question or select a file name, special
+routines are provided. For example, to let the user choose a file in a
+graphical way (allowing him/her to walk through the directory
+hierarchy with a few mouse clicks) the application program needs to
+use just one line of code.
+
+To make designing forms even easier a Form Designer is provided. This
+is a program that lets you interactively design forms and generate the
+corresponding C-code. You simply choose the objects you want to place
+on the forms from a list and draw them on a form. Next you can set
+attributes, change size and position of the objects, etc., all using
+the mouse.
+
+Although this document describes all you need to know about using the
+Forms Library for X, it is not an X tutorial. On the contrary, details
+of programming in X are purposely hidden in the Forms Library
+interfaces, and one need not be an X-expert to use the Forms Library,
+although some knowledge of how X works would help to understand the
+inner workings of the Forms Library.
+
+Forms Library and all the programs either described in this document
+or distributed as demos have been tested under X11 R4, R5 & R6 on all
+major UNIX platforms, including SGI, SUN, HP, IBM RS6000/AIX, Dec
+Alpha/OSF1, Linux(i386, alpha, m68k and sparc) as well as FreeBSD,
+NetBSD (i386, m68k and sparc), OpenBSD(i386, pmax, sparc, alpha), SCO
+and Unixware. Due to access and knowledge, testing on non-unix
+platforms such as OpenVMS, OS/2 and Microsoft/NT are less than
+comprehensive.
+
+This document consists of four parts. The first part is a tutorial
+that provides an easy, informal introduction to the Forms Library.
+This part should be read by everybody that wants to use the library.
+You are encouraged to try variations of the demo programs distributed
+in the Forms Library package.
+
+Part II describes the Form Designer with which you can design forms
+interactively and haveForm Designer write code for you.
+
+Part III gives an overview of all object classes currently available
+in the library. The tutorial part only mentions the most basic classes
+but here you find a complete overview.
+
+Adding new object classes to the system is not very complicated. Part
+IV describes how this should be done.
+
+@strong{Version Note}
+
+The authors request that the following name(s) be used
+when referring to this toolkit
+@center Forms Library for X,
+@center Forms Library
+@center or simply
+@center XForms
+
+Forms Library is not public domain. It is copyright (c) by T.C. Zhao
+and Mark Overmars, and others, with all published and unpublished
+rights reserved. However, permission to use for non-commercial and
+not-for-profit purposes is granted. You may not use xforms
+commercially (including in-house and contract/consulting use) without
+contacting (xforms@@world.std.com) for a license arrangement. Use of
+xforms for the sole purpose of running a publically available free
+software that requires it is not considered a commercial use, even in
+a commercial setting.
+
+You may not "bundle" and distribute this software with commercial
+systems without prior consent of the authors. Permission to distribute
+this software with other free software that requires it, including
+Linux CD distribution, is granted. Further, permission to re-package
+the software is granted.
+
+This software is provided "as is" without warranty of any kind,
+either expressed or implied. The entire risk as to the quality and
+performance of the software is with you. Should the software prove
+defective, you assume the cost of all necessary servicing, repair or
+correction and under no circumstance shall the authors be liable for
+any damages resulting from the use or mis-use of this software.
+
+It would be appreciated if credit to the authors is acknowledged in
+published articles on applications based on the library. A reprint of
+the article would also be appreciated.
+
+The development environment for xforms consists of Linux 1.0.8/a.out
+X11R5 and Linux 2.0/ELF X11R6 with additional testing and validation
+on SGI R8000 and occasionally IBM RS6000/AIX and other machines. For
+every public release, most of the demos and some internal testing
+programs are run on each platform to ensure quality of the
+distribution.
+
+Figures in this document were produced by fd2ps, a program that takes
+the output of the form designer and converts the form definition into
+an encapsulated POSTSCRIPT file. fd2ps as ofXForms V0.85 is included
+in the distribution.
+
+This document is dated June 12, 2000.
+
+@strong{Support}
+
+Although XForms has gone through extensive testing, there are most
+likely a number of bugs remaining. Your comments would be greatly
+appreciated. Please send any bug reports or suggestions to T.C. Zhao
+(tc_zhao@@yahoo.com or xforms@@world.std.com but not both). Please do
+not expect an immediate response, but we do appreciate your input and
+will do our best.
+
+@strong{Bindings to other languages}
+
+As of this writing, the authors are aware of the following bindings
+
+perl binding by Martin Bartlett (<martin@@nitram.demon.co.uk>)
+
+ada95 binding by G. Vincent Castellano (<gvc@@ocsystems.com>)
+
+Fortran binding by G. Groten (<zdv017@@zam212.zam.kfa-juelich.de>) and
+Anke Haeming (<A.Haeming@@kfa-juelich.de>)
+
+pascal binding by Michael Van Canneyt
+(<michael@@tfdec1.fys.kuleuven.ac.be>)
+
+scm/guile binding by Johannes Leveling
+(<Johannes.Leveling@@Informatik.Uni-Oldenburg.DE>)
+
+python binding by Roberto Alsina (<ralsina@@ultra7.unl.edu.ar>).
+(Seems the author has stopped working on this binding).
+
+Follow the links on XForms's home page to get more info on these bindings.
+
+@strong{Archive Sites}
+
+Permanent home for the Forms Library is at
+@example
+ftp://ncmir.ucsd.edu/pub/xforms
+ftp://ftp.cs.ruu.nl/pub/XFORMS (Primary mirror site)
+@end example
+
+The primary site is mirrored by many sites around the world. The
+following are some of the mirror sites
+@example
+ftp://ftp.fu-berlin.de/unix/X11/gui/xforms
+ftp://gd.tuwien.ac.at/hci/xforms
+ftp://ftp.st.ryukoku.ac.jp/pub/X11/xforms
+ftp://ftp.via.ecp.fr/pub2/xforms
+ftp://ftp.unipi.it/pub/mirror/xforms
+ftp://ftp.uni-trier.de/pub/unix/X11/xforms
+@end example
+
+Additional mirrors, html version of this document, news and other
+information related to XForms can be accessed through www via the
+following URL
+@example
+http://world.std.com/~xforms
+@end example
+
+In addition to ftp and www server, a mail server is available for
+those who do not have direct internet access.
+
+To use the mail server, send a message to <mail-server@@cs.ruu.nl> or
+the old-fashioned path alternative
+<uunet!mcsun!sun4nl!ruuinf!mail-server>.
+
+The message should be something like the following
+@example
+begin
+path fred@@stone.age.edu (substitute your address)
+send help
+end
+@end example
+
+To get a complete listing of the archive tree, issue send ls-lR.Z.
+
+@strong{Mailing List}
+
+A mailing list for news and discussions about XForms is available. To
+subscribe or un-subscribe, send a message to
+<xforms-request@@bob.usuhs.mil> with one of the following commands as
+the mail body
+@example
+help
+subscribe
+unsubscribe
+@end example
+
+To use the mailing list, send mail to <xforms@@bob.usuhs.mil>. Please
+remember that the message will be sent to hundreds of people. Please
+Do not send subscribe/unsubscribe messages to the mailing list, send
+them to <xforms-request@@bob.usuhs.mil>.
+
+The mailing list archive is at
+@code{http://bob.usuhs.mil/mailserv/list-archives}.
+
+@strong{Thanks}
+
+Many people contributed, in one way or another, to the development of
+Forms Library, without whose testing, bug reports and suggestions,
+Forms Library would not be what it is today and would certainly not be
+in the relatively bug free state it is in now. We thank Steve Lamont
+of UCSD (<spl@@szechuan.ucsd.edu>), for his numerous suggestions and
+voluminous contributions to the mailing list. We thank Erik Van Riper
+(<geek@@midway.com>), formerly of CUNY, and Dr.@: Robert Williams of
+USUHS (<bob@@bob.usuhs.mil>) for running the mailing list and keeping
+it running smoothly. We also thank every participant on the mailing
+list who contributed by asking questions and challenging our notion of
+what typical use of the Forms Library is. The html version of the
+document, undoubtedly browsed by the thousands, is courtesy of Danny
+Uy (<dau@@westworld.com>). We appreciate the accurate and detailed bug
+reports, almost always accompanied with a demo program, from Gennady
+Sorokopud (<gena@@NetVision.net.il>) and Rouben Rostamian
+(<rostamian@@umbc.edu>). We also thank Martin Bartlett
+(<martin@@nitram.demon.co.uk>), who, in addition to marrying Forms
+Library to perl, made several xforms API suggestions, Last but
+certainly not least, we thank Henrik Klagges (<henrik@@UniX11.com>)
+for his numerous suggestions during the early stages of the
+development.

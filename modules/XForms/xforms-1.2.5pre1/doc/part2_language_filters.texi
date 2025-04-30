@@ -1,0 +1,94 @@
+@node Part II Language Filters
+@chapter Language Filters
+
+@strong{Please note: This chapter is probably completely outdated!}
+
+This chapter discusses the language filter support in Form Designer,
+targeted primarily to the developers of bindings to other language. As
+of this writing, the authors are aware of the following bindings
+@table @code
+@item ada95
+by G.@: Vincent Castellano @email{gvc@@ocsystems.com}
+@item perl
+by Martin Bartlett @email{martin@@nitram.demon.co.uk}
+@item Fortran
+by G.@: Groten @email{zdv017@@zam212.zam.kfa-juelich.de} and Anke
+Haeming @email{A.Haeming@@kfa-juelich.de}
+@item pascal
+by Michael Van Canneyt @email{michael@@tfdec1.fys.kuleuven.ac.be}
+@item scm/guile
+by Johannes Leveling @email{Johannes.Leveling@@Informatik.Uni-Oldenburg.DE}
+@item python
+by Roberto Alsina @email{ralsina@@ultra7.unl.edu.ar}. It would appear
+that author of python binding is no longer working on it.
+@end table
+
+These bindings are of varying degree of beta-ness and support. It
+appears to the authors that the most convenient and flexible way of
+getting output in the targeted language is through external filters
+that are invoked transparently by fdesign. This way, developers of the
+binding would have complete control over the translation of the
+default output from the fdesign to the target language and at the same
+time have the translation done transparently.
+
+@ifnottex
+
+@menu
+* External Filters::
+* Command Line Arguments of the Filter::
+@end menu
+
+@end ifnottex
+
+
+@node External Filters
+@section External Filters
+
+An external filter is a stand-alone program that works on the output
+of Form Designer and translates the output to the target language. The
+filter can elect to work on the @code{.fd} or the C output or both
+simultaneously. However, in non-testing situations, the c output from
+Form Designer probably should be deleted by the filter once the
+translation is complete.
+
+By default, Form Designer only outputs the @code{.fd} and C files. If
+the presence of @code{-ada}, @code{-perl}, @code{-python},
+@code{-fortran}, @code{-pascal} or @code{-scm} command line options to
+Form Designer is detected, then after emitting the default output,
+Form Designer invokes the the external filter with the root filename
+(without the @code{.fd} extension) as an argument, together with
+possible other flags, to the filter. Any runtime error messages are
+presented to the user in a browser. The filter name by default is
+@code{fd2xxxx} where @code{xxxx} is the language name (such as
+@code{fd2perl} etc.), which can be changed using the @code{-filter}
+command line option (or equivalent resources).
+
+The resources that are relevant to the filter are listed below
+@multitable @columnfractions 0.3 0.3 0.3
+Resource Type Default
+@item language
+@tab string
+@tab C
+@item filter
+@tab string
+@tab None
+@end multitable
+
+@node Command Line Arguments of the Filter
+@section Command Line Arguments of the Filter
+
+Form Designer passes along the options that affect the output format
+to the filter. These options may or may not apply to the filter, most
+likely not if the filter works on the C file. For those that do not
+apply, the filter can simply ignore them, but shouldn't stop running
+because of these options.
+@table @code
+@item -callback
+callback stubs are generated
+@item -main
+main stub is generated
+@item -altformat
+output in alternate format
+@item -compensate
+emit size compensation code
+@end table

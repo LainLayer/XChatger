@@ -1,0 +1,3324 @@
+2014-06-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: an object that isn't visible could become the
+	focus object, which was an insidious bug:-(
+
+2014-06-07 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Lots of minor corrections
+
+2014-06-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: some more corrections.
+
+2014-06-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Attempt to fix bugs and inconsistencies
+	reported by Lucas Sköldqvist.
+
+2014-05-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib.bitmaps/colorwheel.xpm: number of colors reduced since
+	this bitmap alone was resposible for over a third of the size
+	of the tar ball.
+
+2014-05-23 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodie_colchooser.c: new goodie for picking arbitrary
+	colors interactively added.
+
+2014-05-23 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/positioner.c: major changes: range of values can now be
+	controlled via a validation function. New functions for setting
+	both alues at once and getting the current boundary settings.
+	Drawing now is done differently (instead of XOR current background
+	is stored and redrawn). Mouse is hidden while over positioner
+	and active.
+
+2014-05-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/positioner.c: step values are now also factored in
+	when a new x- or y-value gets set by the user.
+
+2014-05-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/spinner.c: Bug in handling of FL_FLOAT_SPINNER fixed.
+
+2014-05-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: fl_set_xyplot_mouse_buttons() and
+	fl_get_xyplot_mouse_buttons() added and clean-up of
+	code to fix memory leaks.
+
+2014-04-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/slider.c: Function for selecting mouse buttons added.
+	* lib/input.c: Validator for dates improved
+
+2014-04-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Further bug fixes and code simplifications
+
+2014-04-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Bugs found by Lucas Sköldqvist in input
+	objects (hopefully) fixed.
+
+2014-04-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/fonts.c: Bug in font caching code, found by "Sunny",
+	that could result in crashes fixed.
+
+2014-03-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Some minor fixes for object label alignment
+
+2014-03-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* */Makefile.am: Removed '-Wl,--no-undefined' since
+	this linker flag is not available everywhere
+	* lib/flinternal.h: Removed stupid definition of variables
+	- thanks go to André Ludwig for noticing the problem.
+
+2014-03-19 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Another attempt at speeding-up redraws
+
+2014-03-18 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Speed-up for redraws
+
+2014-03-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/menu.c: Fix by Lothar Esser added for bug in
+	menu handling.
+
+2014-01-15 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: Bug reported by Arie van Wettum
+	fixed.
+
+2014-01-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/events.c: Newer Gnome desktop versions send a
+	seemingly bogus _XIM_PROTOCOL message (for a window
+	we never opened) that resulted in fl_do_forms() re-
+	turning prematurely.
+
+2014-01-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: Stupid bug fixed that could crash the
+	program when using an xyplot object.
+	* lib/forms.c, lib/object.c: Handling of coordinates
+	after call of fl_flip_yorigin() wasn't correct.
+
+2014-01-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Final corrections for new 1.2.0 release
+
+2013-12-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Bug found by Werner Heisch fixed when
+	editing several objects at once fixed (all got the
+	same label string). Also bug in reset of spinner after
+	testing removed.
+
+2013-12-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* libforms.spec.in: Check added if noarch package can be
+	build of the documentation for (open)SUSE. Removed build
+	dependencies on libXpm and libjpeg packages, which are
+	already required by the libXpm-devel and libjpeg-devel
+	packages we depend on. Also added 'mesa-libGL-devel' as
+	another build dependency (otherwise libformsGL isn't
+	contained in the RPM).
+
+2013-12-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* libforms.spec.in, Makefile.am: Lots of changes to
+	cleanly build rpm packages (with name 'libforms')
+
+2013-12-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Bug found by Serge Bromow with saving files
+	fixed.
+	* xforms.spec.in: Patch from Russ Herrold applied.
+
+2013-12-15 Jens Thoms Toerring    <jt@toerring.de>
+
+	* A number of further tweaks to the build system to make
+	sure that it also works on older systens (tested CentOS 5)
+	applied. An installed version of libtool is now required
+	for generating the package from scratch (i.e. with the
+	'autogen.sh' script).
+	* A few things related to the build system issues in
+	fdesign have been fixed.
+
+2013-12-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bug fixes in fdesign: Some xpm files weren't read in
+	and editing choice/menu/browser object attributes could
+	crash the program
+	* Changes to build system to avoid recompilations on
+	install
+	* Clean-up of code after check with clang static
+	analyzer
+
+2013-12-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Applied a patch Serge Bromow created to
+	add a '-migrate' option to fdesign
+	* Thanks to a suggestion from David Binderman all
+	code was checked with the 'cppcheck' static
+	checking tool, which resulted in finding several
+	bugs and improvements in the code with respect to
+	readability.
+
+2013-12-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Minor display bug reported by Segre Bromow fixed
+	* docs: Thanks to Michal Szymanski PDF documentation can now
+	also be build on systems with older texi2dvi versions
+	* Clean-up: Several functions declared in public header
+	files but which were either not present or only meant for
+	internal use removed, other functions documented.
+
+2013-12-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Bug fix in fl_set_obkject_resize()
+	* fdesign: Several bug fixes
+	* build system: Fixes for creation of documentation to
+	allow build with older texi2dvi versions
+
+2013-11-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bug fixes and documentation update for new
+	1.0.94pre22 pre-release.
+
+2013-11-23 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib: for quite a number of functions taking a string
+	as their last argument there's now another version
+	with the same name but with '_f' appended that allows
+	to pass the function a printf()-like format srring,
+	followed by the appropriate number of arguments.
+
+	* fdesign: editing object attributes has gotten a
+	rework, it now hopefully works more consistently
+	(and, in some cases, correctly;-)
+
+2013-11-07 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Bug in validator for float inputs fixed
+	that allowed entering a number followed by a char other
+	than 'e' or 'E'.
+	* lib/dial.c: Functions added for obtaining the settings
+	for the dial angles, step size and direction
+
+2013-11-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	Addition of several functions that instead of accepting
+	just a string expect a printf()-like format string and
+	and an unspecified number of arguments, from which the
+	string is constructed. All these functions have the same
+	name as their simpler counterpart but with an "_f" added
+	at the end.
+
+2013-11-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	Further changes to build system to check for availability
+	of tools required for creating the documentation
+
+2013-10-31 Jens Thoms Toerring    <jt@toerring.de>
+
+	Changes in the build system, mostly for automatic
+	build and installation of documentation
+
+2013-10-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* src/slider.c etc.: new slider types FL_VERT_PROGRESS_BAR
+	and FL_HOR_PROGRESS_BAR added
+	* src/choice.c, src/xpopup(): new function
+	fl_set_choice_align_bottom() and fl_setpup_align_bottom()
+	added.
+
+2013-08-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: small fixes of some inconsistencies
+
+2013-08-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/browser.c etc.: New type FL_DESELECTABLE_HOLD_BROWSER
+	added.
+	* fdesign: Some more bug fixes and cleanup for consistency
+	of handling.
+
+2013-08-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: Logarithmically spaces minor tic added
+	aa suggested by Bill Unruh and minor bug fixes
+
+2013-08-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Some more bug fixes and modification of tge
+	control panel layout. Documentation update.
+
+2013-08-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Bug fixes in handling of group cutting/pasting
+
+2013-08-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Included Paul Nichelsons patch for reading
+	.fd files with xyplot objects.
+
+2013-08-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tabfolder.c: Problem with setting graphic properties
+	of the tab riders infividually ad all at once pointed out
+	by Rob Carpenter hopefully fixed.
+
+	* lib/objects.c: Slow down of fl_unfreeze_form() due to the
+	fli_recalc_interactions function noticed by Rob Carpenter
+	whle not completely eliminated hopefully made less noticable.
+
+	* fd2ps/psobj.c: Support for FL_SPINNER added
+
+	* fdesign: Inconsistencies in handling of path names pointed
+	out by Donato Lorenzo López hopefully fixed.
+
+2013-01-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_select.c: Cutting/copying whole groups didn't
+	work properly, now only the members of the group get
+	copied/cut, but not the property of belonging to a group.
+
+2013-01-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_select.c: Raising and lowering objects
+	didn't work properly
+
+	* fdesign/fd_control.c: Store and reset button state
+	before and after test.
+
+	* autogen.sh: Cleanup
+
+2013-01-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_select.c: Ungrouping didn't work properly
+	since also all members of the group got deleted
+
+	*fdesign/fd_main.c: As proposed by Michal Szymanski a
+	left double clock on an object brings up the attribute
+	dialog, while deleting is done via right double click.
+
+	* lib/fselect.c: if a default file is passed to
+	fl_show_file_selctor() it's now shown centered in the
+	browser (and you don't have to strip the path from the
+	file name for that t work)
+
+	* lib/objects.c: Adding a composite object to a reopened
+	group didn't work, hopefully fixed.
+
+2013-01-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: New function fl_set_input_mode() added
+	according to proposal by Serge Bromow.
+
+	* lib/objects.c: Don't show tooltip while object is de-
+	activated as proposed by Serge Bromow.
+
+	* fdesign/fd_main.c, fd_names.c: as Serge Bromow noticed
+	fdesign didn't ork correctly in '-convert' mode when lots
+	of files were converted at once by the same instance of the
+	program - hopefully fixed that.
+
+2012-12-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: made browser not react to keyboard input when
+	deactivated (to be consistent with the fact that a browser
+	also doesn't resond to mouse events under that condition) -
+	thanks to Serge Bromow for making me aware of this issue
+
+	* lib/imput.c: Fixed another bug Serge pointed out: when
+	pressing the <End> or <Home> button on single-line input
+	objects strange things happend. Fix was to do nothing in
+	fl_set_input_topline() for that kind of objects.
+
+2012-12-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c (and some other file): Lots of changes to the
+	way things are redrawn in order to fix bugs and speed up things
+
+	* lib/flresource.c: Rare problem about a BadWindow error in
+	initialization of the library fixed
+
+	* fdesign/fd_file.c: Reading the label style from an .fd file
+	didn't work properly
+
+	* config/libtool.m4 and ltmain.sh: Use newest files from the
+	libtools package
+
+2012-12-08 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc/part1_goodies.texi: Small documentation improvement.
+
+2012-11-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: Bug in postioning of x-axis after a
+	resize, reported by Michal Szymanski, fixed.
+
+2012-11-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/spinner.c: Bug reported by Sian Mountbatten fixed
+	that led to two invocations of a spinner's callback
+	when one of the buttons was clicked.
+
+2012-07-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xdraw.c, include/XBasic.h: fl_circ() and fl_xircf()
+	macros replaced by functions, fl_circbound() added.
+	Also fl_arc() and fl_arcf() macros replaced by functions.
+	Documentation updated - thanks to Rouben Rostamian for
+	pointing out several problems.
+
+2012-07-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	A bit of clean-up for new pre-release
+
+2012-07-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Attempt to avoid a massive slow-down observed
+	by Rob Carpenter while creating and deleting forms due to
+	much too many calls of fli_recalc_intersections().
+
+	* lib/button.c: Some mis-handling of mouse buttons a button
+	isn't supposed to react to found by Rob fixed.
+	lib/formbrowser.c: Some problem resulting in infinite
+	recursion fixed.
+
+2012-06-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: Problem poinyed out by Rob Carpenter with
+	fl_addto_browser_chars() when first seting an "escape
+	sequence" and then text (which resulted in the effects of
+	the escape sequence getting lost) fixed.
+
+2012-04-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xtext.c: Problem when drawing strings with zero or
+	negative "height" fixed
+
+	* lib/positioner.c: Function for selecting which mouse
+	a positioner reacts to added
+
+	* lib/button.c: Button now reacts only to the release of
+	the mouse button that was pressed first on it
+
+2012-03-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xtext.c: Added fl_get_label_char_at_mouse() function
+	and new demo program 'strange_button.c'.
+
+	* lib/events.c, lib/handling.c: Added new function
+	fl_current_event() that allows callbacks to determine
+	the Xforms event they were called for (instead of the
+	raw XEvent as it can be obtained with fl_last_event()).
+
+2012-03-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xtext.c, lib/input.c: Clean-up in string drawing routine
+	(and detection of mouse position in a string) - labels are
+	now more properly positioned.
+
+2012-03-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/symbols.c: Simplifications (control sequences are now more
+	powerful and the order is unimportant) and new function for
+	removing symbols.
+
+	* lib/vstrcat.c: Removed the file after rewriting the only
+	function in lib/errmsg.c that used anything from that file.
+
+	* lib/objects.c: Changed signature of fl_get_object_bw()
+	to match the documentation (it now returns an int and
+	takes only a single argument).
+
+	* lib/box.c: Boxes of type FL_NO_BOX and FL_FLAT_BOX now have a
+	border width of 0.
+
+	* lib/objects.c: attempt to speed up the detection of overlap
+	between objects.
+
+2012-03-19 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c, lib/forms.c: Several changes to speed up
+	redraw, thanks to Werner Heisch noticing the problem.
+	Function for setting form background color added.
+
+	* lib/handling.c: when in a callback e.g. for a browser a
+	new window was opened was under the mouse the browser didn't
+	receive the correct coordinates on mouse release as
+	Werner Heisch noticed.
+
+	* lib/align.c: Cleanup of code for label alignments and
+	some new functions added (this resulted also in lot of
+	minor changes in other files).
+
+2012-03-12 Jens Thoms Toerring    <jt@toerring.de>
+	* lib/xdraw.c: Code cleanup for handling of clipping,
+	several new functions added for that.
+
+	* lib/tbox.c: Drawing outside the object disabled,
+	thanks to Sian Mountbatten for reportimg the problem
+	and Paul Nicholson for analyzing its causes.
+
+	* lib/handling.c: Bug that appeared when in the
+	callback of a browswer a new window was created,
+	that led to inconsistencies in the original browser
+	hopefully fixed. Thanks to Werner Heisch for finding
+	this strange problem!x
+
+2011-11-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/button.c: Bug pointed out by Michal Szymanski
+	on resetting radio buttons fixed.
+
+2011-11-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/flresource.c: Previous change that made double
+	buffering the default for forms reverted.
+
+2011-10-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* xyplot.c: Drawing bug when fl_set_xyplot_fixed_xaxis()
+	or fl_set_xyplot_fixed_yaxis() had been used and pointed
+	out by Alessandro Basili hopefully fixed.
+
+2011-10-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bits of code cleanup in preparation for new pre-release
+	and removal of a bug introduced a few commits earlier.
+
+2011-09-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: memory leak in fl_set_xyplot_alphatic()
+	found by Alessandro Basili fixed.
+
+2011-09-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_select.c: Bug in undo of alignment fixed.
+
+	* demos/yesno.c, demos/yesno_cb.c: Changed them to have
+	them behave exactly identical.
+
+2011-09-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Several corrections for problems pointed out by Donato
+	Lorenzo that resulted in problems when building with
+	aCC on HP-UX and of which some might have led to memory
+	corruption (calls of calloc() with sizeof(void) which gcc
+	doesn't complain about).
+
+	* lib/handling.c: Guard added to avoid an idle callback
+	accidentally being called from within itself.
+
+2011-08-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c, lib/include/input.h: Changes tp the
+	default behavior of the edit keys. Old behavior can
+	be obtained via the '--enable-classic-editkeys' option
+	to 'configure'.
+
+2011-05-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xyplot.c: Two new public functions added:
+	fl_get_xyplot_screen_area() and fl_get_xyplot_woorld_area()
+	Also a number of bug fixes for double buffered drawing
+	and concerning the displayed axes.
+
+2011-01-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/include/Basic.h: Small change as proposed by
+	LukenShiro
+
+2010-12-31 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/button.c: Fixed bug that made buttons on which the
+	wrong mouse button was released, seem to have been released.
+
+2010-12-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_file.c: Changed the input function
+	to accept .fd files so that for pseudo-objects of
+	type FL_BEGIN_GROUP and FL_END_GROUP no more than
+	a single line with the class name is required.
+
+	* fdesign/fd_file.c, fd_main.h: Change of .fd file
+	to avoid writing out useless informantion for
+	FL_BEGIN_GROUP and FL_END_GROUP	and to have object
+	type names start also with 'FL_'. "Magic" number of
+	.fd file bumped up to 15000.
+
+	* fd2ps/load.c: Changes to make fd2ps work with the new
+	layout of the .fd files
+
+	* fdesign/fd_attributes.c: Fixed a bug pointed out by
+	LukenShiro that resulted in garbage appearing in an
+	objects label with a shortcut when the type of the
+	object got changed.
+
+2010-12-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/part5_resources.texi: Wrong signature of
+	fl_get_app_resources() as pointed out by LukenShiro
+	corrected.
+
+	* lib/xsupport.c: Strange returned string in (undocumented
+	function) fl_vclass_name() on invalid argument changed to
+	something hopefully more reasonable (bug found by
+	LukenShiro)
+
+	* lib/xdraw.c, doc/part5_drawing_obects.texi: As LukenShiro
+	pointed out fl_dashedlinestyle() will fail with BadValue Xlib
+	error when the first argument ontains '\0' characters. In that
+	case no also the default dash pattern is set instead.
+
+2010-12-18 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/include/tabfolder.h, doc/part3_container_objects.texi:
+	Declaration of fl_get_tabfolder_offset() added and description
+	of both fl_get_tabfolder_offset() and fl_set_tabfolder_offset()
+	which as LukenShiro noted was missing./
+
+	* doc/part5_useful_function.texi: Corrections to the
+	descriptions of fl_iconify() and flwinresize() as
+	proposed by LukeShiro.
+
+2010-12-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/win.c, lib/flcolor.c, doc/part4_drawing_objects.texi:
+	In some places there was a mix-up between FL_COLOR and
+	'unsigned long' as LukenShiro pointed out. While this
+	has no direct consequences it obscures the distinction
+	between XForms colors and the colors the X server kows
+	about.
+
+2010-12-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	lib/version.c: fl_library_full_version() function
+	added as sugested by LukenShiro.
+
+2010-12-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Bug removed that kept a multi-line
+	input object to return (or invloe a callback) under
+	the requested circumstances. Thanks to Eberhard
+	Kuemmerle for pointing out the problem and submitting
+	a patch.
+
+	* lib/button.c: As Michal Szymanski pointed out the
+	fl_set_button() function didn't work as described in
+	the documentation for radio buttons (it did either
+	lead to the button object getting returned to the
+	program or an associated callback to be called).
+	Hopefully fixed.
+
+	* lib/xyplot.c: Marcus D. Leech reported problems
+	with xyplot objects of type FL_ACTIVE_XYPLOT when
+	using double buffering. For the time being (as a
+	temporary fix) double buffering is disabled for
+	such objects.
+
+2010-10-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_printC.c: Changed the output format so that
+	the resulting C files also compile with C++ compilers
+	(cast of return value of fd_malloc() needed). Thanks
+	to John Wang for pointing out the problem.
+
+2010-10-18 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/select.c: Memory allocation bug found by Luis Balona
+	removed.
+
+2010-08-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc/part3_choice_objects.texi, doc/part3_valuatorobjects.texi:
+	Added documentation for functions to set the repeat rate for
+	sliders and browser scrollbars.
+
+2010-06-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/slider.c: Doubled the time we wait immediately
+	after a mouse button has pressed in a slider "through"
+	to give the user more time to release the button before
+	"jumping" sets in.
+
+	* lib/objects.c: Recognition of "^[" as meaning the <ESC>
+	key as shortcut key was broken.
+
+	* lib/fselect.c: When a callnback is set for a file selector
+	<ENTER> now has the same function as a double-click. "Dismiss"
+	button was renamed "Close" and now has shortcut keys.
+
+	* lib/browser.c: Added function proposed by Michal Szymanski
+	that allows to set the speed with which the browsers scroll-
+	bar "jump".
+
+2010-06-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tabfolder.c: Serge Bromow found that under Gnome the
+	contents of a tabfolder weren't positioned correctly,
+	hopefully fixed.
+
+	* lib/input.c, xtext.c: As serge Bromow pointed out selection
+	was not always drawn correctly if the text in an input object
+	was longer than the width of the object.
+
+2010-05-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/spinner.c: Werner Heisch found a bug in the
+	float spinner that kept the user from editing the
+	value.
+
+2010-05-23 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/flinternals.h, browser.c, objects.c, input.c: Moved
+	duplicate code in brower and input module into a function
+	in objects.c.
+
+2010-05-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc: Paul Nicholson put a lot of work into correcting
+	all kinds of issue with the documentation!
+
+	* lib/input.c: in some situations in a multi-line
+	input object parts of the scrollbar were drawn even
+	though no scrollbars were suposed to be shown.
+
+	* lib/xyplot.c: Active xyplot was broken.
+
+	* lib/box.c: If label is inside of box it's now clipped
+	to the inside of the box and never draws outside of it.
+
+2010-05-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc: Many spelling errors etc. removed that Paul
+	Nicholson had pointed out.
+
+	* fdesign: deprecated values from alignment label menu
+	in the form for editing object attributes removed.
+
+	* lib/forms.c: Bug with resizing scrollbars on resize of
+	form that Paul Nicholson pointed out fixed.
+
+	* fdesign/fd_attribs.c: Another bug found by Paul Nicholson:
+	when in changing the type of an object with childs and then
+	undoing the change immediately ("Attributes" form still open
+	and clicking "Cancel") fdesign crashed. Hopefully fixed now.
+
+2010-05-19 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: Minor changes (mostly to fd/ui_theforms.fd)
+	to get rid of annoying flicker in the control window
+	when adding a new object in the other window.
+
+2010-05-18 Jens Thoms Toerring    <jt@toerring.de>
+
+	lib/objects.c: Another bug found by Serge Bromow fixed:
+	shortcuts with ALT key had stopped to work.
+
+2010-05-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: As Serge Bromow pointed out in the functions
+	fl_set_browser_topline(), fl_set_browser_bottomline() and
+	fl_set_browser_centerline() there was a missing check for
+	the browser being empty, resulting in dereferencing a NULL
+	pointer.
+
+2010-05-15 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/handling.c, lib/include/Basic.h: After intensive
+	discussions with Serge Bromow added new funtion that allows
+	to switch back to the pre-1.0.91 behavior concerning when
+	an interaction with an input object is considered to have
+	ended.
+
+2010-05-07 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: As Marcus D. Leech pointed out setting colors
+	for a browser via fl_set_object_color() didn't work for
+	the font color (always black), hopefully fixed
+
+	* doc/part6_images.texi: Some more typos etc. found
+	by LukenShiro removed
+
+2010-05-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc/part6_images.texi: A number of typos etc.
+	found by LukenShiro removed.
+
+2010-05-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* image/image.c: LukenShiro pointed out a deviation between
+	the diocumented return type of the flimage_free() function.
+	It now returns void as already documented.
+
+	* lib/font.c: Fix for (rather hypothetical buffer) overrun
+	in get_fname().
+
+2010-03-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	* clipboard.c: Converted error message into warning printed
+	out when a selectio request is made to the XForms program for
+	a type of Atom that XForms doesn't support. Thanks to Mark
+	Adler for pointing out the problem.
+
+2010-03-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Several changes to the way things redrawn - there were
+	some problems with redrawing labels that needed several
+	changes to get it right (again).
+
+	* Some unused stuff removed from include files
+
+	* Corrections in the documentation
+
+2010-01-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Lots of clean-up in header files to address inconsistencies
+	(and in some cases also function prototypes had to be changed)
+	as pointed out by LukenShiro.
+
+	* lib/input.c: Bug with return behaviour of FL_MULTI_INPUT
+	objects fixed.
+
+	* lib/popup.c, lib/nmenu.c: Functions added for adding
+	and modifying popup entries using a FL_POPUP_ITEM added.
+
+	* lib/objects.c: Several getter functions for object
+	properties added
+
+	* gl/glcanvas.c: Bug about missing requested event and
+	pointed out by Dave Strang fixed.
+
+2009-12-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	Some problems with new forms.h pointed out by Lukenshiro
+	and Luis Balona cleaned up.
+
+2009-12-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	Some more clean-up in header files (and documentation)
+
+2009-12-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	demos/thumbwheel.c: Bug fixed as pointed out by LukeShiro
+
+	images/flimage.h: Removed useless declaration of fl_basename()
+	as proposed by LukenShiro
+
+	several include files: Removed useless members from a number
+	of structures and enums, adjusted return types of a few
+	functions to fit the documentation, all as part of the clean
+	up for the new SO version since this just th right moment to
+	get rid of garbage.
+
+2009-11-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* configure.ac: Updated SO_VERSION since the library isn't
+	compatible anymore with the 1.0.90 release and this lead to
+	trouble for Debian (at least).
+
+	* lib/spinner.c, lib/handling.c: Updates to eliminate a bug
+	detected by Werner Heisch that kept spinner objects from
+	working correctly if they are the only input object in a
+	form.
+
+2009-11-23 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/fselect.c: Improved algorithm for finding file
+	to be shown selected on changes of input field
+
+2009-11-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/positioner lib/include/positioner.h: Added a new
+	type of positioner (FL_INVISIBLE_POSITIONER) that's
+	completely invisible to put on top of other objects.
+	The idea for that came from Werner Heisch.
+
+	* fdesign/fd_superspec.c: Werner Heisch found that changing
+	copied menu and choice object entries also change the ones
+	of the object copied from. Bug hopefully fixed.
+
+	* lib/fselect.c: When entering text into the input object
+	of a file selector now a fitting file/directory (if one
+	exists) will now be selected automatically in the browser.
+
+2009-11-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	lib/xyplot.c: As Jussi Elorante noticed posthandlers
+	didn't work with XYPLOT objects. This now should be
+	fixed.
+
+	Peter S. Galbraith pointed out that building the documen-
+	tation in info format didn't work properly.
+
+2009-09-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_forms.c, fdesign/fd_groups.c,
+	fdesign/fd_super.c: Two bugs in fdesign, found
+	by Werner Heisch, removed.
+
+2009-09-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	Minor corrections in the documentation.
+
+2009-09-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/include/Basic.h: Removed a nonexistent color
+	that had made it into the list of colors as Werner
+	Heisch pointed out.
+
+2009-09-15 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/events.c: general callbacks for events for user
+	generated windows weren't called anymore, repaired.
+	* lib/include/xpopup.h: Broken define Rouben Rostamian
+	found for the fl_setpup_default_checkcolor() repaired.
+
+2009-09-14 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/thumwheel.c, lib/validator.c: Fixed return
+	behaviour of thumbwheel.
+
+2009-09-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Further problems with beep and
+	input objects removed.
+
+2009-09-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/sp_spinner.c: Added forgotten output to
+	C file for setting colors and text size and style.
+
+	* lib/input.c: Removed beep on valid input into
+	FL_INT_INPUT and FL_FLOAT_INPUT objects.
+
+2009-09-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/flcolor.c, lib/include/Basic.h: New pre-defined
+	colors added as proposed and assembled by Rob Carpenter.
+
+	* lib/spinner.c: Corrections to return behaviour of
+	spinner objects as pointed out by Werner Heisch.
+
+2009-09-08 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Bug in copy-and-paste and found by Werner
+	Heisch repaired.
+
+	* lib/include/zzz.h: defines of 'TRUE' and 'FALSE'
+	relaced by 'FL_TRUE' and 'FL_FALSE' to avoid problems
+	for other programs that may define them on their own
+	(thanks to Serge Bromow for pointing out that this
+	can be a real problem).
+
+2009-09-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	Some more bugs in fdesign, found by Werner Heisch,
+	removed. Most important: bitmaps weren't drawn
+	correctly.
+	* lib/bitmap.c: fl_set_bitmapbutton_file() removed,
+	is now an alias for fl_set_bitmap_file()
+	* lib/sysdep.c: fl_now() doesn't add a trailing '\n'
+	anymore
+
+2009-09-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	Several bugs reported by Werner Heisch in fdesign fixed.
+	Input of form and group names is now checked for being
+	a valid C identifier.
+
+2009-09-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/util.c: Removed function fli_get_string()
+	which was just a duplication of fli_print_to_string()
+
+2009-09-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	Tabs replaced by spaces.
+
+	Repairs to fd2ps that had stopped working (output
+	doesn't look too nice yet, changing that will probably
+	take quite a bit of work...)
+
+2009-08-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	Support for spinner objects built into fdesign.
+
+2009-08-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	Dependence of form size on snap grid setting in fdesign
+	removed since it led to unpleasant effects under KDE, form
+	size can now be set directly via a popup window.
+
+	Some more bugs with new way of reading .fd files removed.
+
+	* lib/browser.c: Missing redraw of scrollbar added in
+	fl_show_browser_line() (thanks to Werner Heisch for
+	noticing and telling me about it),
+
+2009-08-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* README: updated to reflect new mailing list location
+	and homepage
+
+2009-08-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	A number of bugs in the new code for reading in .fd-Files
+	pointed out by Werder Heisch have been removed.
+
+2009-08-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	Thanks to lots of input (patches and discussions) by Werner
+	Heisch the way .fd files get read in and analyzed has been
+	changed to be a lot more liberal of what is accepted as well
+	as spitting out reasonable error messages and warnings if
+	things go awry. New files added are fdesign/fd_file_fun.c
+	and fdesign/sp_util.c and lots of others have been changed.
+
+2009-08-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_printC.c: Some corrections/bug fixes
+
+	* Bit of clean-up all over the place;-)
+
+2009-08-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/Makefile.am, gl/Makefile.am, image/Makefile.am:
+	Applied patch send by Rex Dieter that changes the way the
+	dynamic libraries get created so that linking explicitely
+	against libX11.so and ibXpm.so (and possibly others) isn't
+	necessary anymore when linking against libforms.so.
+
+2009-07-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Bug in convertion of string to
+	shortcut characters removed
+
+2009-07-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bit of cleanup of error handling
+
+2009-07-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Forms.c split into two, forms.c and
+	handling.c
+
+2009-07-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/events.c: Bug found by Werner Heisch when using
+	fdesign under KDE/Gnome removed
+
+2009-07-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Hack added to correct drawing of formbrowser
+	objects
+	* lib/input.c: Cursor was sometimes not drawn at the correct
+	position
+
+2009-07-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: Some adjustments to redraw of textbox
+
+2009-07-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bugs found by Werner Heisch in fdesign fixed.
+
+2009-07-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Some bugs in code for drawing of folder and
+	formbrowser objects repaired.
+
+	* Mistakes in documentation removed.
+
+2009-07-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Several bugs in fdesign removed
+
+	* lib/tbox.c: Realculation of horizontal offset after
+	removal of longest line fixed
+
+2009-06-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Some bugs found by Werner Heisch in the new browser
+	implementation corrected.
+
+	* Some issues with fdesign and browsers removed.
+
+	* lib/scrolbar.c: Cleanup due to compiler warning
+
+2009-06-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: Some corner cases for browsers
+	corrected.
+
+2009-06-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/tbox.c: Bug in handling of new lines and
+	appending to existing lines fixed to make it
+	work like earlier versions.
+
+2009-06-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	Several bug-fixes and changes all over the place to
+	get everything working again.
+
+	Flag '--enable-bwc-bs-hack' added to 'configure' to
+	allow compliation for programs that rely on the tradi-
+	tional behaviour of browsers and scrollbars, i.e. that
+	they don't report changes via e.g. fl_do_forms() but
+	do invoke a callback if installed.
+
+2009-06-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	lib/tbox.c: Replacement for lib/textbox.c used in all
+	browsers.
+
+2009-05-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	Lots of changes to the event handling system. The handler
+	routines for objects now are supposed to return information
+	about what happend (changes, end of interaction) instead
+	of just 1 or 0 (which indicated if the user application
+	was to be notified or not. Using the new system makes it
+	easier to use objects that consist of child objects e.g.
+	when dealing with callbacks for these kinds of objects.
+
+2009-05-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/events.c: Bug fixed that resulted in crashes when
+	in the callback for an object the object itself got deleted.
+
+	* lib/input.c: fl_validate_input() function added.
+
+	* configure.ac, config/common.am, config/texinfo.tex,
+	doc/Makefile.am: Documentation added to built system
+
+2009-05-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/events.c: Objects consisting just of child objects
+	weren't handled correctly in that they never got returned
+	by fl_do_forms().
+
+	* lib/browser.c, lib/formbrowser.c, lib/scrollbar.c,
+	lib/tabfolder.c: these objects now get created with a
+	default callback that does nothing to keep them reported
+	by fl_do_forms() (for backward compatibility reasons).
+	Also quite a bit of cleanup in lib/browser.c
+
+	* lib/spinner.c, lib/include/spinner.h, lib/private/pspinner.h:
+	new widget added, very similar to counter object (but realized
+	just using already existing objects).
+
+	* lib/child.c, lib/include/Basic.h: fl_add_child() is
+	am exported function now (again) since it might be
+	rather useful for creating new, composite widgets.
+
+2009-05-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/Makefile: Added a few include directories
+	in order to allow fdesign's fd files when newly
+	converted with fdesign to be compiled without
+	manual changes.
+
+2009-05-08 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c, lib/objects.c, lib/flinternals.h:
+	Using the return key to activate a FL_RETURN_BUTTON
+	object in a form with a single input object works
+	again.
+
+2009-05-08 Jens Thoms Toerring    <jt@toerring.de>
+
+	* configure.ac: check for nanosleep too
+	* lib/sysdep.c (fl_msleep): use HAVE_NONOSLEEP
+
+2009-05-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/form.c: Changed return type of the functions
+	fl_show_form(), fl_prepare_form_window() and
+	fl_show_form_window() to 'Window' to reflect what
+	was (mostly) said in the documentation. That also
+	required including X11 header files already in
+	lib/include/Basic.h instead of lib/include/XBasic.h.
+	fl_prepare_form_window() now returns 'None' on
+	failure instead of -1. Also the type of the 'window'
+	member of the FL_FORM structure is now 'Window'
+	instead of 'unsigned long' and that of 'icon_pixmap'
+	and 'icon_mask' is 'Pixmap'.
+
+	FL_TRIANGLE_* macros renamed to FLI_TRIANGLE_* and
+	moved to lib/flinternal.h.
+
+2009-05-06 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Just a bit of code cleanup in fdesign and
+	minor changes of the documentation.
+
+2009-05-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/signal.c: in handle_signal() a caught signal
+	could lead to an infinite loop when the handling
+	function did something that put it back into the
+	main loop.
+
+	* Some improvements of teh documentation
+
+2009-05-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_attribs.c: Bug that kept composite
+	objects from being selected after type change in
+	fdesign removed. Length of labels is now unlimited.
+
+2009-05-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Some missing figures added to documentation.
+
+2009-04-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	Git repository added.
+
+2009-03-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_main.c, fdesign/fd_printC.c: As Rob
+	Carpenter noticed <glcanvas.h> doesn't get inclued
+	in the files generated by fdesign when a glcanvas
+	object exists. Changed that so that both <forms.h>
+	and <glcanvas.h> (but only if required) get included
+	in the header file created by fdesign.
+
+2009-01-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/include/AAA.h.in: Contact address etc. corrected.
+
+2009-01-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc/images/: Some new figures added.
+
+2009-01-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_spec.c, fdesign/fd_super.c: Removed lots of
+	potential buffer overruns and restriction on number of
+	lines/entries that could be used for browser, menu and
+	choice objects.
+
+	* lib/utils: Added function for reading in lines of
+	arbitrary length from a file and a function with similar
+	functionality as GNUs asprintf().
+
+2009-01-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	* image/image_disp.c: Tried to correct display of images
+	on machines where the COMPOSITE extension is supported.
+	As Luis Balona noticed on these systems images dispayed
+	with the itest demo program appear half-transparent.
+	Probably not solved but looks a bit better now...
+
+	* image/image_jpeg.c: Bug in identification of JPEG images
+	corrected.
+
+2009-01-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/nmenu.c, lib/include/nmenu.h, lib/private/pnmenu.h:
+	New type of menus based on the new popup code.
+
+	* lib/private/pselect.h: Small correction to get the knob
+	of browser sliders drawn correctly.
+
+2009-01-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/select.c: Corrections and additions of new functions
+	for select objects.
+
+	* demos: Changes to a number of demo programs to use select
+	instead of choice objects.
+
+	* doc: Updates of some of the files of the documentation.
+
+2009-01-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/select.c, lib/include/select.h, lib/private/pselect.h:
+	Files for the new select object added that is supposed to
+	replace the old choice object and is based on the new popup
+	code recently added.
+
+	* doc/part3_choice_objects.texi, doc/part3_deprecated_objects.texi:
+	Documentation of choice objects moved from that for choice
+	objects to that for deprecated objects and documenttation for
+	the new select object was added to that for choice objects.
+
+2008-12-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_printC.c: Applied a patch Werner Heisch send
+	in for a bug that resulted in the label alignment getting
+	set incorrectly (always ended up as FL_ALIGN_CENTER).
+
+2008-12-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc: Reassembly of documentation in texinfo format more
+	or less complete. Still missing are most of the figures.
+
+	* lib/include/popup.h: File has been renamed xpopup.h.
+
+	* lib/popup.c, lib/include/popup.h, demo/new_popup.c: New
+	implementation of popups, supposed to replace old Xpopups.
+	Still missing: reimplementation of menu and choice objects
+	based on the new Popup class.
+
+	* lib/forms.c: fl_end_group() now returns void instead of
+	a pseudo-object that never should be used by the user.
+
+2008-12-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xpopup.c: Found that FL_PUP_GREY and FL_PUP_INACTIVE
+	are actually the same, so removed all uses of FL_PUP_INACTIVE.
+
+2008-12-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* doc: New directory with first parts of rewrite of docu-
+	mentation in texi format.
+
+	* lib/counter.c: Rob Carpenter noticed that it sometimes
+	can be difficult to use a counter to just change it by a
+	single step. Thus, according to his suggstions, the first
+	step now takes longer and the time between following
+	steps gets smaller and smaller until a final minimum
+	timeout is reached (initial timeout is 600 ms and final
+	is 50 ms per default). The fl_get_counter_repeat() and
+	fl_set_counter_repeat() are now for the initial timeout
+	and the final timeout can be controlled vianew functions
+	fl_set_counter_min_repeat()/fl_get_counter_min_repeat().
+	To switch back to the old behaviour use the functions
+	fl_set_counter_speedup()/fl_get_counter_speedup() and
+	set the initial and final rate to the same value. If
+	speed-up is switched off but initial and final timeouts
+	differ the initial timeout is used for the first step and
+	the final timeout for all following steps.
+
+	* lib/choice.c: Choices didn't react immediately to a click
+	with the middle or left mouse button. Now the selected entry
+	will change immediately and continue to change slowly when
+	the mouse button is kept pressed down.
+
+	* fdesign/fd_forms.c: Rob Carpenter and Werner Heisch found
+	that while loading .fd file a spurious "Failure to read file"
+	warning gets emitted.
+
+2008-11-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/appwin.c, lib/events.c: Small changes to clean
+	up a few things that did look a bit confusing.
+
+2008-11-11 Jens Thoms Toerring    <jt@toerring.de>
+
+	Cosmetic changes to a number of files to pacify the
+	newest gcc/libc combination about issues with disre-
+	garded return values of standard input/output func-
+	tions (fgets(), fread(), fwrite(), sscanf() etc.)
+
+2008-11-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/textbox.c: Another bug Rob Carpenter found: when
+	trying to scroll in an empty browser the program crashed
+	with a segmentation fault due to miscalculation of the
+	number of the topmost line of text.
+
+2008-11-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Rob Carpenter pointed out another bug
+	that resulted in extremely slow redraws of objects and
+	was due to a off-by-one error in the calculation of the
+	bounding box of objects (which in turn made non-overlap-
+	ping objects appear to overlap.
+
+2008-10-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/button.c: Bug in function for selecting which
+	mouse buttons a button reacts to fixed.
+
+2008-10-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Added function fl_form_is_iconified()
+	that returns if a forms window is in iconfied state.
+	Thanks to Serge Bromow for propose a function like
+	that.
+
+2008-10-18 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c, lib/tooltip.c: Bug removed that
+	led to multiple deletes of tooltip form in the
+	fl_finish() function.
+
+2008-09-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/clock.c: FL_POINT array in draw_hand() was
+	one element too short.
+
+2008-09-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Further code cleanup
+
+	* Update of man page
+
+2008-09-21 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Bits of code clean-up in several places.
+
+2008-09-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Added removal of tooltip when
+	object gets deleted.
+
+2008-09-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/win.c, lib/forms.c: Code for showing a form
+	was changed. The previous code made the assumption
+	that all window managers would reparent the form
+	window withing a window with the decorations, but
+	this is not necessary the case (e.g. metacity, the
+	default window manager of Gnome). This led to
+	inconsistencies in the positioning of forms with
+	different window managers. Also positioning forms
+	with negative values for x and y (to position a
+	window with its right or bottom border relative
+	to the right or bottom of the screen didn't work
+	correctly.
+
+2008-08-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodie_choice.c: Bug in setting the buttons
+	texts removed.
+
+2008-08-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c, lib/objects.c: Removed bug pointed out
+	by J. P. Mellor that allowed selecting and editing
+	input objects even when the were deactivated.
+
+	* fdesign/fd_attribs.c: Removed a bug pointed out
+	by Werner Heisch that crashed fdesign if the type
+	of an object was changed.
+
+	* fdesign/fd_attribs.c: Bug in fdesign fixed that
+	led to crash when the type of a composite object
+	was changed and then Restore or Cancel was clicked.
+
+2008-07-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/menu.c: Thanks to a lot of input from Jason
+	Cipriani several changes were made concerning the
+	ability to set menu item IDs and callback functions
+	for menu items. This includes slight changes to the
+	prototype of the three functions fl_set_menu(),
+	fl_addto_menu() and fl_replace_menu_item(). All of
+	them now accept in addition to their traditional
+	arguments an unspecified number of extra arguments.
+	Also tow new functions were added:
+
+	fl_set_menu_item_callback( )
+	fl_set_menu_item_id( )
+
+	Please see the file 'New_Features.txt' for a more
+	complete description.
+
+	* fdesign:  Support for setting menu item IDs and
+	menu item callbacks has been added.
+
+2008-07-03 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: for radio buttons an associated
+	callback function wasn't called on a click on an
+	already pressed radio button as Luis Balona found
+	out. Since this isn't the bahaviour of older
+	XForms version this could lead to problems for
+	applictaions that expect the old behaviour, so
+	the behaviour was switched back to the old one.
+
+	* config/: on "make maintainer-mode the scripts
+	install-sh, missing and mkinstalldirs got deleted.
+	While the first two were generated automatically
+	during the autoconf process the last wasn't which
+	led to a warning when running configure. Thus the
+	'mkinstalldirs' (from automake 1.10) was added.
+
+2008-07-02 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xpopup.c, lib/menu.c: Tried to fix a bug
+	resulting in artefacts with menus on some machines
+	as Luis Balona pointed out.
+
+2008-06-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Removed a bug in the calculation
+	of size of the bounding of an object. Thanks to
+	Rob Carpenter for sending me example code that
+	did show the problem nicely.
+
+	* lib/forms.c, lib/objects.c: Added some code to
+	speed up freeing of forms (overlap of objects does
+	not get recalculated anymore, which could take a
+	considerable time for forms with many objects).
+
+2008-06-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/object.c, lib/button.c, lib/xpopup.c: Fixed
+	two bugs found by Luis Balona that under certain
+	circumstances led to a segmentation fault.
+
+	* config/ltmain.sh, config/libtool.m4,
+	config/config.guess, config/config.sub:
+	Updated libtool files from version 1.4.3 to 1.5.26
+	since Raphael Straub, the maintainer of the MacPorts
+	port of XForms, pointed out that compilation of
+	fdesign on Mac OSX failed due to a problem with the
+ 	old libtool version.
+
+2008-06-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/xsupport.c: Code cleanup.
+
+	* lib/pixmap.c: Changed code for drawing a pixmap
+	to take the current clipping setting unto account.
+	Many thanks To Werner Heisch for explaining the
+	problem with a lot of screentshots and several
+	example programs that did show what went wrong!
+
+	* lib/bitmap.c: Made bitmap buttons behave like
+	normal buttons, just with a bitmap drawn on top
+	of it. The foreground color of the bitmap is
+	the same as the label color (and never changes).
+	Also changed the code for drawing a bitmap to
+	take account fo the current clipping setting.
+
+2008-06-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/pixmap.c: Made pixmap buttons behave like
+	normal buttons, just with a pixmap drawn on top
+	of it (which may get changed when the button
+	receives or loses the focus).
+
+	* lib/objects.c: Made some changes to the redraw
+	of objects when a "lower" object gets redrawn
+	and thus an object on top of it also needs to be
+	redrawn.
+
+2008-05-31 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/pixmap.c: As Werner Heinsch pointed out
+	the display of partially transparent pixmaps
+	was broken due to a bug I had introduced when
+	cleaning up the code for redraw. Moreover,
+	already in 1.0.90 the pixmap of a pixmap button
+	was exchanged for the focus pixmap when the
+	button was pressed, which wasn't what the
+	documentation said. Code changed to avoid that.
+
+	* lib/objects.c: The code for determining if
+	two objects intersect was broken and reported
+	all objects to intersect, which then resulted
+	in a lot of useless redraws. Hopefully fixed.
+
+2008-05-24 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Got rid of some compiler warnings removed.
+
+	* lib/fldraw.c: As Andrea Scopece pointed out
+	colors of box borders weren't correct and the
+	shadow wasn't drawn for for shadow boxes with
+	a border width of 1 or -1. Added his proposed
+	patches.
+
+2008-05-17 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodies.c, lib/goodie_*.c: Some code cleanup
+	and made sure that memory allocated gets released.
+
+2008-05-16 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Removed a bug that has been
+	pointed out by Werner Heisch with a small demo
+	program: if an object is partially or even fully
+	hidden by another object and gets redrawn it got
+	drawn above the object it was supposed to be
+	(more or less) hidden by, thus obscuring the
+	"upper" object.
+
+	* lib/pixmap.c: It could happen that parts of a
+	pixmap got drawn outside of the object that it
+	belongs to. That in turn could mess up redrawing
+	(e.g. if the pixmap object got hidden). Thus now
+	only that part of a pixmap that fits inside the
+	object gets drawn.
+
+2008-05-15 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/textbox.c: The functions fl_addto_browser()
+	and fl_addto_browser_chars() didn't worlk correctly
+	anymore. When lines where appended the browser
+	wasn't shifted to display the new line. Thanks to
+	Werner Heisch for pointing out the problem.
+
+2008-05-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodie_alert.c: Removed restriction on the
+	maximum length of the alert message.
+
+	Added new function
+
+	void
+	fl_show_alert2( int          c,
+	                const char * fmt,
+	                ... )
+
+	The first argument is the same as the last of
+	fl_show_alert(), indicating if the alert box is to be
+	centered on the screen. The second one is a printf()-
+	like format string, followed by as many further
+	arguments as there are format specifiers in the 'fmt'
+	argument. The title and the alert message are taken
+	from the resulting string, where the first form-feed
+	character ('\f') embedded in the string is used as the
+	separator between the title and the message.
+
+2008-05-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/menu.c: Changed the default font style of
+	menus from FL_BOLD_STYLE to FL_NORMAL_STYLE and
+	menu entries from FL_BOLDITALIC_STYLE also to
+	FL_NORMAL_STYLE.
+
+	* lib/xpopup.c: Changed the default font style
+	of both popup entries as well as the title from
+	FL_BOLDITALIC_STYLE to FL_NORMAL_STYLE.
+
+	* lib/flcolor.c: Made the default background
+	color a bit lighter.
+
+2008-05-09 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c: Removed bug that kept canvases
+	from being hidden and tabfolders from being
+	re-shown correctly. This was especially annoying
+	with fdesign as Rob Carpenter pointed out.
+
+	* lib/forms.c: Added a new function
+
+	int
+	fl_get_decoration_sizes( FL_FORM * form,
+	                         int     * top,
+	                         int     * right,
+	                         int     * bottom,
+	                         int     * left );
+
+	which returns the widths of the additional
+	decorations the window manager puts around
+	a forms window. This function can be useful
+	if e.g. one wants to store the position of a
+	window in a file and use the position the
+	next time the program is started. If one
+	stores the forms position and uses that to
+	place the window it will appear to be shifted
+	by the size of the top and left decoration.
+	So instead storing the forms position one has
+	to correct it for the decoration sizes.
+
+	* everywhere: further clean up (getting internal
+	stuff separated from stuff that belongs to API)
+
+2008-05-08 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib.objects.c, lib/childs.c: Rewrite of the
+	functions for hidding an object. Some adjustments
+	to the code for freeing objects to set the focus
+	correctly.
+
+	* lib/flresource.c: Changed the name of the option
+	to set the debug level from 'debug' to 'fldebug'
+	since it's too likely that a program using XForms
+	also has a 'debug' option which would get over-
+	written by XForms option.
+
+	Also added a 'flhelp' option that outputs the options
+	that XForms accepts and then calls exit(1). Thanks to
+	Andrea Scopece for contributing this.
+
+2008-05-07 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/objects.c, lib/child.c: Handling of child
+	objects corrected - valgrind was reporting an
+	error with the old code (access to already re-
+	leased memory) and the code was rather buggy
+	and inconsistent anyway.
+
+	* lib/xpopup.c: Changed a XFhlush() to XSync()
+	after a popup was opened - without it an Map-
+	Notify was sometimes passed back to the user
+	program (happened due to a fix to a different
+	bug in lib/events.c).
+
+	* fdesign: Tried to make the fdesign GUI look a
+	bit nicer (thinner borders etc.). Some changes to
+	generated output files (format, call of fl_free()
+	on the different fdui's at the end of the main()
+	function etc.).
+
+2008-05-05 Jens Thoms Toerring    <jt@toerring.de>
+
+	* further clean-up of header files and renaming
+	of functions and macros usied only internally.
+
+2008-05-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd_forms.c: Removed limit on number of
+	forms that can be created or read from a file. Few
+	changes to error handling.
+
+	* fdesign/fd_control.c: Removed limit on number of
+	objects in a form that can be dealt with.
+
+	* fdesign/fd_groups.c: Removed limit on number of
+	groups that can be dealt with.
+
+	* fdesign/fd/ui_theforms.fd: Changed browser for
+	groups to be a multi instead of hold browser.
+
+	* lib/events.c: Bug I had ontroduced in function
+	fl_handle_event_callbacks() repaired. Thanks to
+	Andrea Scopece for pointing out the problem.
+
+	* everywhere: started attempt to distinguish clearly
+	between functions, variables, and macros belonging to
+	the API and those only used internally to the library
+	by having API names start with 'fl_' (or 'FL_') while
+	internal names start with 'fli_' (or FLI_'). Also
+	removed doubly declared or non-existent functions
+	in lib/flinternal.h.
+
+2008-05-01 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodies_msg.c: New function fl_show_msg()
+	now works.
+
+2008-04-30 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/goodie_msg.c: Added function
+
+	  void fl_show_msg( const char * fmt, ... )
+
+	The first argument is a printf-like format string,
+	followed by as many arguments as required by the
+	format specifiers in the format string. This simplfies
+	outputting freely formatted messages.
+
+	Changed fl_show_message() to avoid an upper limit
+	of 2048 characters on the total length of the three
+	strings passed to it.
+
+	Added #defines for fl_hide_messages and fl_hide_msg -
+	they are just alternative names for fl_hide_message().
+
+2008-04-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/fselect.c: If a callback for a file selector is
+	installed the prompt line and the input field aren't
+	shown anymore. As Andrea Scopece pointed out the input
+	field can't be used at all for file selectors with a
+	callback (only a double click in the browser works)
+	so it doesn't make sense to show it.
+
+	* lib/n2a.c: This file isn't needed anymore - the only
+	of its functions used at all, fl_itoa(), was used in only
+	a single place (lib/errmsg.c) and got replaced by sprintf().
+
+	* image/image_proc.c: Bug fixed in flimage_tint() that led
+	to writes past the end of an array.
+
+2008-04-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Jumping backwards with Shift-<TAB>
+	through a set of input objects now works even if
+	there are non-input objects in between.
+
+	* demos/browserop.c: Bug removed that only surfaced
+	now since clicking onto a button makes an input
+	object lose the focus.
+
+	* lib/canvas.c, lib/forms.c: On hiding a form it was
+	forgotten to unmap the windows of canvases belonging
+	to that form and to reset the ID of these windows.
+	Resulted in an XError on unhiding the form. Thanks
+	to Andrea Scopece for finding this bug.
+
+2008-04-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/input.c: Correct leap year handling in date input
+	validator. Multi-line input field don't receive a <TAB>
+	anymore (which never did work anyway).
+
+	* lib/forms.c: <TAB> can now also be used to move the
+	focus out of a multi-line input field and into the next
+	input field.
+
+	* lib/version.c: The version output now contains the
+	full copyright information, not just the first three
+	lines.
+
+2008-04-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/flresource.c: Library version information wasn't
+	output when the '-flversion' option was given. Repaired
+	by a patch Andrea Scopece send.
+
+	* lib/forms.c: Scrollbars had been extempt from resizing
+	due to the wrong assumption that they always would be
+	childs of a composite object, which isn't the case.
+	Thanks to Andrea Scopece for finding this problem.
+
+	* lib/scrollbar.c: Horizontal scrollbars now only get
+	resized in x-direction per default, verticall ones in
+	y-direction only.
+
+2008-04-22 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/async_io.c: Removed a bug pointed out by Andrea
+	Scopece that resulted in a segmentation fault in the
+	'demo' program. This also needed some changes in the
+	files lib/flresource.c and lib/flinternal.h (where
+	also all remains from be.c were removed).
+
+2008-04-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/flresource.c: Removed setting of the machines
+	locale setting as default for the program. This
+	change had already been discussed by Jean-Marc and
+	Angus back in 2004 but never actually done.
+
+	* lib/fselect.c: Programs doesn't crash anymore when
+	fl_set_directory() gets passed a NULL pointer.
+
+	* lib/buttons.c: Bug repaired that kept buttons from
+	becoming highlighted when the mouse was moved nto them
+	(and vice versa).
+
+	* lib/formbrowser.c: Changed the handling of the scroll-
+	bars to hopefully make it work correctly even when the
+	form gets resized.
+
+2008-04-13 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign/fd/*.c, fdesign/spec/*.c: Replaced
+	'#include "forms.h"' with '#include "include/forms.h"
+	to avoid compilation problems Peter Galbraith pointed
+	out.
+
+	* fdesign/fd_printC.c: In created C files we now have
+	'#include <forms.h>' instead of '#include "forms.h"'.
+
+2008-04-10 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/buttons.c: Removed code that enforced on of a
+	set of radio buttons to be set - thus led to problems
+	for some older applications.
+
+	Also emoved restriction that buttons only react to
+	a click with the left mouse button per default.
+	Instead added two new public functions
+	  fl_set_button_mouse_buttons()
+	  fl_get_button_mouse_buttons()
+	that allow to set and query the mouse buttons a
+	button will react to. dfault is to react to all
+	mouse buttons.
+
+	* fdesign/sp_buttons.c, fdesign/fd_spec.c: Added
+	support for setting the mouse buttons a button
+	reacts to via fdesign (click the "Spec" tab rider
+	in the attributes window).
+
+	* fdesign/fd_main.c: Added option '-xforms-version'
+	to print out the version of the library being used.
+
+	* lib/tabfolder.c: All memory now gets released on
+	call of fl_finish().
+
+	* lib/symbols.c: Unlimited number of symbols can be
+	created without restrictions on the name length.
+	Memory allocated for symbols gets deallocated in
+	fl_finish().
+
+	* lib/flresource.c: Array allocated for copy of
+	command line arguments was one element too short
+	which led to crashes when using lots of command
+	line arguments. Added function to free this memory
+	in fl_finish().
+
+	* fdesign/fd_printC.c: Output wasn't correct ANSI-C89
+	when the pre_form_output() function was called.
+
+	* fdesign/fd/*.[ch], fdesign/spec/*.[ch]: Newly
+	generated using the newest fdesign version.
+
+2008-03-27 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/button.c: Most buttons now again react only
+	to the release of the left mouse button, I had
+	introduced a bug that broke this behaviour.
+
+	* fdesign/sp_*.c: Some cosmetic correction to the
+	output format of the files generated by fdesign.
+
+2008-03-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Clicking on a "pushable" object now
+	leads to an input object currently having the focus
+	lose the focus, thus enforcing it to report changes.
+	Until now this only happened if the object that was
+	clicked on was another input object.
+
+	A FocusOut event now takes away keyboard input from
+	input objects on the form in the window that lost
+	the focus, a FocusIn event restores it.
+
+2008-03-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Further restructuring of event handling.
+	All memory for objects of a form now (hopefully) gets
+	deallocated on a call of fl_free_form() and a call of
+	fl_finish() deallocates all memory used for forms and
+	their objects, removes signal callbacks and deletes
+	timers. The only exception is memory for tabfolder,
+	I haven't yet understood the code for that...
+
+	* lib/objects.c: Object pre- and posthandlers aren't
+	called anymore on FL_FREEMEM events (the object or
+	some of its childs probably doesn't exist anymore
+	in that kind of situation).
+
+	* lib/timeout.c: Changed the code a bit and, in combi-
+	nation with changes in lib/forms.c, got the precision
+	of timeouts to be a bit higher (haven't seen it being
+	off more than 5 ms on my machine under light load) and
+	made sure they never expire too early (as promised in
+	the manual). Added a function to remove all timeouts,
+	to be be called from fl_finish().
+
+	* lib/be.c: File isn't used anymore, the list of memory
+	to be allocated never was used anyway if no idle handler
+	was installed and it also didn't do the right thing. No
+	calls to fl_addto_freelist() and fl_free_freelist() are
+	left in XForms.
+
+	* lib/include/Basic.h: FL_MOTION has come back, what
+	I should have thrown out was FL_MOUSE. FL_MOUSE is
+	still available for backward compatibility but isn't
+	used in the code anymore - FL_UPDATE is the new name
+	(in the object structure the 'want_update' member must
+	be set to request this type of event - can be switched
+	on and off at any time).
+
+	* lib/slider.c: Changed the code for sliders (and
+	thereby scrollbars) quite a bit - it was much too
+	complicated (unfortunately still is:-( and didn't
+	always work correctly. Scrollbars now react to
+	scroll wheel mouse the same way a textbrowser does.
+
+	* lib/signal: On system that support it sigaction()
+	instead of signal() is used now. Added a function
+	to remove all signal handlers, to be used from
+	fl_finish().
+
+	* fdesign/ps_printC.c: Replaced the use of fl_calloc()
+	by fl_malloc() when writing out C files - there's no
+	good reason to spend time on zeroing out the memory.
+
+2008-03-20 Jens Thoms Toerring    <jt@toerring.de>
+
+	* textbox.c: Textboxes didn't get regular update
+	events that are needed for scrolling with the
+	mouse pressed down just below or above the box.
+	They also did only react to left mouse buttons
+	(and scroll wheel) and now again also to the
+	middle and right button.
+
+	* lib/counter.c, fdesign/fd_object.c: Removed some
+	debugging output accidentally left in.
+
+	* lib/dial.c: Corrected return behaviour on mouse
+	button release.
+
+2008-03-19 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Further cleanup and removal of cruft that
+	was hard to understand but actually was unnecessary or
+	counter-productive. Added check that makes sure that
+	one of the radio buttons of a form is always set.
+
+	* lib/include/Basic.h: FL_MOTION got removed, instead
+	FL_UPDATE was introduced for events of the artificial
+	timer (the one that kicks in when there are no events).
+	The FL_OBJECT structure got two new elements, 'want_motion'
+	and 'want_update'. If the first is set an object which is
+	not an object that can be "pushed" will receive mouse
+	movement events (e.g. in case the object has some inner
+	structure that depends on the mouse position like counter
+	objects) and the second is to be set by objects that want
+	to receive FL_UPDATE events (but they still need to be
+	objects that can be "pushed") - at the moment these are
+	touch buttons, counters and choice objects.
+
+	* lib/choice.c: FL_DROPLIST_CHOICE didn't work correctly
+	anymore, fixed. Scroll wheel can now also be  used to
+	walk through the entry up or down in the popup. Added a
+	new function fl_get_choice_item_mode() to the public
+	interface.
+
+	* lib/menu.c: Menus become highlighted when the mouse
+	is moved onto it. Code cleaned up a bit.
+	Added a function fl_set_menu_notitle() (analogous to
+	the fl_set_choice_notitle() function) to allow removal
+	of the sometimes ugly menu popup titles. This leads to
+	an important change in the behaviour of FL_PUSH_MENU
+	objects: if the title is switched off they only get
+	opened on button release and stay directly below the
+	menu button (like FL_PULLDOWN_MENU objects).
+
+	There's a lot of code identical to that in choice.c,
+	it might be reasonable to remove the duplication (what
+	actually is the big difference between the menu and
+	choice objects, anyway?)
+
+	* lib/button: Changes to fit the new event handling
+	code. Buttons now only react to clicks with the left
+	mouse. button. Handling of radio buttons corrected.
+
+	* lib/choice, lib/counter: Changes to fit the new event
+	handling code.
+
+	* lib/slider.c, lib/thumbwheel.c, lib/textbox.c,
+	lib/positioner.c, lib/dial.c: Now react to left mouse
+	button only (and mouse wheel as far as reasonable).
+
+	* lib/fldraw.c: Issues with memory handling checked
+	and corrected.
+
+2008-03-12 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/forms.c: Removed code injecting fake FL_RELEASE
+	events that led to problems with double click selections
+	e.g. in the file selector (this in turn required changes
+	to lib/xpopup.c).
+
+	* lib/xpopup.c: Extensive code cleanup, bug fixes and
+	rewrite of event handling. Popup's, menus etc. now work
+	more like one is it used from other toolkits. Shadows
+	around popups got removed since they don't (and never
+	did) work correctly.
+
+	* Further code cleanup all over the place, removing
+	bugs that may lead to segmentation faults or memory
+	or X resources leaks.
+
+2008-02-04 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Resizing code again changed since I hadn't understood all
+	the interdepencies between gravity and resize settings.
+	Hopefully works correctly now.
+
+	The special treatment of the case for objects that have no
+	gravity set and all resizing switched off (in which case
+	the center of gravity is moved when the enclosing form is
+	resized) seems to be a bit strange. Why is not the same
+	behaviour used for e.g. the  x-direction if an object
+	isn't fixed in x-direction by its gravity setting and it
+	isn't to be resized in horizontal direction (same for y)?
+
+	* lib/events.c: Changed the Expose event compression code that
+	did lead to missed redraws under e.g. KDE or Gnome if they are
+	set up to update a window also during resizing and the mouse is
+	moved around a lot in the process.
+
+	* lib/textbox.c: Hopefully fixed a bug (perhaps it's the one
+	that Michal Szymanski reported on 2005/3/11 in the XForms
+	mailing list) that resulted under certain circumstances in e.g.
+	fl_do_forms() returning the object for a normal textbrowser
+	unexpectedly when the mouse wheel was used, which in turn could
+	make programs exit that did not expect such a return value (the
+	fbrowse.c demo program did show the problem).
+
+	* lib/textbox.c: Hopefully fixed another bug that kept the
+	text area of a browser from being redrawn correctly following
+	the resizing of its window when sliders were on and not in
+	the left- or top-most position.
+
+	* lib/objects.c: Added three functions fl_get_object_bw(),
+	fl_get_object_gravity() and fl_get_object_resize() (to be
+	added to the public interface).
+
+	* lib/flinternal.h: Added several macros that test if the
+	upper left hand and the lower right hand corner of an
+	object are locked due to gravity settings and macros that
+	test if the width or height is "fixed", i.e. determined
+	by the gravity settings (so they are not influenced by
+	the corresponding resizing settings).
+
+	* demos/grav.c: Created a small demo program that shows the
+	effects of the different gravity and resizing settings. The
+	results can sometimes be a bit surprising at a first glance
+	but I hope to have gotten it right;-)
+
+2008-01-28 Jens Thoms Toerring    <jt@toerring.de>
+
+	* Resizing behaviour got rewritten to get it to work correctly
+	even if a window gets resized to a very small size and then
+	back to a large one (see e.g. the xyplotall demo program for
+	the behaviour). This required to add elements to the FL_FORM
+	and FL_OBJECT structures, but since they shouldn't be used
+	directly from user programs and also user defined object should
+	always be created via a call of fl_make_object(), where the
+	geometry of the object gets set, this shouldn't lead to any
+	trouble. One aspect of the changes is that an objects gravity
+	setting now always takes precedence over the 'resize' setting
+	and the 'resize' setting gets automatically corrected whenever
+	necessary.
+
+	* lib/events.c: changed queueing system so that queue overflows
+	and thus loss of calls of callback functions or Xevents shouldn't
+	be possible anymore. The queues are now implemented using linked
+	lists that get extendend if necessary, deallocation is done from
+	fl_finish().
+
+	* Got rid of a redraw bug that led to a form not being redrawn
+	correctly after its window was made smaller (e.g. under fvwm2)
+
+	* Several bugs where fixed that sometimes crashed the program
+	with XErrors after resizing a window, especially when the
+	window was made very small (exhibited by e.g. the formbrowser
+	demo program).
+
+	* Number of forms that can be created is now unlimited (or
+	only limited by the available memory) instead of having an
+	arbitrary maximum of 64
+
+	* Changes to autogen.sh to allow built with newer versions of
+	autoconf and small changes on config/xformsinclude.m4 to avoid
+	warnings. Added '-W' compiler flag (which in turn required to
+	mark unused arguments of a lot of functions as such to avoid
+	compiler warnings, see the new macro FL_UNUSED_ARG in
+	lib/include/Basic.h that exists for just that purpose).
+
+	* Handling of the number of colors was corrected for displays
+	with more colors than can be stored in an unsigned long (e.g.
+	32-bit depth display with 32-bit wide unsigned longs).
+
+	* Correction of the sizes of the scrollbars of FL_NORMAL_FORMBROWSER
+	type of objects.
+
+	* lib/dial.c: mouse-wheel handling for dials added
+
+	* lib/tabfolder.c: bugs in memory handling corrected
+
+	* Replaced float by double in many places (not yet finished!).
+
+	* Code cleanup (concerns several dozens of files)
+
+2004-12-28  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* image/image_jpeg.c: fix compilation with IBM's xlc.
+
+	* Makefile.am: remove useless GNUish construct.
+
+	* lib/listdir.c: add a better definition of S_ISSOCK, that works
+	with SCO OpenServer (thanks to Paul McNary).
+
+2004-10-05  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* xforms.spec.in: Updating SO_VERSION revealed a flaw in the logic
+	that tries to use this variable to define some missing
+	symbolic links. The 'post' and 'postun' scripts have been rewritten
+	to work once more.
+
+	* lib/flinternal.h: move FL_NoColor...
+	* lib/include/Basic.h: here.
+
+	* lib/forms.c (do_interaction_step): prevent potential crash
+	caused by invoking fl_get_winsize with a width as the first
+	argument rather than a window ID.
+
+	* NEWS: add some highlights post 1.0.90.
+
+2004-10-05  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* configure.ac (SO_VERSION): updated to "2:0:1" in preparation
+	for the xforms 1.1 release.
+
+2004-10-06  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/textbox.c (fl_set_textbox_xoffset): don't ignore a
+	request to reset the offset if the manipulated value is less
+	than zero. Instead, reset it to zero and proceed.
+
+	* lib/browser.c (get_geometry): reset the horizontal offset to
+	zero if the horizontal scrollbar is turned off. (Bug #3205.)
+
+2004-07-28  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/forms.c (fl_prepare_form_window): correct typo in
+	error message.
+
+2004-06-04  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/fonts.c (fl_try_get_font_struct): change an error message to
+	an informational one as the function is often used to test
+	whether a font is loadable or not.
+
+2004-06-03  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/Makefile.am (EXTRA_DIST): distribute dirent_vms.h and
+	vms_readdir.c.
+
+2004-06-01  Duncan Simpson  <dps@simpson.demon.co.uk>
+
+	* fdesign/fd_printC.c (build_fname): re-write using fl_snprintf
+	as a simpler and safer replacement for strncat and strncpy.
+
+2004-05-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_printC.c (build_fname): if no output_dir is specified,
+	then output files in the current directory.
+
+2004-05-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_main.c: improve diagnostics when failing to convert
+	the .fd file to a .[ch] pair.
+	Also remove some redundant cruft.
+
+2004-05-18  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/Basic.h (fl_set_err_logfp): function was known as
+	'fl_set_error_logfp' in XForms 0.89. Define a typedef to map
+	from the old to the new.
+
+2004-05-18  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/demo27.c:
+	* demos/iconify.c:
+	* demos/pup.c:
+	* fdesign/fd_attribs.c:
+	* fdesign/fd_main.c:
+	* fdesign/fd_main.h:
+	* fdesign/fd_rubber.c:
+	* gl/glcanvas.c:
+	* image/flimage.h:
+	* image/flimage_int.h:
+	* image/image.c:
+	* image/image_disp.c:
+	* image/image_fits.c:
+	* image/image_gif.c:
+	* image/image_jquant.c:
+	* image/image_marker.c:
+	* image/image_proc.c:
+	* image/image_xwd.c:
+	* image/matrix.c:
+	* lib/asyn_io.c:
+	* lib/canvas.c:
+	* lib/child.c:
+	* lib/choice.c:
+	* lib/flcolor.c:
+	* lib/flinternal.h:
+	* lib/flresource.c:
+	* lib/forms.c:
+	* lib/fselect.c:
+	* lib/input.c:
+	* lib/listdir.c:
+	* lib/menu.c:
+	* lib/objects.c:
+	* lib/pixmap.c:
+	* lib/win.c:
+	* lib/xdraw.c:
+	* lib/xpopup.c:
+	* lib/xsupport.c:
+	* lib/include/Basic.h:
+	* lib/include/XBasic.h:
+	* lib/include/bitmap.h:
+	* lib/include/button.h:
+	* lib/include/canvas.h:
+	* lib/include/choice.h:
+	* lib/include/menu.h:
+	* lib/include/popup.h:
+	* lib/private/pcanvas.h:
+	* lib/private/ptextbox.h: s/unsigned/unsigned int/
+
+2004-05-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Revert some functions to the same API as was used in XForms
+	version 0.89, patch level 5. In all cases, this is just a case of using
+	the typedef rather than the raw type.
+
+	* lib/browser.c (fl_create_browser, fl_add_browser):
+	* lib/include/browser.h (fl_create_browser, fl_add_browser): use FL_Coord.
+
+	* lib/flcolor.c (fl_bk_color, fl_bk_textcolor):
+	* lib/include/Basic.h (fl_bk_color, fl_bk_textcolor): use FL_COLOR.
+
+	* lib/flresource.c (fl_initialize):
+	* lib/include/XBasic.h (fl_initialize): use FL_CMD_OPT *.
+
+	* lib/formbrowser.c (fl_add_formbrowser):
+	* lib/include/formbrowser.h (fl_add_formbrowser): use FL_Coord.
+
+	* lib/oneliner.c (fl_show_oneliner):
+	* lib/include/goodies.h (fl_show_oneliner): use FL_Coord.
+
+	* lib/scrollbar.c (fl_create_scrollbar, fl_add_scrollbar():
+	* lib/include/scrollbar.h (fl_create_scrollbar, fl_add_scrollbar():
+	use FL_Coord.
+
+	* lib/signal.c (fl_add_signal_callback):
+	* lib/include/Basic.h (fl_add_signal_callback): use FL_SIGNAL_HANDLER.
+
+	* lib/tabfolder.c (fl_add_tabfolder, fl_get_folder_area):
+	* lib/include/tabfolder.h (fl_add_tabfolder, fl_get_folder_area):
+	use FL_Coord.
+
+	* lib/win.c (fl_winmove, fl_winreshape):
+	* lib/include/XBasic.h (fl_winmove, fl_winreshape): use FL_Coord.
+
+	* lib/xdraw.c (fl_polygon):
+	* lib/include/XBasic.h (fl_polygon): use FL_COLOR.
+
+	* lib/xtext.c (fl_drw_text_beside):
+	* lib/include/Basic.h (fl_drw_text_beside): use FL_COLOR.
+
+	* lib/include/goodies.h (fl_exe_command, fl_end_command, fl_check_command):
+	use FL_PID_T.
+
+2004-05-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/canvas.h: change the change to AUTOINCLUDE_GLCANVAS_H.
+	* gl/glcanvas.h: #include <GL/glx.h>. Add C++ guards.
+
+2004-05-14  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/canvas.h: add a preprocessor-qualified #include
+	of glcanvas.h. The user must inititalise the GLCANVAS_H_LOCATION
+	appropriately.
+
+	This is a means to maintain some sort of backwards compatibility
+	without the old, hacky code.
+
+2004-05-13  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* image/Makefile.am (libflimage_la_LDFLAGS):
+	* gl/Makefile.am (libformsGL_la_LDFLAGS): change the -version-info
+	data to '@SO_VERSION@' so that all get updated automatically.
+
+2004-05-13  Reed Riddle  <drriddle@mac.com>
+
+	* lib/xyplot.c:
+	* lib/include/xyplot.h (fl_replace_xyplot_point_in_overlay):
+	new function, generalizing the existing fl_replace_xyplot_point
+	which acts only on the first dataset.
+
+2004-05-12  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* gl/Makefile.am (INCLUDES):
+	* demos/Makefile.am (INCLUDES):
+	* fd2ps/Makefile.am (INCLUDES):
+	* fdesign/Makefile.am (INCLUDES): add X_CFLAGS
+
+2004-05-07  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* (xforms.spec.in): add code to the 'post' script to modify
+	libforms.la et al. to prevent libtool from complaining that
+	the files have been moved.
+
+2004-05-07  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/private/pvaluator.h (repeat_ms, timeout_id, mouse_pos):
+	new variables.
+	* lib/include/slider.[ch] (fl_[sg]et_slider_repeat):
+	* lib/include/counter.[ch] (fl_[sg]et_counter_repeat):
+	new accessor functions, enabling the user to query and modify the
+	timeout used to control the behaviour of these widgets when the
+	mouse is kept pressed down.
+
+	* lib/include/slider.[ch] (handle_mouse):
+	* lib/include/counter.[ch] (handle_mouse): use a timeout to
+	control the rate at which the slider/counter is incremented.
+	Replaces the current strategy which used a simple counter loop and
+	which has become unusable with today's fast processors.
+
+2004-05-06  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* configure.ac (SO_VERSION): new variable defining the libtool
+	version info. Substituted in lib/Makefile.am and xforms.spec.in.
+
+	* lib/Makefile.am (libforms_la_LDFLAGS): use the configure-time
+	variable @SO_VERSION@ rather than the hard-coded 1:0:0.
+
+	* xforms.spec.in: fix 'Release' and 'Source0' info.
+	add 'post' and 'postun' scripts to create and remove symbolic links,
+	respectively.
+
+2004-05-06  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_spec.c: revert the change made earlier today.
+	Turned out to be used in the demos code...
+
+2004-05-06  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* xforms.spec.in: modify so that devfiles and binfiles are not
+	placed in ${RPM_BUILD_ROOT}. Prevents rpm from bombing out with a
+	"Checking for unpackaged files" error.
+
+2004-05-05  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/xtext.c (fl_drw_string): enable the drawing of characters
+	in a font larger than the input widget.
+
+2004-05-06  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_spec.c: initialization of the FL_CHOICE component of
+	the objspec struct used 'emit_menu_header' and 'emit_menu_global',
+	a cut-n-paste typo from the following FL_MENU component.
+	They have both been reset to '0'.
+
+2004-05-04  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* NT/libxforms.dsp, NT/xformsAll.dsw: removed these Visual C++
+	project files. They're way out of date and can be re-added
+	if needed.
+
+2004-05-05  Mike Heffner  <mheffner@vt.edu>
+
+	* lib/fselect.c (select_cb): clean-up and simplify this callback
+	function by use of the existing fl_set_browser_dblclick_callback.
+
+2004-05-04  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	The original patch, posted to the xforms list on June 21, 2002,
+	appears to have got lost. Archived here:
+	http://bob.usuhs.mil/mailserv/list-archives/xforms-archive/0285.html
+
+	Pass the associated (XEvent * xev) to fl_handle_object on an FL_DRAW
+	event. This XEvent * is not used at all by any of xforms' "native"
+	widgets, but an FL_FREE object is able to make use of this info to
+	redraw only the part of the window that has changed.
+
+	* forms.c (fl_handle_form): pass the XEvent on an FL_DRAW event.
+
+	* objects.c (redraw_marked): pass the XEvent to fl_handle_object.
+	(mark_for_redraw): new, static function containing all but the
+	'redraw_marked' call of the original fl_redraw_form.
+	(fl_redraw_form): refactored code. Functionality unchanged.
+	(fl_redraw_form_using_xevent): identical to fl_redraw_form, except
+	that it passes the XEvent on to redraw_marked.
+
+2004-05-02  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/flresource.c (get_command_name): squash valgrind warning
+	about a possible memory leak.
+
+2004-04-30  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/Makefile.am, fdesign/Makefile.am: silence automake
+	warning about trailing backslash on last line of file.
+
+2004-04-20  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/xpopup.c (fl_freepup): do not free unallocated entries
+	(fl_setpup_maxpup): do not forget to reset parent and window in
+	newly created menu_rec entries
+
+2004-04-19  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* demos/Makefile.am (glwin_LDADD, gl_LDADD): fix ordering of
+	libraries
+	(LDFLAGS): rename from AM_LDFLAGS (automake 1.5 did not like that)
+
+	* config/xformsinclude.m4 (XFORMS_PROG_CC): fix description of
+	--enable-debug
+
+2004-04-05  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* Dummy commit to check all is well with my account.
+
+2004-04-01  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/flresource.c (fl_get_resource): when a resource is a
+	FL_STRING, avoid doing a strncpy of a string over itself (triggers
+	a valgrind report)
+
+2004-03-30  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* README: mention the --enable-demos and --disable-gl flags, which
+	got forgotten
+
+2004-03-30  Hans J. Johnson <hjohnson@mail.psychiatry.uiowa.edu>
+
+	* lib/pixmap.c (cleanup_xpma_struct): use a better check for
+	libXpm version
+
+2004-03-30  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* XForms 1.0.90 released
+
+	* NEWS:
+	* README: update for 1.0.90
+
+	* configure.ac: set version to 1.0.90. Use XFORMS_CHECK_VERSION
+
+	* config/xformsinclude.m4 (XFORMS_CHECK_VERSION): merge
+	XFORMS_SET_VERSION and XFORMS_CHECK_VERSION. Set PACKAGE here and
+	read version from PACKAGE_VERSION (set by AC_INIT). Remove
+	detection of prereleases. Development versions are now versions
+	with minor version number >= 50.
+
+	* README: small update
+
+	* configure.ac: add new define RETSIGTYPE_IS_VOID
+
+	* lib/signal.c: fix handling of RETSIGTYPE
+
+2003-12-02  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/Makefile.am: enable 'make -j2' to work on a
+	multi-processor machine.
+
+	* demos/Makefile.am: handle the .fd -> .c conversion in
+	automake-standard fashion.
+
+	* lib/include/Makefile.am: pass sed the names of the files to
+	be manipulated as '${srcdir}/`basename $$i`' rather than as
+	'${srcdir}/$$i' or things go awol on the Dec. (Running ksh, fwiw.)
+
+2003-11-28  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* Makefile.am: re-add xforms.spec to EXTRA_DIST. It is needed as well
+	as xforms.spec.in or else 'make rpmdist' will fail.
+
+2003-11-28  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_attribs.c:
+	* image/image_jpeg.c:
+	* image/image_xwd.c:
+	* lib/flcolor.c: warning free compilation of the entire xforms source.
+
+2003-11-28  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/demotest.c:
+	* demos/folder.c:
+	* demos/free1.c:
+	* demos/group.c:
+	* demos/popup.c:
+	* demos/wwwl.c:
+	* demos/xyplotall.c:
+	* demos/fd/scrollbar_gui.fd: squash all remaining warnings when
+	compiling the demos directory '-W -Wall -Wno-unused-parameter'.
+
+2003-11-28  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* Makefile.am:
+	* configure.ac: compile fd2ps after fdesign. Will allow me to get rid
+	of the files generated from the .fd files.
+
+2003-11-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/fd/Makefile.am: remove all the .[ch] files generated from their
+	.fd parents.
+
+	* demos/Makefile.am: generate the fd/*.[ch] files on-the-fly.
+
+	* demos/buttonall.c: no longer #include fd/buttons_gui.c.
+	* demos/butttypes.c:
+	* demos/demotest.c:
+	* demos/dirlist.c:
+	* demos/folder.c:
+	* demos/formbrowser.c:
+	* demos/inputall.c:
+	* demos/pmbrowse.c:
+	* demos/scrollbar.c:
+	* demos/thumbwheel.c: ditto for their own fd-generated files.
+
+	* demos/pmbrowse.h: removed: cruft.
+
+	* demos/fd/buttons_gui.[ch]:
+	* demos/fd/butttypes_gui.[ch]:
+	* demos/fd/fbtest_gui.[ch]:
+	* demos/fd/folder_gui.[ch]:
+	* demos/fd/formbrowser_gui.[ch]:
+	* demos/fd/ibrowser_gui.[ch]:
+	* demos/fd/inputall_gui.[ch]:
+	* demos/fd/is_gui.[ch]:
+	* demos/fd/is_gui_main.c:
+	* demos/fd/pmbrowse_gui.[ch]:
+	* demos/fd/scrollbar_gui.[ch]:
+	* demos/fd/twheel_gui.[ch]: removed.
+
+2003-11-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_printC.c (filename_only): use strrchr.
+
+	* fdesign/fdesign.man: document the -dir <destdir> option.
+
+2003-11-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* NEWS: updated to reflect what has been going on in the 1.1 cycle.
+
+2003-11-26  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/fd_main.h: add a 'char * output_dir' var to the FD_Opt struct.
+
+	* fdesign/fd_main.c: add code to initialize FD_Opt::output_dir.
+
+	* fdesign/fd_forms.c (save_forms): pass fdopt.output_dir var to the
+	external converter if non-zero.
+
+	* fdesign/fd_printC.c (filename_only, build_fname): new helper functions
+	that use FD_Opt::output_dir if it is set.
+	(C_output): invoke build_fname rather than building the file name
+	itself.
+
+2003-11-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/demotest_fd.[ch]:
+	* demos/demotest_fd.fd: removed. The routines were not invoked by
+	demotest (witness that it still links fine).
+
+	* demos/pmbrowse.c: split out the fdesign generated code.
+	Ensuing changes to use the fdesign generated code unchanged.
+
+	* demos/pmbrowse.fd: moved...
+	* demos/fd/pmbrowse_gui.[ch]:
+	* demos/fd/pmbrowse_gui.fd: to here.
+
+	* demos/Makefile.am:
+	* demos/fd/Makefile.am: ensuing changes.
+
+2003-11-27  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* image/image_gif.c (flush_buffer): do not pass 'incode'. Instead use
+	a local variable.
+
+2003-11-26  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* fdesign/fd_forms.c (save_forms): do not try to remove twice ".fd"
+	from file name (avoids problem with path names containing a '.').
+
+2003-11-25  Clive A Stubbings <xforms2@vjet.demon.co.uk>
+
+	* image/image_gif.c (flush_buffer): new static function, containing
+	code factored out of process_lzw_code.
+	(process_lzw_code): invoke flush_buffer where old code was in
+	process_lzw_code itself. In addition, also invoke flush_buffer
+	when cleaning up after an old-style gif image.
+
+	* image/image_jpeg.c (JPEG_identify): handle 'raw' JPEG images
+	without the JFIF header.
+
+2003-11-26  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/boxtype.c: squash warning about uninitialized data.
+
+2003-11-24  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fdesign/sp_menu.c (emit_menu_header): output properly initialized
+	C-code.
+
+2003-11-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/Makefile.am: enable the conditional building of the demo
+	GL codes.
+
+	* demos/gl.c:
+	* demos/glwin.c: #include gl/glcanvas.h and so prevent warnings
+	about implicit function declarations.
+
+2003-11-20  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/local.h: do not define HAVE_KP_DEFINE
+
+	* lib/flinternal.h: test directly for X11 version here
+
+	* lib/forms.c (fl_keyboard):
+	* lib/flcolor.c (fl_mapcolor, fl_dump_state_info):
+	* lib/xpopup.c (fl_addtopup):
+	* lib/clock.c (draw_clock): use proper ML_xxx macros instead of
+	bogus names
+
+2003-11-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/events.c:
+	* lib/fldraw.c:
+	* lib/forms.c:
+	* lib/xpopup.c:
+	* lib/xsupport.c:
+
+	* image/image_fits.c:
+	* image/image_gif.c:
+	* image/image_jpeg.c:
+	* image/image_replace.c:
+	* image/image_tiff.c:
+	* image/ps_core.c:
+	* image/ps_draw.c:
+
+	* image/image_fits.c:
+	* image/image_gif.c:
+	* image/image_jpeg.c:
+	* image/image_replace.c:
+	* image/image_tiff.c:
+	* image/image_xwd.c:
+	* image/ps_core.c:
+	* image/ps_draw.c:
+
+	* fdesign/fd_main.c: squash warnings about comparison of
+	signed and unsigned variables. Only 'safe' warnings have been squashed.
+
+2003-11-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/flsnprintf.c: remove unused variable 'credits'.
+
+	* lib/flresource.c: remove line 'fl_context->xim;' as it is a
+	statement with no effect.
+
+	* lib/version.c: remove unused variable 'c'.
+
+2003-11-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/flinternal.h: add declaration of fl_handle_form.
+	Squash warnings about implicit declaration of the function when
+	compiling lib/tabfolder.c.
+
+	* gl/glcanvas.h: remove #ifdef HAVE_GL_GLX_H guard.
+	Cruft from pre-autoconf days.
+	Squash warnings about implicit declaration of the function when
+	compiling gl/glcanvas.c
+
+2003-11-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fd2ps/papers.c:
+	* fd2ps/pscol.c:
+	* fd2ps/psdraw.c:
+	* fdesign/fd_control.c:
+	* fdesign/fd_main.c:
+	* fdesign/fd_printC.c:
+	* fdesign/fd_spec.c:
+	* fdesign/sp_dial.c:
+	* image/image_marker.c:
+	* image/image_tiff.c:
+	* image/ps_core.c:
+	* lib/cursor.c:
+	* lib/flcolor.c: squash warnings about 'var may be uninitialized' when
+	compiling with gcc -W -Wall by explicitly initializing all parts of the
+	arrays in the above files.
+
+2003-11-19  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* autogen.sh: enable the use of autoconf 2.58.
+
+2003-11-19  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/OS2 and all files therein: removed.
+
+	* lib/Makefile.am: remove mention of OS2.
+
+	* lib/Readme: removed.
+	* os2move.cmd: removed.
+	* gl/canvas.h: removed.
+
+	* gl/Makefile.am: remove canvas.h.
+
+2003-11-19  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/flinternal.h: remove obsolete comment
+
+	* config/xformsinclude.m4 (XFORMS_PATH_XPM): honor X_CFLAGS to
+	find xpm.h (should fix problem reported by Reed Riddle)
+
+	* README: update. In particular, the acknowledgement of copyright
+	has been removed since the code is not here anymore (and the
+	advertising clause is not needed anymore). Try to point to the new
+	nongnu.org site.
+
+	* Makefile.am (dist-hook): remove old leftover from LyX
+	(EXTRA_DIST): do not distribute xforms.spec, which
+	is generated at configure time
+
+	* lib/signal.c (default_signal_handler): fix typo
+
+2003-11-14  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* config/config.guess:
+	* config/config.sub:
+	* config/libtool.m4:
+	* config/ltmain.sh: updated from libtool 1.4.3 (as distributed
+	with rh9)
+
+	* config/depcomp: updated from automake 1.4 (as distributed
+	with rh9)
+
+2003-11-18  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* xforms.spec.in: update the %doc list to reflect actuality.
+
+2003-11-18  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* INSTALL: generic instructions from autoconf.
+
+2003-10-03  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Patch from Matthew Yaconis by way of
+	David Dembrow <ddembrow@nlxcorp.com>.
+
+	* lib/fselect.c: remove the arbitrary restriction on the display of
+	borderless forms.
+
+	* lib/tabfolder.c: display the tab forms correctly when using
+	bottom tab folders.
+
+2003-11-13  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* config/common.am: do not set LIBS to an empty value
+
+	* image/Makefile.am (INCLUDES):
+	* lib/Makefile.am (INCLUDES): honor X_CFLAGS
+
+	* demos/Makefile.am:
+	* fdesign/Makefile.am:
+	* fd2ps/Makefile.am: use $(foo) form instead of @foo@ for
+	variables references. Honor X_LIBS, X_PRE_LIBS and X_EXTRA_LIBS.
+
+2003-09-10  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* Makefile.am: only build the gl/ directory if required
+
+	* configure.ac: simplify handling of --enable-demos. Add support
+	for --disable-gl option; gl support is only compiled in if
+	GL/glx.h is found
+
+2003-09-09  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* config/xformsinclude.m4 (XFORMS_CHECK_LIB_JPEG): no need to link
+	against the X11 libs...
+
+	* configure.ac: remove lots of checks for headers and functions.
+	We only keep the ones that were already tested for in the old
+	source (although we do not know whether they are still useful).
+
+	* lib/asyn_io.c: use HAVE_SYS_SELECT_H
+
+2003-09-09  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* Makefile.am: only build demos/ directory if required
+
+	* configure.ac: add --enable-demos option
+
+2003-09-09  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/forms.c (fl_keyboard): pass it the event to allow it to
+	distinguish between KeyPress and KeyRelease events.
+	(dispatch_key): new function, factored out of do_keyboard.
+	(do_keyboard): Handles KeyRelease events correctly. The KeyPress keysym
+	is stored and then dispatched on KeyRelease also, since
+	XmbLookupString is undefined on a KeyRelease event.
+
+2003-09-05  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/version.c (fl_print_version): remove workaround for XENIX
+
+	* lib/local.h: remove NO_SOCK (who wants to support old SCO anyway?)
+
+2003-07-31  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/local.h (FL_SIGRET):
+
+	* lib/signal.c (default_signal_handler): use RETSIGTYPE instead of
+	FL_SIG_RET
+
+	* lib/errmsg.c (fl_get_syserror_msg): use HAVE_STRERROR
+
+	* lib/sysdep.c (fl_msleep): use HAVE_USLEEP
+
+	* lib/local.h: remove variables DONT_HAVE_USLEEP,
+	DONT_HAVE_STRERROR, NO_CONST (handled by AC_C_CONST),
+	FL_SIGRET_IS_VOID, FL_SIGRET
+
+	* configure.ac: check for usleep too
+
+2003-05-23  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* image/rgb_db.c: follow Rouben Rostamian's advice and remove all the
+	helper functions that were used to ascertain the name of the RGB color
+	before he rewrote fl_lookup_RGBcolor.
+
+	* flimage.h: add a comment to the declaration of fl_init_RGBdatabase
+	that is does nothing and is retained for compatibility only.
+
+2003-05-23  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/Basic.h: remove declarations of functions
+	fl_init_RGBdatabase and fl_lookup_RGBcolor as they are part of
+	libflimage, not libforms.
+
+2003-05-30  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* Changes: renamed as NEWS.
+	* COPYING: renamed as COPYING.LIB.
+	* 00README: renamed as README.
+
+2003-05-22  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/include/Makefile.am: make sure that forms.h is not distributed
+
+2003-05-21  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* configure.ac: do not set VERSION explicitely, this is done in
+	XFORMS_SET_VERSION.
+
+	* config/xformsinclude.m4 (XFORMS_SET_VERSION): simplify a tiny bit
+
+2003-05-22  Rouben Rostamian  <rostamian@umbc.edu>
+
+	* image/rgb_db.c (fl_lookup_RGBcolor): this function fell off the
+	dist at 1.0pre3. Now it is back again with a shiny new, more efficient
+	implementation.
+
+2003-05-05  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/include/Makefile.am (forms.h): create forms.h using the
+	target stamp-forms, so that it remains untouched when AAA.h is
+	regenerated but did not change.
+
+	* lib/include/AAA.h.in: new file. This is the template from which
+	AAA.h is generated
+
+	* lib/include/.cvsignore: add AAA.h
+
+	* configure.ac: call XFORMS_SET_VERSION; generate AAA.h from AAA.h.in
+
+	* config/xformsinclude.m4 (XFORMS_SET_VERSION): new macro, which
+	sets the VERSION string for xforms
+	(XFORMS_CHECK_VERSION): simplify a bit
+
+2003-04-24  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* image/image_fits.c (Bad_bpp): use abs() and not fabs(), since
+	bpp is an int
+
+2003-04-24  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Migrate from imake to autoconf/automake.
+
+	* Imakefile:
+	* Imakefile.os2:
+	* demos/Imakefile:
+	* demos/Imakefile.os2:
+	* fd2ps/Imakefile:
+	* fd2ps/Imakefile.os2:
+	* fdesign/Imakefile:
+	* fdesign/Imakefile.os2:
+	* fdesign/Imakefile.xxx:
+	* gl/Imakefile:
+	* image/Imakefile:
+	* lib/Imakefile:
+	* lib/Imakefile.os2:
+	* lib/OS2/Imakefile.os2:
+	* lib/include/Imakefile: removed.
+
+	* autogen.sh:
+	* configure.ac:
+	* config/.cvsignore:
+	* config/common.am:
+	* config/config.guess:
+	* config/config.sub:
+	* config/cygwin.m4:
+	* config/depcomp:
+	* config/libtool.m4:
+	* config/ltmain.sh:
+	* config/xformsinclude.m4: Here be magic ;-)
+
+	* Makefile.am:
+	* config/Makefile.am:
+	* demos/Makefile.am:
+	* demos/fd/Makefile.am:
+	* fd2ps/Makefile.am:
+	* fd2ps/test/Makefile.am:
+	* fdesign/Makefile.am:
+	* fdesign/fd/Makefile.am:
+	* fdesign/fd4test/Makefile.am:
+	* fdesign/notes/Makefile.am:
+	* fdesign/spec/Makefile.am:
+	* fdesign/xpm/Makefile.am:
+	* gl/Makefile.am:
+	* image/Makefile.am:
+	* lib/Makefile.am:
+	* lib/OS2/Makefile.am:
+	* lib/bitmaps/Makefile.am:
+	* lib/fd/Makefile.am:
+	* lib/include/Makefile.am:
+	* lib/private/Makefile.am: added.
+
+	* xforms.spec.in: the RPM spec file.
+
+	* lib/local.h: make use of the HAVE_STRCASECMP preprocessor variable.
+
+	* lib/pixmap.c: use XPM_H_LOCATION instead of pre-processor stuff.
+
+	* demos/demotest.c: define the callback.
+
+	* fd2ps/sys.c: use preprocessor variable HAVE_STRCASECMP rather than
+	NO_STRCASECMP.
+
+	* fd2ps/sys.h: now redundant, so remove it.
+
+	* fd2ps/fd2ps.h:
+	* fd2ps/sys.c: remove #include "sys.h"
+
+	* gl/canvas.h:
+	* gl/glcanvas.h: make use of HAVE_GL_GLX_H preprocessor variable.
+
+2003-04-24  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/tabfolder.c (handle): ensure that we have an active folder
+	before trying to manipulate its contents.
+
+2003-04-24  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/Imakefile: do not copy the generated forms.h to ../.
+	* lib/Imakefile: remove the targets to install forms.h.
+
+	* pretty well all .c files: change #include "forms.h" to
+	#include "include/forms.h".
+
+2003-04-22  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* fd2ps/sys.h: remove #define NO_STRDUP and FL_SIGRET as they aren't
+	used.
+
+2003-04-22  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* */*.c: ensure that config.h is #included if the HAVE_CONFIG_H
+	preprocessor variable is set.
+
+2003-04-22  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/zzz.h: remove the #include "flinternal.h" line whose
+	inclusion depends on the MAKING_FORMS preprocessor variable.
+
+	* lib/forms.h:
+        * lib/include/forms.h: regenerated.
+
+2003-04-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/wwwl.c: #include "private/flsnprintf.h".
+
+2003-04-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/private/flsnprintf.h: use #defines to prevent needless
+	fl_snprintf bloat.
+	* lib/flsnprintf.c: prepend portable_v?snprintf with "fl_" to prevent
+	name clashes with other software. Make these functions globally
+	accessible.
+	Importantly, #if 0...#endif a block that prevents the code from
+	linking correctly on the DEC.
+
+2003-04-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* image/image.c:
+	* lib/errmsg.c: no need to check for fl_vsnprintf anymore.
+
+2003-04-20  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/Imakefile:
+	* fd2ps/Imakefile:
+	* fdesign/Imakefile:
+	* gl/Imakefile:
+	* image/Imakefile:
+	* lib/Imakefile: pass the expected -DHAVE_SNPRINTF options to the
+	compiler.
+
+2003-04-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Make fl_snprintf private.
+
+	* lib/include/flsnprintf.h: moved to lib/private/flsnprintf.h.
+	* lib/include/Imakefile: remove flsnprintf.h.
+
+	* lib/forms.h:
+	* lib/include/forms.h: regenerated.
+
+	* fdesign/fd_attribs.c:
+	* image/image.c:
+	* image/image_io_filter.c:
+	* image/image_postscript.c:
+	* lib/choice.c:
+	* lib/cmd_br.c:
+	* lib/events.c:
+	* lib/flresource.c:
+	* lib/fselect.c:
+	* lib/goodie_alert.c:
+	* lib/goodie_choice.c:
+	* lib/goodie_msg.c:
+	* lib/goodie_salert.c:
+	* lib/version.c:
+	* lib/xpopup.c: add #include "private/flsnprintf.h".
+
+2003-04-17  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* lib/Imakefile (EXTRA_INCLUDES): add $(XPMINC)
+
+2003-04-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/Imakefile:
+	* fd2ps/Imakefile:
+	* fdesign/Imakefile:
+	* gl/Imakefile:
+	* image/Imakefile:
+	* lib/Imakefile: don't pass -Iprivate to the complier.
+
+	* fdesign/fd_super.c:
+	* fdesign/sp_browser.c:
+	* fdesign/sp_choice.c:
+	* fdesign/sp_counter.c:
+	* fdesign/sp_dial.c:
+	* fdesign/sp_menu.c:
+	* fdesign/sp_positioner.c:
+	* fdesign/sp_xyplot.c:
+	* image/image_postscript.c:
+	* image/postscript.c:
+	* image/ps_core.c:
+	* image/ps_draw.c:
+	* image/ps_text.c:
+	* lib/browser.c:
+	* lib/canvas.c:
+	* lib/choice.c:
+	* lib/counter.c:
+	* lib/dial.c:
+	* lib/flinternal.h:
+	* lib/formbrowser.c:
+	* lib/menu.c:
+	* lib/objects.c:
+	* lib/positioner.c:
+	* lib/scrollbar.c:
+	* lib/sldraw.c:
+	* lib/slider.c:
+	* lib/textbox.c:
+	* lib/thumbwheel.c:
+	* lib/valuator.c:
+	* lib/xyplot.c: associated changes to the #include directives.
+
+2003-04-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/xforms.5: renamed as xforms.man. This probably breaks the
+	installation, but that is all slated for change anyway.
+
+2003-04-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/Imakefile: do not -Ifd when compiling.
+
+	* demos/Imakefile:
+	* demos/buttonall.c:
+	* demos/demotest.c:
+	* demos/dirlist.c:
+	* demos/folder.c:
+	* demos/formbrowser.c:
+	* demos/ibrowser.c:
+	* demos/inputall.c:
+	* demos/itest.c:
+	* demos/scrollbar.c:
+	* demos/thumbwheel.c: associated changes.
+
+	* demos/.cvsignore: add all the generated executables.
+
+2003-04-17  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/canvas.h: cruft removal. Don't mention glcanvas.h
+	here in case the user does not want GL support.
+
+	* lib/include/forms.h
+	* lib/forms.h: regenerated.
+
+	* gl/glcanvas.c: include glcanvas.h as this is no longer in forms.h
+
+2003-04-16  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Remove the SNP directory and replace it with a single file,
+	flsnprintf.c. Invoke snprintf through a wrapper fl_snprintf.
+
+	* Imakefile: remove SUBDIR snp.
+
+	* lib/flsnprintf.c, lib/include/flsnprintf.h: new files.
+
+	* lib/include/Imakefile: add flsnprintf.h to the files used to
+	generated forms.h.
+
+	* lib/forms.h
+	* lib/include/forms.h: regenerated.
+
+	* lib/Imakefile: add flsnprintf.c.
+	Pass -DHAVE_SNPRINTF as a compiler option.
+
+	* lib/local.h: remove HAVE_SNPRINTF stuff.
+
+	* demos/Imakefile:
+	* fd2ps/Imakefile:
+	* fdesign/Imakefile:
+	* gl/Imakefile:
+	* image/Imakefile:
+	pass -DHAVE_SNPRINTF as a compiler option. Remove other SNP stuff.
+
+	* demos/wwwl.c:
+	* fdesign/fd_attribs.c:
+	* image/image.c:
+	* image/image_io_filter.c:
+	* image/image_postscript.c:
+	* lib/choice.c:
+	* lib/cmd_br.c:
+	* lib/errmsg.c:
+	* lib/events.c:
+	* lib/flresource.c:
+	* lib/fselect.c:
+	* lib/goodie_alert.c:
+	* lib/goodie_choice.c:
+	* lib/goodie_msg.c:
+	* lib/goodie_salert.c:
+	* lib/version.c:
+	* lib/xpopup.c:
+	s/\(v*snprintf\)/fl_\1/
+
+	* snp/*: all files removed.
+
+2003-04-15  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lots of files: reduce the amount of magic includes of header files
+	and therefore include flinternal.h explicitly much more.
+
+2003-04-15  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* .cvsignore:
+	* demos/.cvsignore:
+	* fd2ps/.cvsignore:
+	* fdesign/.cvsignore:
+	* gl/.cvsignore:
+	* image/.cvsignore:
+	* libs/.cvsignore:
+	* libs/include/.cvsignore: prepare the way for autoconf/automake.
+
+2003-04-10  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/include/Basic.h: add FL_RESIZED to the FL_EVENTS enum.
+	* lib/include/AAA.h: up FL_FIXLEVEL to 2 to reflect this.
+
+	* lib/forms.h:
+	* lib/include/forms.h: regenerated.
+
+	* lib/forms.c (scale_form): pass event FL_RESIZED to the object handler
+	if the object size is changed.
+
+	* lib/tabfolder.c (handle): handle the FL_RESIZED event to ensure
+	that the currently active folder is resized.
+
+2003-04-10  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/version.c (fl_print_version, fl_library_version): use
+	FL_VERSION, FL_REVISION rather than RCS stuff.
+
+2003-04-10  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* most files: Remove all the RCS strings from the header files
+	and about half of 'em from the .c files.
+
+2003-04-10  John Levon <moz@compsoc.man.ac.uk>
+
+	* lib/pixmap.c (init_xpm_attributes): "fix" XPixmaps containing
+	colour "opaque".
+
+2003-04-09  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* demos/.cvsignore:
+	* snp/.cvsignore: Ignore Makefile*
+
+2003-04-09  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Move tabfolder-specific code out of forms.c and allow individual
+	FL_OBJECTs to respond to such events. Means that the library
+	becomes extensible to new, user-defined widgets once again.
+
+	* lib/include/Basic.h: add FL_MOVEORIGIN to the FL_EVENTS enum.
+
+	* lib/forms.h:
+	* lib/include/forms.h: regenerated automatically.
+
+	* lib/forms.c (fl_handle_form): no longer a static function.
+	Dispatch FL_MOVEORIGIN events to the form's constituent objects.
+	(fl_get_tabfolder_origin): removed. Functionality moved into
+	tabfolder.c.
+	(do_interaction_step): no longer call fl_get_tabfolder_origin. Instead,
+	dispatch a call to fl_handle_form(form, FL_MOVEORIGIN, ...).
+
+	* lib/tabfolder.c (handle): add FL_MOVEORIGIN to the event switch.
+	Update the x,y absolute coords of the active_folder and dispatch
+	a call to fl_handle_form(active_folder, FL_MOVEORIGIN, ...) to
+	ensure that the x,y absolute coords of nested tabfolders are also
+	updated.
+
+2003-04-09  Jean-Marc Lasgouttes  <lasgouttes@lyx.org>
+
+	* image/Imakefile (EXTRA_INCLUDES): change the order of includes,
+	to avoid that an older installed forms.h is used instead of the
+	fresh one
+
+2003-04-09  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* lib/objects.c (hide_tooltip): renamed as checked_hide_tooltip.
+	(unconditional_hide_tooltip): new static helper function,
+	invoked within fl_handle_it on FL_KEYPRESS and FL_PUSH events.
+
+	* lib/include/AAA.h: up-ed FL_FIXLEVEL to 1 to reflect the changes
+	made above.
+	* lib/forms.h: regenerated to reflect changed FL_FIXLEVEL.
+
+	* version.c (version): update to reflect this also.
+
+2003-04-08  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	Enable tooltips to be shown correctly in "composite" widgets
+	such as the browser.
+
+	* lib/objects.c (get_parent): new static helper function. Given an
+	FL_OBJECT*, returns its parent FL_OBJECT.
+	(tooltip_handler): rewritten to show the tooltip that is stored
+	by the parent FL_OBJECT.
+	(hide_tooltip): new static helper function: on leaving an FL_OBJECT,
+	only hide the tooltip if we have also left the bounds of the parent
+	FL_OBJECT.
+	(fl_handle_it): make use of these new functions to show and hide
+	tooltips.
+
+2003-04-08  Angus Leeming  <angus.leeming@btopenworld.com>
+
+	* image/image_rotate.c (flimage_rotate): enable the rotation of
+	grayscale images by 90 degree multiples and more generally prevent
+	other unsupported image types from crashing xforms.
+
+	* lib/flresource.c (fl_initialize): clean-up properly if we fail to
+	create input contexts or methods.
+
+	* lib/textbox.c (handle_textbox):
+	* lib/thumbwheel.c (handle):
+	* lib/util.c (flevent): FL_KEYBOARD has been replaced by FL_KEYPRESS.
+	The former is retained for compatability, but the latter should be
+	used internally.

@@ -1,0 +1,135 @@
+@node Part IV An Example
+@chapter An Example
+
+Let us work through an example of how to create a simple object class
+named @code{colorbox}. Assume that we want a class with the following
+behavior: it should normally be red. When the user presses the mouse
+on it it should turn blue. When the user releases the mouse button the
+object should turn red again and be returned to the application
+program. Further, the class module should keep a total count how many
+times the box got pushed.
+
+The first thing to do is to define some constants in a file named
+@file{colbox.h}. This file should at least contain the class number
+and one or more types:
+@example
+/* Class number must be between FL_USER_CLASS_START
+    and FL_USER_CLASS_END */
+
+#define FL_COLBOX        (FL_USER_CLASS_START + 1)
+
+#define FL_NORMAL_COLBOX 0          /* The only type */
+@end example
+
+Note that the type must start from zero onward. Normally it should
+also contain some defaults for the boxtype and label alignment etc.
+The include file also has to declare all the functions available for
+this object class. I.e., it should contain:
+@example
+extern FL_OBJECT *fl_create_colbox(int, FL_Coord, FL_Coord, FL_Coord,
+                                   FL_Coord, const char *);
+extern FL_OBJECT *fl_add_colbox(int, FL_Coord, FL_Coord, FL_Coord,
+                                FL_Coord, const char *);
+extern int fl_get_colorbox(FL_OBJECT *);
+@end example
+
+Now we have to write a module @file{colbox.c} that contains the
+different routines. First of all we need routines to create an object
+of the new type and to add it to the current form. We also need to
+have a counter that keeps track of number of times the colbox is
+pushed. They would look as follows:
+@example
+typedef struct @{
+    int counter;         /* no. of times pushed */
+@} COLBOX_SPEC;
+
+FL_OBJECT *fl_create_colbox(int type, FL_Coord x, FL_Coord y,
+                            FL_Coord w, FL_Coord h,
+                            const char *label) @{
+    FL_OBJECT *obj;
+
+    /* create a generic object class with an appropriate ID */
+    obj = fl_make_object(FL_COLBOX, type, x, y, w, h, label,
+                         handle_colbox);
+
+    /* initialize some members */
+    obj->col1 = FL_RED;
+    obj->col2 = FL_BLUE;
+
+    /* create class specific structures and initialize */
+    obj->spec = fl_malloc(sizeof *obj->spec);
+    obj->spec->counter = 0;
+    return obj;
+@}
+
+FL_OBJECT *fl_add_colbox(int type, FL_Coord x, FL_Coord y,
+                         FL_Coord w, FL_Coord h, const char *label) @{
+    FL_OBJECT *obj = fl_create_colbox(type, x, y, w, h, label); 
+    fl_add_object(fl_current_form, obj);
+    return obj;
+@}
+@end example
+
+The fields @code{col1} and @code{col2} are used to store the two
+colors red and blue such that the user can change them when required
+with the routine @code{@ref{fl_set_object_color()}}. What remains is
+to write the handling routine @code{handle_colbox()}. It has to react
+to three types of events: @code{FL_DRAW}, @code{FL_PUSH} and
+@code{FL_RELEASE}. Also, when the box is pushed, the counter should be
+incremented to keep a total count. Note that whether or not the mouse
+is pushed on the object is indicated in the field @code{obj->pushed}.
+Hence, when pushing and releasing the mouse the only thing that needs
+to be done is redrawing the object. This leads to the following piece
+of code:
+@example
+static int handle_colbox(FL_OBJECT *obj, int event,
+                         FL_Coord mx, FL_Coord my,
+                         int key, void *xev) @{
+    switch (event) @{
+        case FL_DRAW:              /* Draw box */
+            fl_draw_box(obj->boxtype, obj->x,obj->y, obj->w, obj->h,
+                        obj->pushed ? obj->col2 : obj->col1, obj->bw);
+            /* fall through */
+
+        case FL_DRAWLABEL:         /* Draw label */
+             fl_draw_object_label(obj);
+             break;
+
+        case FL_PUSH:
+            ((COLBOX_SPEC *) obj->spec)->counter++;
+            fl_redraw_object(obj);
+            break;
+
+        case FL_RELEASE:
+            fl_redraw_object(obj);
+            return 1;             /* report back to application! */
+
+         case FL_FREEMEM:
+             fl_free(obj->spec);
+             break;
+    @}
+
+    return 0;
+@}
+@end example
+
+That is the whole piece of code. Of course, since the @code{COLBOX_SPEC}
+structure is invisible outside of @file{colbox.c}, the following
+routine should be provided to return the total number of times the
+colbox was pushed:
+@example
+int fl_get_colbox(FL_OBJECT *obj) @{
+    if (!obj || obj->objclass != FL_COLBOX) @{
+        fprintf(stderr, "fl_get_colbox: Bad argument or wrong type);
+        return -1;
+    @}
+
+    return ((COLBOX_SPEC *) obj->spec)->counter;
+@}
+@end example
+
+To use it, compile it into a file @file{colbox.o}. An application
+program that wants to use the new object class simply should include
+@file{colbox.h} and link with @file{colbox.o} when compiling the
+program. It can then use the routine @code{fl_add_colbox()} to add
+objects of the new type to a form.

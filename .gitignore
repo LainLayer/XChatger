@@ -1,0 +1,3 @@
+.build
+modules/XForms/libforms.a
+main

@@ -1,0 +1,8 @@
+To recreate the .c and .h files from the .fd files use the command
+
+fdesign -convert -I \"../lib/include/forms.h\" *.fd
+
+This makes sure that the newest version of the forms.h file
+is included instead of an already installed forms.h file
+(typically /usr/local/include/forms.h).
+
