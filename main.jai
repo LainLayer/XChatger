@@ -127,9 +127,10 @@ send_message_callback :: (object: *forms.Object, data: s64) { send_message(); }
 
 send_message :: () {
 
-    health_check := make_health_check_packet(ping=true);
+    health_check := make_health_check_packet(.PONG);
     log("Sending message: %", health_check);
-    write(socket_file_descriptor, health_check.data, xx health_check.count);
+    send(health_check, socket_file_descriptor);
+    // write(socket_file_descriptor, health_check.data, xx health_check.count);
 
     return;
 
@@ -149,21 +150,25 @@ send_message :: () {
 }
 
 message_listener :: (thread: *Thread) -> s64 {
+    context.print_style.struct_printer = printer_with_big_endian;
     while true {
-        buffer: [1024]u8;
-        amount_read := read(socket_file_descriptor, buffer.data, buffer.count);
+        // buffer: [1024]u8;
+        // amount_read := read(socket_file_descriptor, buffer.data, buffer.count);
         // assert(amount_read != -1 && amount_read != 0); // TODO: Deal with disconnects
-        if(amount_read == -1 || amount_read == 0) {
-            log("read returned %", amount_read);
-            exit(1);
-            continue;
-        }
+        // if(amount_read == -1 || amount_read == 0) {
+        //     log("read returned %", amount_read);
+        //     exit(1);
+        //     continue;
+        // }
 
-        message: []u8;
-        message.data  = buffer.data;
-        message.count = amount_read;
+        // message: []u8;
+        // message.data  = buffer.data;
+        // message.count = amount_read;
 
-        log("got reply: %", message);
+        packet := receive_packet(socket_file_descriptor);
+        defer free(packet);
+
+        log("got reply: %", packet.*);
 
         continue;
 
@@ -223,6 +228,8 @@ make_message_form :: (text: string) -> *forms.Form {
 }
 
 main :: () {
+
+    context.print_style.struct_printer = printer_with_big_endian;
 
     forms.initialize();
 

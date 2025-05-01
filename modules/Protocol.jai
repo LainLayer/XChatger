@@ -1,4 +1,6 @@
 #import "Basic";
+#import "Socket";
+#import "POSIX";
 
 MAGIC                ::  0x43485447; // ("CHTG")
 VERSION              ::  1;
@@ -9,6 +11,8 @@ PASSWORD_HASH_LENGTH ::  32;         // bytes
 PASSWORD_SALT_LENGTH ::  32;         // bytes
 USERNAME_MAX         ::  128;
 PACKET_HEADER_SIZE   ::  10;         // bytes
+
+MAGIC_BIG_ENDIAN :u32be: #run to_big_endian(MAGIC);
 
 Packet_Type :: enum u8 {
     CLIENT_HEALTHCHECK :: 0x80; //MSB is sender (1 for client/0 for server)
@@ -47,36 +51,80 @@ Media_Type :: enum {
     MEDIA_VIDEO;
 };
 
-write_header :: (buffer: *[..]u8, type: Packet_Type, length: u32) {
+Ping_Type :: enum u8 {
+    PONG :: 0;
+    PING :: 1;
+}
 
-    push_bytes :: inline (buffer: *[..]u8, item: $T) {
-        memcpy(buffer.data + buffer.count, *item, size_of(T));
-        buffer.count += size_of(T);
+u32be :: #type,distinct u32;
+to_little_endian :: inline (n: u32be) -> u32   { return ntohl(xx n); }
+to_big_endian    :: inline (n: u32)   -> u32be { return xx htonl(n); }
+
+Packet :: struct {
+    magic   : u32be = MAGIC_BIG_ENDIAN #align 1;
+    version : u8    = VERSION          #align 1;
+    type    : Packet_Type              #align 1;
+    length  : u32be                    #align 1;
+} #no_padding
+
+#assert size_of(Packet) == PACKET_HEADER_SIZE;
+
+Health_Check_Packet :: struct {
+    #as using header: Packet #align 1;
+    ping: Ping_Type          #align 1;
+} #no_padding
+
+make_health_check_packet :: (ping: Ping_Type) -> Health_Check_Packet {
+    return Health_Check_Packet.{
+        header = .{
+            type   = .CLIENT_HEALTHCHECK,
+            length = #run to_big_endian(1)
+        },
+        ping = ping
+    };
+}
+
+send :: (packet: *Packet, descriptor: s32) {
+    size_to_send := size_of(Packet) + to_little_endian(packet.length);
+
+    bytes := cast(*[size_of(Packet)]u8) packet;
+    log("sending bytes: %", bytes.*);
+
+    amount_sent  := write(descriptor, packet, size_to_send);
+    assert(amount_sent == size_to_send);
+}
+
+receive_packet :: (descriptor: s32) -> *Packet {
+    header: Packet;
+    amount_read := read(descriptor, *header, size_of(Packet));
+    if amount_read  != size_of(Packet) {
+        log("Expected to read % bytes, but read % bytes", size_of(Packet), amount_read);
+        exit(1);
     }
 
-    magic        : u32 = htonl(MAGIC);
-    version      : u8  = VERSION;
-    htonl_length : u32 = htonl(length);
+    assert(header.magic == MAGIC_BIG_ENDIAN);
 
-    SIZE :: size_of(type_of(magic)) + size_of(type_of(version)) + size_of(type_of(type)) + size_of(type_of(length));
-    #assert SIZE == PACKET_HEADER_SIZE;
+    payload_length := to_little_endian(header.length);
 
-    array_reserve(buffer, SIZE + length);
+    buffer := alloc(size_of(Packet) + payload_length);
+    memcpy(buffer, *header, size_of(Packet));
 
-    push_bytes(buffer, magic);
-    push_bytes(buffer, version);
-    push_bytes(buffer, type);
-    push_bytes(buffer, htonl_length);
+    amount_read = read(descriptor, buffer + size_of(Packet) + 1, payload_length);
+    assert(amount_read == payload_length);
+
+    return buffer;
 }
 
-make_health_check_packet :: (ping: bool) -> []u8 {
-    result: [..]u8;
-    write_header(*result, .CLIENT_HEALTHCHECK, 1);
-    array_add(*result, xx (ifx ping then 1 else 0));
-    return result;
+
+printer_with_big_endian :: (builder: *String_Builder, any: Any, struct_printer_data: *void) -> bool {
+    info := any.type;
+    if info.type == .VARIANT {
+        variant_info := info.(*Type_Info_Variant);
+        if (variant_info.variant_flags & .DISTINCT) && (variant_info.name == "u32be") {
+            print_to_builder(builder, "%", to_little_endian(any.value_pointer.(*u32be).*));
+            return true;
+        }
+    }
+
+    return false;
 }
-
-#scope_file
-
-htonl :: (hostlong:  u32) -> u32 #foreign libc;
-htons :: (hostlong:  u32) -> u32 #foreign libc;
