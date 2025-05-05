@@ -10,9 +10,8 @@ MESSAGE_TEXT_MAX     ::  4096;
 PASSWORD_HASH_LENGTH ::  32;         // bytes
 PASSWORD_SALT_LENGTH ::  32;         // bytes
 USERNAME_MAX         ::  128;
+PASSWORD_MAX         ::  1024;
 PACKET_HEADER_SIZE   ::  10;         // bytes
-
-MAGIC_BIG_ENDIAN :u32be: #run to_big_endian(MAGIC);
 
 Packet_Type :: enum u8 {
     CLIENT_HEALTHCHECK :: 0x80; //MSB is sender (1 for client/0 for server)
@@ -52,79 +51,168 @@ Media_Type :: enum {
 };
 
 Ping_Type :: enum u8 {
-    PONG :: 0;
-    PING :: 1;
+    PING :: 0;
+    PONG :: 1;
 }
 
-u32be :: #type,distinct u32;
-to_little_endian :: inline (n: u32be) -> u32   { return ntohl(xx n); }
-to_big_endian    :: inline (n: u32)   -> u32be { return xx htonl(n); }
+to_little_endian :: inline (n: u32) -> u32 { return ntohl(n); }
+to_big_endian    :: inline (n: u32) -> u32 { return htonl(n); }
+
+to_little_endian :: inline (n: u16) -> u16 { return ntohs(n); }
+to_big_endian    :: inline (n: u16) -> u16 { return htons(n); }
 
 Packet :: struct {
-    magic   : u32be = MAGIC_BIG_ENDIAN #align 1;
-    version : u8    = VERSION          #align 1;
-    type    : Packet_Type              #align 1;
-    length  : u32be                    #align 1;
-} #no_padding
-
-#assert size_of(Packet) == PACKET_HEADER_SIZE;
-
-Health_Check_Packet :: struct {
-    #as using header: Packet #align 1;
-    ping: Ping_Type          #align 1;
-} #no_padding
-
-make_health_check_packet :: (ping: Ping_Type) -> Health_Check_Packet {
-    return Health_Check_Packet.{
-        header = .{
-            type   = .CLIENT_HEALTHCHECK,
-            length = #run to_big_endian(1)
-        },
-        ping = ping
-    };
+    magic:   u32 = MAGIC;
+    version: u8  = VERSION;
+    type:    Packet_Type;
+    length:  u32;
 }
 
-send :: (packet: *Packet, descriptor: s32) {
-    size_to_send := size_of(Packet) + to_little_endian(packet.length);
-
-    bytes := cast(*[size_of(Packet)]u8) packet;
-    log("sending bytes: %", bytes.*);
-
-    amount_sent  := write(descriptor, packet, size_to_send);
-    assert(amount_sent == size_to_send);
-}
-
-receive_packet :: (descriptor: s32) -> *Packet {
-    header: Packet;
-    amount_read := read(descriptor, *header, size_of(Packet));
-    if amount_read  != size_of(Packet) {
-        log("Expected to read % bytes, but read % bytes", size_of(Packet), amount_read);
-        exit(1);
+read_into :: (from_descriptor: s32, any: ..Any) {
+    total_size: s64 = 0;
+    for any {
+        assert(it.type.type == .POINTER, "passed non pointer to read_into()");
+        total_size += it.type.(*Type_Info_Pointer).pointer_to.runtime_size;
     }
 
-    assert(header.magic == MAGIC_BIG_ENDIAN);
+    buffer := alloc(total_size);
+    defer free(buffer);
 
-    payload_length := to_little_endian(header.length);
+    amount_read := read(from_descriptor, buffer, xx total_size);
 
-    buffer := alloc(size_of(Packet) + payload_length);
-    memcpy(buffer, *header, size_of(Packet));
+    if amount_read != total_size {
+        log("Tried reading % bytes, but only read % bytes", total_size, amount_read);
+        exit(1); // @cleanup - should reconnect
+    }
 
-    amount_read = read(descriptor, buffer + size_of(Packet) + 1, payload_length);
-    assert(amount_read == payload_length);
+    cursor := 0;
+    for any {
+        value_type_info := it.type.(*Type_Info_Pointer).pointer_to;
 
-    return buffer;
-}
+        size := value_type_info.runtime_size;
 
+        memcpy(it.value_pointer.(**u8).*, buffer + cursor, size);
 
-printer_with_big_endian :: (builder: *String_Builder, any: Any, struct_printer_data: *void) -> bool {
-    info := any.type;
-    if info.type == .VARIANT {
-        variant_info := info.(*Type_Info_Variant);
-        if (variant_info.variant_flags & .DISTINCT) && (variant_info.name == "u32be") {
-            print_to_builder(builder, "%", to_little_endian(any.value_pointer.(*u32be).*));
-            return true;
+        cursor += size;
+
+        if value_type_info.type == .INTEGER {
+            int_type_info := value_type_info.(*Type_Info_Integer);
+            assert(int_type_info.signed == false, "signed reading not implemented");
+            if size == {
+                case 2;
+                    number_pointer: *u16 = it.value_pointer.(**u16).*;
+                    number_pointer.*     = to_little_endian(number_pointer.*);
+                case 4;
+                    number_pointer: *u32 = it.value_pointer.(**u32).*;
+                    number_pointer.*     = to_little_endian(number_pointer.*);
+                case 8;
+                    assert(false, "endian convesion not implemented for 8 byte sized integers");
+                case 1;
+                case;
+                    log("wtf?? %", size);
+            }
         }
     }
+}
 
-    return false;
+write_into :: (to_descriptor: s32, any: ..Any) {
+
+    total_size: s64 = 0;
+    for any total_size += it.type.runtime_size;
+
+    buffer := alloc(total_size);
+    defer free(buffer);
+
+    cursor := 0;
+    for any {
+        size := it.type.runtime_size;
+
+        if it.type.type == .INTEGER {
+            int_info := it.type.(*Type_Info_Integer);
+            assert(int_info.signed == false, "signed writing not implemented");
+
+            if size == {
+                case 1;
+                    memcpy(buffer + cursor, it.value_pointer, size);
+                case 2;
+                    send_me := to_big_endian(it.value_pointer.(*u16).*);
+                    memcpy(buffer + cursor, *send_me, xx size);
+                case 4;
+                    send_me := to_big_endian(it.value_pointer.(*u32).*);
+                    memcpy(buffer + cursor, *send_me, xx size);
+                case 8;
+                    assert(false, "endian convesion not implemented for 8 byte sized integers");
+                case;
+                    log("wtf?? %", size);
+            }
+        } else {
+            memcpy(buffer + cursor, it.value_pointer, xx size);
+        }
+
+        cursor += size;
+    }
+
+    amount_sent := write(to_descriptor, buffer, xx total_size);
+
+    if amount_sent != total_size {
+        log("Tried sending % bytes but only sent % bytes", total_size, amount_sent);
+        exit(1);
+    }
+}
+
+read_header :: (descriptor: s32) -> Packet {
+    using result: Packet;
+    read_into(descriptor, *magic, *version, *type, *length);
+
+    return result;
+}
+
+receive_packet :: (descriptor: s32) -> header: Packet, payload: []u8 {
+
+    header := read_header(descriptor);
+
+    payload: [..]u8;
+    payload.count = header.length;
+    payload.data  = alloc(header.length);
+    read(descriptor, payload.data, header.length);
+
+    return header, payload;
+}
+
+Message_Type :: enum u8 {
+    TEXT;
+}
+
+Message :: struct {
+    type: Message_Type;
+    payload: []u8;
+
+    union {
+
+    }
+}
+
+Message_Type_Text :: struct {
+    text: string;
+}
+
+get_message :: (descriptor: s32) -> Message {
+
+    while true {
+        packet, payload := receive_packet(descriptor);
+        log("[server]: %", packet);
+
+        if packet.type == {
+            case .SERVER_HEALTHCHECK;
+                response := Packet.{
+                    type   = .CLIENT_HEALTHCHECK,
+                    length = 1,
+                };
+                log("[client]: %", response);
+                write_into(descriptor, response.magic, response.version, response.type, response.length, Ping_Type.PONG);
+            case;
+                log("unhandled packet type: %", packet.type);
+                exit(1);
+        }
+    }
 }

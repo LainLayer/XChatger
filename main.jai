@@ -127,56 +127,39 @@ send_message_callback :: (object: *forms.Object, data: s64) { send_message(); }
 
 send_message :: () {
 
-    health_check := make_health_check_packet(.PONG);
-    log("Sending message: %", health_check);
-    send(health_check, socket_file_descriptor);
+    // health_check := make_health_check_packet(.PING);
+    // log("Sending message: %", health_check);
+    // send(health_check, socket_file_descriptor);
     // write(socket_file_descriptor, health_check.data, xx health_check.count);
 
     return;
 
-    message := forms.get_input(message_box);
+    // message := forms.get_input(message_box);
 
-    if trim(message) == "" then return;
+    // if trim(message) == "" then return;
 
-    write(socket_file_descriptor, message.data, xx message.count);
+    // write(socket_file_descriptor, message.data, xx message.count);
 
-    lock(*ui_mutex);
-    defer unlock(*ui_mutex);
-    forms.fl_addto_formbrowser(message_browser, make_message_form(message));
+    // lock(*ui_mutex);
+    // defer unlock(*ui_mutex);
+    // forms.fl_addto_formbrowser(message_browser, make_message_form(message));
 
-    forms.set_input(message_box, "");
+    // forms.set_input(message_box, "");
 
-    reset_temporary_storage();
+    // reset_temporary_storage();
 }
 
 message_listener :: (thread: *Thread) -> s64 {
-    context.print_style.struct_printer = printer_with_big_endian;
+
     while true {
-        // buffer: [1024]u8;
-        // amount_read := read(socket_file_descriptor, buffer.data, buffer.count);
-        // assert(amount_read != -1 && amount_read != 0); // TODO: Deal with disconnects
-        // if(amount_read == -1 || amount_read == 0) {
-        //     log("read returned %", amount_read);
-        //     exit(1);
-        //     continue;
-        // }
 
-        // message: []u8;
-        // message.data  = buffer.data;
-        // message.count = amount_read;
+        message := get_message(socket_file_descriptor);
+        defer free(message.payload.data);
 
-        packet := receive_packet(socket_file_descriptor);
-        defer free(packet);
-
-        log("got reply: %", packet.*);
-
-        continue;
-
-        // lock(*ui_mutex);
-        // defer unlock(*ui_mutex);
-        // forms.fl_addto_formbrowser(message_browser, make_message_form(message));
-
-        reset_temporary_storage();
+        if message.type == {
+            case;
+                assert(false, "unimplemented");
+        }
     }
 
     return 0;
@@ -229,7 +212,7 @@ make_message_form :: (text: string) -> *forms.Form {
 
 main :: () {
 
-    context.print_style.struct_printer = printer_with_big_endian;
+    // context.print_style.struct_printer = printer_with_big_endian;
 
     forms.initialize();
 
