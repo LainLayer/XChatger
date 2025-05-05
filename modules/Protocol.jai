@@ -37,7 +37,7 @@ Packet_Type :: enum u8 {
     SERVER_USER_TYPING;
 }
 
-Return_Status :: enum {
+Return_Status :: enum u8 {
     SUCCESS :: 0;
     FAILED  :: 1;
 };
@@ -55,11 +55,22 @@ Ping_Type :: enum u8 {
     PONG :: 1;
 }
 
-to_little_endian :: inline (n: u32) -> u32 { return ntohl(n); }
-to_big_endian    :: inline (n: u32) -> u32 { return htonl(n); }
+to_little_endian :: to_big_endian;
+to_big_endian :: (n: $T) -> T {
+    size :: size_of(T);
 
-to_little_endian :: inline (n: u16) -> u16 { return ntohs(n); }
-to_big_endian    :: inline (n: u16) -> u16 { return htons(n); }
+    bytes: [..]u8 = ---;
+    bytes.data  = xx *n;
+    bytes.count = size;
+
+    for i : 0..(size / 2  - 1) {
+        t := bytes[i];
+        bytes[i] = bytes[size - 1 - i];
+        bytes[size - 1 - i] = t;
+    }
+
+    return bytes.data.(*T).*;
+}
 
 Packet :: struct {
     magic:   u32 = MAGIC;
@@ -106,12 +117,49 @@ read_into :: (from_descriptor: s32, any: ..Any) {
                     number_pointer: *u32 = it.value_pointer.(**u32).*;
                     number_pointer.*     = to_little_endian(number_pointer.*);
                 case 8;
-                    assert(false, "endian convesion not implemented for 8 byte sized integers");
+                    number_pointer: *u64 = it.value_pointer.(**u64).*;
+                    number_pointer.*     = to_little_endian(number_pointer.*);
                 case 1;
                 case;
                     log("wtf?? %", size);
             }
         }
+    }
+}
+
+write_into :: (buffer: *[..]u8, any: ..Any) {
+    total_size: s64 = 0;
+    for any total_size += it.type.runtime_size;
+
+    array_reserve(buffer, total_size);
+
+    for any {
+        size := it.type.runtime_size;
+
+        if it.type.type == .INTEGER {
+            int_info := it.type.(*Type_Info_Integer);
+            assert(int_info.signed == false, "signed writing not implemented");
+
+            if size == {
+                case 1;
+                    memcpy(buffer.data + buffer.count, it.value_pointer, size);
+                case 2;
+                    send_me := to_big_endian(it.value_pointer.(*u16).*);
+                    memcpy(buffer.data + buffer.count, *send_me, xx size);
+                case 4;
+                    send_me := to_big_endian(it.value_pointer.(*u32).*);
+                    memcpy(buffer.data + buffer.count, *send_me, xx size);
+                case 8;
+                    send_me := to_big_endian(it.value_pointer.(*u64).*);
+                    memcpy(buffer.data + buffer.count, *send_me, xx size);
+                case;
+                    log("wtf?? %", size);
+            }
+        } else {
+            memcpy(buffer.data + buffer.count, it.value_pointer, xx size);
+        }
+
+        buffer.count += size;
     }
 }
 
@@ -141,7 +189,8 @@ write_into :: (to_descriptor: s32, any: ..Any) {
                     send_me := to_big_endian(it.value_pointer.(*u32).*);
                     memcpy(buffer + cursor, *send_me, xx size);
                 case 8;
-                    assert(false, "endian convesion not implemented for 8 byte sized integers");
+                    send_me := to_big_endian(it.value_pointer.(*u64).*);
+                    memcpy(buffer + cursor, *send_me, xx size);
                 case;
                     log("wtf?? %", size);
             }
@@ -167,52 +216,158 @@ read_header :: (descriptor: s32) -> Packet {
     return result;
 }
 
-receive_packet :: (descriptor: s32) -> header: Packet, payload: []u8 {
-
-    header := read_header(descriptor);
-
-    payload: [..]u8;
-    payload.count = header.length;
-    payload.data  = alloc(header.length);
-    read(descriptor, payload.data, header.length);
-
-    return header, payload;
-}
-
 Message_Type :: enum u8 {
     TEXT;
 }
 
 Message :: struct {
     type: Message_Type;
-    payload: []u8;
 
     union {
-
+        as_text_message: Message_Type_Text;
     }
 }
 
 Message_Type_Text :: struct {
+    id: u64;
+    sent_at: u64;
+    user_id: u64;
+    channel_id: u64;
+    reply_id: u64;
+
     text: string;
+
+    media: [..]u64;
 }
 
-get_message :: (descriptor: s32) -> Message {
+get_messages :: (descriptor: s32, heap: Allocator) -> [..]Message {
+
+    result: [..]Message;
 
     while true {
-        packet, payload := receive_packet(descriptor);
+        packet := read_header(descriptor);
+
+        assert(packet.magic   == MAGIC);
+        assert(packet.version == VERSION);
+
         log("[server]: %", packet);
 
         if packet.type == {
             case .SERVER_HEALTHCHECK;
-                response := Packet.{
+                assert(packet.length == 1);
+                pong: Ping_Type;
+                read(descriptor, *pong, 1);
+
+                using response := Packet.{
                     type   = .CLIENT_HEALTHCHECK,
                     length = 1,
                 };
                 log("[client]: %", response);
-                write_into(descriptor, response.magic, response.version, response.type, response.length, Ping_Type.PONG);
+                write_into(descriptor, magic, version, type, length, Ping_Type.PONG);
+
+            case .SERVER_HISTORY;
+
+                status: Return_Status;
+                number_of_messages: u8;
+                read_into(descriptor, *status, *number_of_messages);
+
+                assert(status != .FAILED);
+
+                for i : 0..number_of_messages-1 {
+                    message: Message;
+                    using message.as_text_message;
+
+                    text_count: u16;
+
+                    read_into(descriptor, *id, *sent_at, *user_id, *channel_id, *reply_id, *text_count);
+
+                    text.count = text_count;
+                    text.data  = alloc(text_count);
+                    read(descriptor, text.data, text_count);
+
+                    media_count: u8;
+                    read_into(descriptor, *media_count);
+
+                    array_reserve(*media, media_count);
+                    read(descriptor, media.data, media_count * size_of(u64));
+                    media.count = media_count;
+
+                    message.type = .TEXT;
+                    log("message: %", message);
+                    array_add(*result, message);
+                }
+
+                return result;
+
             case;
+                buffer := alloc(packet.length);
+                read(descriptor, buffer, packet.length);
                 log("unhandled packet type: %", packet.type);
-                exit(1);
+                log("draining the read buffer of % bytes", packet.length);
+                t: string;
+                t.data = buffer;
+                t.count = packet.length;
+                log("buffer content: '%'", t);
+                // exit(1);
         }
+
+        reset_temporary_storage();
+    }
+
+    return result;
+}
+
+send_text_message :: (descriptor: s32, text: string, channel_id: u64, reply_id: u64 = 0) {
+
+    using response := Packet.{
+        type   = .CLIENT_SEND_MESSAGE,
+        length = 8 + 8 + 1 + 0 + cast(u32)text.count,
+    };
+
+    buffer: [..]u8;
+    defer free(buffer.data);
+
+    number_of_media: u8 = 0;
+
+    write_into(*buffer, magic, version, type, length, channel_id, reply_id, number_of_media);
+
+    for text
+        array_add(*buffer, it);
+
+    amount_sent := write(descriptor, buffer.data, xx buffer.count);
+
+    if amount_sent != buffer.count {
+        log("Tried sending % bytes, but only sent % bytes", buffer.count, amount_sent);
+        exit(1);
+    }
+}
+
+send_login_message :: (descriptor: s32, username: string, password: string) {
+
+    using response := Packet.{
+        type   = .CLIENT_LOGIN,
+        length = xx(username.count + password.count + 1),
+    };
+
+    builder: String_Builder;
+    defer free_buffers(*builder);
+
+    append(*builder, username);
+    append(*builder, "\0");
+    append(*builder, password);
+
+    payload := builder_to_string(*builder);
+
+    buffer: [..]u8;
+
+    write_into(*buffer, magic, version, type, length);
+
+    for payload array_add(*buffer, it);
+
+    amount_sent := write(descriptor, buffer.data, xx buffer.count);
+
+    if amount_sent != buffer.count {
+        log("Tried sending % bytes, but only sent % bytes", buffer.count, amount_sent);
+        exit(1);
     }
 }

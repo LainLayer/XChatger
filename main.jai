@@ -127,39 +127,43 @@ send_message_callback :: (object: *forms.Object, data: s64) { send_message(); }
 
 send_message :: () {
 
-    // health_check := make_health_check_packet(.PING);
-    // log("Sending message: %", health_check);
-    // send(health_check, socket_file_descriptor);
-    // write(socket_file_descriptor, health_check.data, xx health_check.count);
+    message := forms.get_input(message_box);
 
-    return;
+    if trim(message) == "" then return;
 
-    // message := forms.get_input(message_box);
+    send_text_message(socket_file_descriptor, message, 1);
 
-    // if trim(message) == "" then return;
+    lock(*ui_mutex);
+    defer unlock(*ui_mutex);
+    forms.fl_addto_formbrowser(message_browser, make_message_form(message));
 
-    // write(socket_file_descriptor, message.data, xx message.count);
+    forms.set_input(message_box, "");
 
-    // lock(*ui_mutex);
-    // defer unlock(*ui_mutex);
-    // forms.fl_addto_formbrowser(message_browser, make_message_form(message));
-
-    // forms.set_input(message_box, "");
-
-    // reset_temporary_storage();
+    reset_temporary_storage();
 }
 
 message_listener :: (thread: *Thread) -> s64 {
 
+    heap := context.allocator;
+
+    push_allocator(temp);
+
     while true {
 
-        message := get_message(socket_file_descriptor);
-        defer free(message.payload.data);
+        for message : get_messages(socket_file_descriptor, heap) {
+            if message.type == {
+                case .TEXT;
+                    text_message := message.as_text_message;
 
-        if message.type == {
-            case;
-                assert(false, "unimplemented");
+                    lock(*ui_mutex);
+                    defer unlock(*ui_mutex);
+                    forms.fl_addto_formbrowser(message_browser, make_message_form(text_message.text));
+                case;
+                    assert(false, "unimplemented");
+            }
         }
+
+        reset_temporary_storage();
     }
 
     return 0;
@@ -190,6 +194,8 @@ connect_button_callback :: (object: *forms.Object, data: s64) {
 
     thread_init(*read_message_thread, message_listener);
     thread_start(*read_message_thread);
+
+    send_login_message(socket_file_descriptor, username="cephon", password="MySuperSecurePassword");
 
     log("success!");
     forms.hide_form(welcome_form);
